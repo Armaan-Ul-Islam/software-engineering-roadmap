@@ -1,0 +1,721 @@
+(function () {
+  "use strict";
+
+  const data = window.ROADMAP_DATA || { domains: [], notes: {}, repositoryUrl: "", branch: "main" };
+  const PROGRESS_KEY = "roadmap.progress.v1";
+  const UI_STATE_KEY = "roadmap.ui.v1";
+  const THEME_KEY = "roadmap.theme";
+
+  const progress = loadJson(PROGRESS_KEY, {});
+  const uiState = loadJson(UI_STATE_KEY, { open: {} });
+  const domainsBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
+  const itemElements = new Map();
+
+  function loadJson(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function saveJson(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      /* storage may be unavailable in private windows; the page still works for this session */
+    }
+  }
+
+  function progressKey(domain, item) {
+    return domain.slug + ":" + item.id;
+  }
+
+  function isDone(domain, item) {
+    return Boolean(progress[progressKey(domain, item)]);
+  }
+
+  function flattenItems(items, accumulator) {
+    for (const item of items) {
+      accumulator.push(item);
+      flattenItems(item.children, accumulator);
+    }
+    return accumulator;
+  }
+
+  function domainItems(domain) {
+    const accumulator = [];
+    for (const section of domain.sections) {
+      flattenItems(section.items, accumulator);
+    }
+    return accumulator;
+  }
+
+  function countDone(domain, items) {
+    return items.reduce((count, item) => count + (isDone(domain, item) ? 1 : 0), 0);
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function githubUrl(path) {
+    if (!data.repositoryUrl) {
+      return null;
+    }
+    return data.repositoryUrl.replace(/\/$/, "") + "/blob/" + (data.branch || "main") + "/" + path;
+  }
+
+  /* ---------- theme ---------- */
+
+  function applyTheme(theme) {
+    if (theme === "dark" || theme === "light") {
+      document.documentElement.setAttribute("data-theme", theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  }
+
+  function currentTheme() {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored) {
+      return stored;
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function toggleTheme() {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  }
+
+  /* ---------- map ---------- */
+
+  function computeLevels() {
+    const levels = new Map();
+    const visiting = new Set();
+    function levelOf(slug) {
+      if (levels.has(slug)) {
+        return levels.get(slug);
+      }
+      if (visiting.has(slug)) {
+        return 0;
+      }
+      visiting.add(slug);
+      const domain = domainsBySlug.get(slug);
+      let level = 0;
+      for (const prerequisite of domain.prerequisites) {
+        if (domainsBySlug.has(prerequisite)) {
+          level = Math.max(level, levelOf(prerequisite) + 1);
+        }
+      }
+      visiting.delete(slug);
+      levels.set(slug, level);
+      return level;
+    }
+    for (const domain of data.domains) {
+      levelOf(domain.slug);
+    }
+    return levels;
+  }
+
+  function renderMap() {
+    const container = document.getElementById("map");
+    if (!data.domains.length) {
+      container.innerHTML = '<p class="empty">No domains yet. Add a folder like 01-foundations/README.md and run tools/build.py.</p>';
+      return;
+    }
+    const levels = computeLevels();
+    const columns = new Map();
+    for (const domain of data.domains) {
+      const level = levels.get(domain.slug);
+      if (!columns.has(level)) {
+        columns.set(level, []);
+      }
+      columns.get(level).push(domain);
+    }
+    const nodeWidth = 176;
+    const nodeHeight = 58;
+    const columnGap = 70;
+    const rowGap = 18;
+    const padding = 16;
+    const columnCount = Math.max(...columns.keys()) + 1;
+    const maxRows = Math.max(...Array.from(columns.values()).map((list) => list.length));
+    const width = padding * 2 + columnCount * nodeWidth + (columnCount - 1) * columnGap;
+    const height = padding * 2 + maxRows * nodeHeight + (maxRows - 1) * rowGap;
+    const positions = new Map();
+    for (const [level, list] of columns) {
+      const columnHeight = list.length * nodeHeight + (list.length - 1) * rowGap;
+      const startY = padding + (height - padding * 2 - columnHeight) / 2;
+      list.forEach((domain, rowIndex) => {
+        positions.set(domain.slug, {
+          x: padding + level * (nodeWidth + columnGap),
+          y: startY + rowIndex * (nodeHeight + rowGap),
+        });
+      });
+    }
+
+    let edges = "";
+    for (const domain of data.domains) {
+      const target = positions.get(domain.slug);
+      for (const prerequisite of domain.prerequisites) {
+        const source = positions.get(prerequisite);
+        if (!source) {
+          continue;
+        }
+        const startX = source.x + nodeWidth;
+        const startY = source.y + nodeHeight / 2;
+        const endX = target.x;
+        const endY = target.y + nodeHeight / 2;
+        const bend = (endX - startX) / 2;
+        edges += '<path class="edge" marker-end="url(#arrow)" d="M' + startX + " " + startY +
+          " C" + (startX + bend) + " " + startY + ", " + (endX - bend) + " " + endY + ", " + (endX - 4) + " " + endY + '"/>';
+      }
+    }
+
+    let nodes = "";
+    for (const domain of data.domains) {
+      const position = positions.get(domain.slug);
+      const items = domainItems(domain);
+      const done = countDone(domain, items);
+      const percent = items.length ? Math.round((done / items.length) * 100) : 0;
+      const trackWidth = nodeWidth - 24;
+      nodes += '<g class="node" data-slug="' + domain.slug + '" transform="translate(' + position.x + "," + position.y + ')">' +
+        '<rect class="box" width="' + nodeWidth + '" height="' + nodeHeight + '"/>' +
+        '<text x="12" y="22">' + escapeHtml(domain.title) + "</text>" +
+        '<text class="pct" x="' + (nodeWidth - 12) + '" y="22" text-anchor="end" data-role="pct">' + percent + "%</text>" +
+        '<rect class="track" x="12" y="36" width="' + trackWidth + '" height="8" rx="4"/>' +
+        '<rect class="progress" x="12" y="36" width="' + (trackWidth * percent / 100) + '" height="8" rx="4" data-role="progress" data-track="' + trackWidth + '"/>' +
+        "</g>";
+    }
+
+    container.innerHTML =
+      '<svg viewBox="0 0 ' + width + " " + height + '" role="img" aria-label="Domain dependency map">' +
+      '<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+      '<path d="M 0 0 L 10 5 L 0 10 z" fill="var(--muted)" opacity="0.7"/></marker></defs>' +
+      edges + nodes + "</svg>";
+
+    container.querySelectorAll(".node").forEach((node) => {
+      node.addEventListener("click", () => {
+        openDomain(node.getAttribute("data-slug"), true);
+      });
+    });
+  }
+
+  function updateMapNode(domain) {
+    const node = document.querySelector('.map .node[data-slug="' + domain.slug + '"]');
+    if (!node) {
+      return;
+    }
+    const items = domainItems(domain);
+    const done = countDone(domain, items);
+    const percent = items.length ? Math.round((done / items.length) * 100) : 0;
+    node.querySelector('[data-role="pct"]').textContent = percent + "%";
+    const progressBar = node.querySelector('[data-role="progress"]');
+    progressBar.setAttribute("width", String(Number(progressBar.getAttribute("data-track")) * percent / 100));
+  }
+
+  /* ---------- checklist ---------- */
+
+  function renderLinkChips(links) {
+    return links.map((link) => {
+      if (link.kind === "note" && link.path && data.notes[link.path]) {
+        return '<a class="chip note" href="#note=' + encodeURIComponent(link.path) + '" data-note="' + escapeHtml(link.path) + '" title="' + escapeHtml(data.notes[link.path].title) + '">' + escapeHtml(link.label) + "</a>";
+      }
+      if (link.kind === "note" || link.kind === "file") {
+        const url = link.path ? githubUrl(link.path) : link.url;
+        return '<a class="chip article" href="' + escapeHtml(url || link.url) + '" target="_blank" rel="noopener">' + escapeHtml(link.label) + "</a>";
+      }
+      return '<a class="chip ' + link.kind + '" href="' + escapeHtml(link.url) + '" target="_blank" rel="noopener" title="' + escapeHtml(link.url) + '">' + escapeHtml(link.label) + "</a>";
+    }).join("");
+  }
+
+  function renderItem(domain, item) {
+    const listItem = document.createElement("li");
+    listItem.className = "item" + (isDone(domain, item) ? " done" : "");
+    listItem.id = "item-" + domain.slug + "-" + item.id.replace(/\./g, "-");
+    const key = progressKey(domain, item);
+    listItem.innerHTML =
+      '<div class="item-row">' +
+      '<input type="checkbox" id="check-' + key.replace(/[:.]/g, "-") + '" ' + (isDone(domain, item) ? "checked" : "") + ' aria-label="Mark ' + escapeHtml(item.text) + ' as done">' +
+      '<label class="item-id" for="check-' + key.replace(/[:.]/g, "-") + '">' + item.id + "</label>" +
+      '<div class="item-main"><label class="item-text" for="check-' + key.replace(/[:.]/g, "-") + '">' + escapeHtml(item.text) + "</label>" +
+      '<span class="links">' + renderLinkChips(item.links) + "</span></div>" +
+      "</div>";
+    const checkbox = listItem.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener("change", () => {
+      setDone(domain, item, checkbox.checked);
+    });
+    if (item.children.length) {
+      const childList = document.createElement("ul");
+      childList.className = "items";
+      for (const child of item.children) {
+        childList.appendChild(renderItem(domain, child));
+      }
+      listItem.appendChild(childList);
+    }
+    itemElements.set(key, { element: listItem, domain, item });
+    return listItem;
+  }
+
+  function renderSection(domain, section) {
+    const details = document.createElement("details");
+    details.className = "rsection";
+    const stateKey = domain.slug + "/" + section.id;
+    details.dataset.sectionKey = stateKey;
+    details.open = uiState.open[stateKey] !== false;
+    const items = flattenItems(section.items, []);
+    details.innerHTML =
+      '<summary><span class="chevron">▶</span><h4>' + section.id + ". " + escapeHtml(section.title) + "</h4>" +
+      '<span class="count" data-role="count"></span>' +
+      '<button class="btn small" data-role="mark-all" title="Mark every item in this section as done">Mark all</button></summary>';
+    const list = document.createElement("ul");
+    list.className = "items";
+    for (const item of section.items) {
+      list.appendChild(renderItem(domain, item));
+    }
+    details.appendChild(list);
+    details.addEventListener("toggle", () => {
+      uiState.open[stateKey] = details.open;
+      saveJson(UI_STATE_KEY, uiState);
+    });
+    details.querySelector('[data-role="mark-all"]').addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const allDone = items.every((item) => isDone(domain, item));
+      for (const item of items) {
+        setDone(domain, item, !allDone, true);
+      }
+      refreshCounts();
+    });
+    details.updateCount = function () {
+      const done = countDone(domain, items);
+      details.querySelector('[data-role="count"]').textContent = done + " / " + items.length;
+      details.querySelector('[data-role="mark-all"]').textContent = done === items.length && items.length ? "Unmark all" : "Mark all";
+    };
+    details.updateCount();
+    return details;
+  }
+
+  function renderDomain(domain) {
+    const details = document.createElement("details");
+    details.className = "domain";
+    details.id = "domain-" + domain.slug;
+    details.open = uiState.open[domain.slug] === true;
+    const items = domainItems(domain);
+    const prerequisites = domain.prerequisites
+      .filter((slug) => domainsBySlug.has(slug))
+      .map((slug) => '<a href="#' + slug + '" data-domain="' + slug + '">' + escapeHtml(domainsBySlug.get(slug).title) + "</a>")
+      .join(", ");
+    const readmeUrl = githubUrl(domain.directory + "/README.md");
+    details.innerHTML =
+      "<summary>" +
+      '<span class="chevron">▶</span>' +
+      '<div class="domain-title"><h3>' + String(domain.order).padStart(2, "0") + " · " + escapeHtml(domain.title) + "</h3>" +
+      '<span class="summary">' + escapeHtml(domain.summary) + "</span></div>" +
+      '<div class="domain-progress"><div class="bar"><div class="fill" data-role="fill"></div></div><span class="count" data-role="count"></span></div>' +
+      "</summary>" +
+      '<div class="domain-body">' +
+      '<div class="domain-meta">' +
+      "<span>Prerequisites: " + (prerequisites || "none") + "</span>" +
+      (readmeUrl ? '<a href="' + readmeUrl + '" target="_blank" rel="noopener">Roadmap on GitHub ↗</a>' : "") +
+      "<span>" + domain.noteCount + " notes in this domain</span>" +
+      "</div>" +
+      (domain.abilities.length
+        ? '<div class="abilities"><b>Done when you can</b><ul>' + domain.abilities.map((ability) => "<li>" + escapeHtml(ability) + "</li>").join("") + "</ul></div>"
+        : "") +
+      "</div>";
+    const body = details.querySelector(".domain-body");
+    for (const section of domain.sections) {
+      body.appendChild(renderSection(domain, section));
+    }
+    details.addEventListener("toggle", () => {
+      uiState.open[domain.slug] = details.open;
+      saveJson(UI_STATE_KEY, uiState);
+    });
+    details.updateCount = function () {
+      const done = countDone(domain, items);
+      const percent = items.length ? Math.round((done / items.length) * 100) : 0;
+      details.querySelector('[data-role="fill"]').style.width = percent + "%";
+      details.querySelector('[data-role="count"]').textContent = done + " / " + items.length + " · " + percent + "%";
+      details.querySelectorAll(".rsection").forEach((section) => section.updateCount());
+    };
+    details.updateCount();
+    return details;
+  }
+
+  function renderDomains() {
+    const container = document.getElementById("domains");
+    container.innerHTML = "";
+    itemElements.clear();
+    if (!data.domains.length) {
+      container.innerHTML = '<p class="empty">Nothing to show yet.</p>';
+      return;
+    }
+    for (const domain of data.domains) {
+      container.appendChild(renderDomain(domain));
+    }
+    container.addEventListener("click", (event) => {
+      const noteLink = event.target.closest("[data-note]");
+      if (noteLink) {
+        event.preventDefault();
+        openNote(noteLink.getAttribute("data-note"));
+        return;
+      }
+      const domainLink = event.target.closest("[data-domain]");
+      if (domainLink) {
+        event.preventDefault();
+        openDomain(domainLink.getAttribute("data-domain"), true);
+      }
+    });
+  }
+
+  function setDone(domain, item, done, deferRefresh) {
+    const key = progressKey(domain, item);
+    if (done) {
+      progress[key] = new Date().toISOString().slice(0, 10);
+    } else {
+      delete progress[key];
+    }
+    saveJson(PROGRESS_KEY, progress);
+    const entry = itemElements.get(key);
+    if (entry) {
+      entry.element.classList.toggle("done", done);
+      entry.element.querySelector('input[type="checkbox"]').checked = done;
+    }
+    if (!deferRefresh) {
+      refreshCounts();
+    }
+  }
+
+  function refreshCounts() {
+    let total = 0;
+    let done = 0;
+    for (const domain of data.domains) {
+      const items = domainItems(domain);
+      total += items.length;
+      done += countDone(domain, items);
+      const element = document.getElementById("domain-" + domain.slug);
+      if (element) {
+        element.updateCount();
+      }
+      updateMapNode(domain);
+    }
+    const percent = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("overall-fill").style.width = percent + "%";
+    document.getElementById("overall-text").textContent = done + " / " + total + " · " + percent + "%";
+  }
+
+  function openDomain(slug, scroll) {
+    const element = document.getElementById("domain-" + slug);
+    if (!element) {
+      return;
+    }
+    element.open = true;
+    if (scroll) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function highlightItem(slug, itemId) {
+    const entry = itemElements.get(slug + ":" + itemId);
+    if (!entry) {
+      return;
+    }
+    openDomain(slug, false);
+    let parent = entry.element.parentElement;
+    while (parent) {
+      if (parent.tagName === "DETAILS") {
+        parent.open = true;
+      }
+      parent = parent.parentElement;
+    }
+    entry.element.scrollIntoView({ behavior: "smooth", block: "center" });
+    const row = entry.element.querySelector(".item-row");
+    row.classList.add("flash");
+    setTimeout(() => row.classList.remove("flash"), 2500);
+  }
+
+  /* ---------- search ---------- */
+
+  let searchTimer = null;
+
+  function applySearch(query) {
+    const normalised = query.trim().toLowerCase();
+    const domainsContainer = document.getElementById("domains");
+    if (!normalised) {
+      domainsContainer.querySelectorAll(".hidden").forEach((element) => element.classList.remove("hidden"));
+      domainsContainer.querySelectorAll("details").forEach((details) => {
+        const key = details.classList.contains("domain") ? details.id.replace("domain-", "") : null;
+        if (key) {
+          details.open = uiState.open[key] === true;
+        } else if (details.dataset.sectionKey) {
+          details.open = uiState.open[details.dataset.sectionKey] !== false;
+        }
+      });
+      return;
+    }
+    for (const { element, item } of itemElements.values()) {
+      const haystack = (item.id + " " + item.text + " " + item.links.map((link) => link.label).join(" ")).toLowerCase();
+      const selfMatch = haystack.includes(normalised);
+      element.classList.toggle("hidden", !selfMatch);
+      element.dataset.match = selfMatch ? "1" : "0";
+    }
+    for (const { element } of itemElements.values()) {
+      if (element.dataset.match === "1") {
+        let ancestor = element.parentElement;
+        while (ancestor && ancestor.id !== "domains") {
+          ancestor.classList.remove("hidden");
+          if (ancestor.tagName === "DETAILS") {
+            ancestor.open = true;
+          }
+          ancestor = ancestor.parentElement;
+        }
+      }
+    }
+    domainsContainer.querySelectorAll(".rsection").forEach((section) => {
+      const visible = section.querySelectorAll("li.item:not(.hidden)").length > 0;
+      section.classList.toggle("hidden", !visible);
+    });
+    domainsContainer.querySelectorAll(".domain").forEach((domain) => {
+      const visible = domain.querySelectorAll(".rsection:not(.hidden)").length > 0;
+      domain.classList.toggle("hidden", !visible);
+      if (visible) {
+        domain.open = true;
+      }
+    });
+  }
+
+  /* ---------- reader ---------- */
+
+  const reader = document.getElementById("reader");
+  const readerBackdrop = document.getElementById("reader-backdrop");
+  const readerContent = document.getElementById("reader-content");
+  const readerPath = document.getElementById("reader-path");
+  const readerGithub = document.getElementById("reader-github");
+
+  function resolveRelativePath(basePath, href) {
+    try {
+      const resolved = new URL(href, "file:///" + basePath);
+      return decodeURIComponent(resolved.pathname.replace(/^\//, ""));
+    } catch (error) {
+      return href;
+    }
+  }
+
+  function openNote(path) {
+    const note = data.notes[path];
+    if (!note) {
+      return;
+    }
+    const html = window.marked ? window.marked.parse(note.content) : "<pre>" + escapeHtml(note.content) + "</pre>";
+    readerContent.innerHTML = html;
+    readerPath.textContent = path;
+    const url = githubUrl(path);
+    readerGithub.classList.toggle("hidden", !url);
+    if (url) {
+      readerGithub.href = url;
+    }
+    readerContent.querySelectorAll("a[href]").forEach((anchor) => {
+      const href = anchor.getAttribute("href");
+      if (/^https?:\/\//.test(href) || href.startsWith("mailto:")) {
+        anchor.target = "_blank";
+        anchor.rel = "noopener";
+        return;
+      }
+      if (href.startsWith("#")) {
+        return;
+      }
+      const targetPath = resolveRelativePath(path, href).split("#")[0];
+      const domainMatch = data.domains.find((domain) => domain.directory + "/README.md" === targetPath);
+      if (domainMatch) {
+        anchor.href = "#" + domainMatch.slug;
+        anchor.addEventListener("click", (event) => {
+          event.preventDefault();
+          closeReader();
+          openDomain(domainMatch.slug, true);
+        });
+        return;
+      }
+      if (data.notes[targetPath]) {
+        anchor.href = "#note=" + encodeURIComponent(targetPath);
+        anchor.addEventListener("click", (event) => {
+          event.preventDefault();
+          openNote(targetPath);
+        });
+        return;
+      }
+      const external = githubUrl(targetPath);
+      if (external) {
+        anchor.href = external;
+        anchor.target = "_blank";
+        anchor.rel = "noopener";
+      }
+    });
+    if (window.hljs) {
+      readerContent.querySelectorAll("pre code").forEach((block) => {
+        try {
+          window.hljs.highlightElement(block);
+        } catch (error) {
+          /* unsupported language: leave the block as plain text */
+        }
+      });
+    }
+    reader.classList.remove("hidden");
+    readerBackdrop.classList.remove("hidden");
+    reader.setAttribute("aria-hidden", "false");
+    readerContent.scrollTop = 0;
+    document.body.style.overflow = "hidden";
+    if (location.hash !== "#note=" + encodeURIComponent(path)) {
+      history.replaceState(null, "", "#note=" + encodeURIComponent(path));
+    }
+  }
+
+  function closeReader() {
+    reader.classList.add("hidden");
+    readerBackdrop.classList.add("hidden");
+    reader.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (location.hash.startsWith("#note=")) {
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+  }
+
+  /* ---------- export / import / reset ---------- */
+
+  function exportProgress() {
+    const payload = {
+      format: "software-engineering-roadmap-progress",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      progress,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const anchor = document.createElement("a");
+    anchor.href = URL.createObjectURL(blob);
+    anchor.download = "roadmap-progress-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(anchor.href);
+  }
+
+  function importProgress(file) {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(fileReader.result));
+        const imported = parsed && parsed.progress && typeof parsed.progress === "object" ? parsed.progress : parsed;
+        let count = 0;
+        for (const [key, value] of Object.entries(imported)) {
+          if (value && typeof key === "string" && key.includes(":")) {
+            progress[key] = typeof value === "string" ? value : new Date().toISOString().slice(0, 10);
+            count += 1;
+          }
+        }
+        saveJson(PROGRESS_KEY, progress);
+        renderDomains();
+        refreshCounts();
+        applySearch(document.getElementById("search").value);
+        window.alert("Imported " + count + " completed items.");
+      } catch (error) {
+        window.alert("That file does not look like an exported progress file.");
+      }
+    };
+    fileReader.readAsText(file);
+  }
+
+  function resetProgress() {
+    if (!window.confirm("Clear all progress stored in this browser? Export first if you want a backup.")) {
+      return;
+    }
+    for (const key of Object.keys(progress)) {
+      delete progress[key];
+    }
+    saveJson(PROGRESS_KEY, progress);
+    renderDomains();
+    refreshCounts();
+  }
+
+  /* ---------- routing ---------- */
+
+  function handleHash() {
+    const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+    if (!hash) {
+      return;
+    }
+    if (hash.startsWith("note=")) {
+      openNote(hash.slice(5));
+      return;
+    }
+    const [slug, itemId] = hash.split("/");
+    if (itemId) {
+      highlightItem(slug, itemId);
+    } else if (domainsBySlug.has(slug)) {
+      openDomain(slug, true);
+    }
+  }
+
+  /* ---------- boot ---------- */
+
+  function boot() {
+    applyTheme(localStorage.getItem(THEME_KEY));
+    renderMap();
+    renderDomains();
+    refreshCounts();
+
+    document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+    document.getElementById("export-btn").addEventListener("click", exportProgress);
+    document.getElementById("reset-btn").addEventListener("click", resetProgress);
+    document.getElementById("import-input").addEventListener("change", (event) => {
+      const [file] = event.target.files;
+      if (file) {
+        importProgress(file);
+      }
+      event.target.value = "";
+    });
+    document.getElementById("reader-close").addEventListener("click", closeReader);
+    readerBackdrop.addEventListener("click", closeReader);
+
+    const searchInput = document.getElementById("search");
+    searchInput.addEventListener("input", () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => applySearch(searchInput.value), 120);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (!reader.classList.contains("hidden")) {
+          closeReader();
+        } else if (document.activeElement === searchInput && searchInput.value) {
+          searchInput.value = "";
+          applySearch("");
+        }
+      }
+      if (event.key === "/" && document.activeElement !== searchInput && !event.metaKey && !event.ctrlKey) {
+        event.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    const footerMeta = document.getElementById("footer-meta");
+    const totalNotes = Object.keys(data.notes).length;
+    footerMeta.textContent = data.domains.length + " domains · " + totalNotes + " notes · data generated " + (data.generatedAt ? data.generatedAt.slice(0, 10) : "locally");
+    const footerRepo = document.getElementById("footer-repo");
+    if (data.repositoryUrl) {
+      footerRepo.href = data.repositoryUrl;
+    } else {
+      footerRepo.classList.add("hidden");
+    }
+
+    window.addEventListener("hashchange", handleHash);
+    handleHash();
+  }
+
+  document.addEventListener("DOMContentLoaded", boot);
+})();

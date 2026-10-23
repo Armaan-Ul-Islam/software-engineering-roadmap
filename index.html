@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Software Engineering Roadmap</title>
+  <meta name="description" content="A curated roadmap for backend-leaning software engineers: checklists, notes, and the best resources, with progress tracking.">
+  <link rel="stylesheet" href="site/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>Software Engineering Roadmap</h1>
+      <p class="tagline">Tick what you know. Read what you don't. Build the rest.</p>
+    </div>
+    <div class="overall" title="Overall progress">
+      <div class="bar"><div class="fill" id="overall-fill"></div></div>
+      <span class="overall-text" id="overall-text">0 / 0</span>
+    </div>
+    <div class="actions">
+      <input id="search" type="search" placeholder="Search topics… (press /)" autocomplete="off" aria-label="Search topics">
+      <button id="theme-toggle" class="btn icon" title="Toggle light/dark theme" aria-label="Toggle theme">◐</button>
+      <button id="export-btn" class="btn" title="Download your progress as JSON">Export</button>
+      <label class="btn" title="Load progress from an exported JSON file">Import<input id="import-input" type="file" accept="application/json" hidden></label>
+      <button id="reset-btn" class="btn danger" title="Clear all progress stored in this browser">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <details class="howto" id="howto">
+      <summary>How to use this page</summary>
+      <ol>
+        <li>1. Start with the map below. Arrows point from a prerequisite to what builds on it. Click a domain to jump to it.</li>
+        <li>2. Each domain is a checklist. Tick an item when you can explain it to a colleague without notes and have used it at least once.</li>
+        <li>3. Items marked <span class="chip note">notes</span> open a short explainer right here. The other chips open the best external resource for that item in a new tab.</li>
+        <li>4. Progress is saved in this browser only. Use <b>Export</b> to back it up or move it to another machine, and <b>Import</b> to restore it.</li>
+        <li>5. Read the roadmap source on GitHub if you prefer plain markdown; every checklist and note is a file in the repository.</li>
+      </ol>
+    </details>
+
+    <section id="map-section" class="map-section">
+      <div class="section-head">
+        <h2>The map</h2>
+        <p class="muted">Domains and how they build on each other. Progress is shown inside each node.</p>
+      </div>
+      <div id="map" class="map"></div>
+    </section>
+
+    <section id="domains" class="domains"></section>
+  </main>
+
+  <div id="reader-backdrop" class="reader-backdrop hidden"></div>
+  <aside id="reader" class="reader hidden" aria-label="Note reader" aria-hidden="true">
+    <div class="reader-bar">
+      <div class="reader-path" id="reader-path"></div>
+      <div class="reader-actions">
+        <a id="reader-github" class="btn" target="_blank" rel="noopener">Open on GitHub</a>
+        <button id="reader-close" class="btn icon" title="Close (Esc)" aria-label="Close reader">✕</button>
+      </div>
+    </div>
+    <article id="reader-content" class="markdown"></article>
+  </aside>
+
+  <footer class="footer">
+    <span id="footer-meta"></span>
+    <span><a id="footer-repo" href="#" target="_blank" rel="noopener">Repository</a> · built from markdown with <code>tools/build.py</code></span>
+  </footer>
+
+  <script src="site/vendor/marked.min.js"></script>
+  <script src="site/data.js"></script>
+  <script src="site/app.js"></script>
+</body>
+</html>
