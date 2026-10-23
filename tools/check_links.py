@@ -35,6 +35,8 @@ MANUAL_CHECK_HOSTS = {"cwe.mitre.org", "itrevolution.com", "www.uber.com"}
 
 def collect_links(paths: list[pathlib.Path]) -> dict[str, set[str]]:
     links: dict[str, set[str]] = {}
+    reserved_suffixes = (".example", ".test", ".invalid", ".localhost")
+    reserved_hosts = {"example.com", "example.net", "example.org", "localhost", "www.example.com"}
     for path in paths:
         files = [path] if path.is_file() else sorted(path.rglob("*.md"))
         for markdown_file in files:
@@ -43,6 +45,9 @@ def collect_links(paths: list[pathlib.Path]) -> dict[str, set[str]]:
             for line_number, line in enumerate(markdown_file.read_text(encoding="utf-8").splitlines(), 1):
                 for url in LINK_PATTERN.findall(line):
                     url = url.rstrip(".,;")
+                    host = url.split("//", 1)[-1].split("/", 1)[0].split(":", 1)[0].lower()
+                    if host in reserved_hosts or host.endswith(reserved_suffixes):
+                        continue
                     links.setdefault(url, set()).add(f"{markdown_file.relative_to(REPOSITORY_ROOT).as_posix()}:{line_number}")
     return links
 

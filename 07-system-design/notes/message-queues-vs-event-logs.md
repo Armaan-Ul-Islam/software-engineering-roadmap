@@ -64,7 +64,7 @@ The queue made per-message failure handling trivial and replay impossible; the l
 
 - [Apache Kafka: Introduction](https://kafka.apache.org/intro) · topics, partitions, offsets and consumer groups from the source.
 - [RabbitMQ: Reliability Guide](https://www.rabbitmq.com/docs/reliability) · acknowledgements, confirms, and what each failure does to a message in flight.
-- [Jay Kreps: The Log](https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying) · the essay that explains why a replayable log is a different kind of thing from a queue.
+- [Jay Kreps: The Log](https://web.archive.org/web/2024/https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying) · the essay that explains why a replayable log is a different kind of thing from a queue.
 - [Designing Data-Intensive Applications, chapter 11](https://dataintensive.net/) · message brokers versus log-based brokers, with the delivery-guarantee consequences.
 
 ---
