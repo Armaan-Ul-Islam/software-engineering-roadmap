@@ -8,7 +8,7 @@
 
 When a bean has a `@Transactional` method, Spring does not change the bean. It wraps it in a proxy and injects the proxy everywhere the bean is used. A call goes:
 
-```
+```text
 caller  -->  proxy (TransactionInterceptor)  -->  your bean
                  |                                   |
                  |  1. begin or join a transaction   |

@@ -62,6 +62,8 @@ site/                  the tracker's script, styles, generated data, and a vendo
 NN-<domain>/README.md  the roadmap for one domain
 NN-<domain>/notes/     short explainers for the concepts in that domain
 tools/build.py         regenerates site/data.js from the markdown and validates links and IDs
+tools/check_notes.py   checks note structure and conventions
+tools/link_notes.py    links each note into the roadmap items named in its footer
 tools/check_links.py   checks every external link
 AGENTS.md              conventions for editing this repository (for people and for coding agents)
 NOTES.md               backlog of content to add and open questions
@@ -71,8 +73,12 @@ After editing any roadmap or note, run:
 
 ```bash
 python3 tools/build.py        # validate and regenerate site/data.js
+python3 tools/check_notes.py  # check that every note follows the note conventions
+python3 tools/link_notes.py   # add [notes] links to the roadmap items each note declares in its footer
 python3 tools/check_links.py  # optional: check external links (writes tools/link-report.txt)
 ```
+
+The same checks run in GitHub Actions on every push. To publish the tracker as a website, enable GitHub Pages for the repository with the `main` branch and the root folder as the source; `index.html` needs no build step.
 
 ## 6. Curation principles
 

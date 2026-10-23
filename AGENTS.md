@@ -10,6 +10,8 @@ It has three kinds of content, and each has a strict shape so that the tracker p
 index.html              static tracker: progress, domain map, note reader (open directly in a browser)
 site/                   app.js, styles.css, generated data.js, vendored marked.min.js
 tools/build.py          parses the roadmaps + notes into site/data.js and validates links/IDs
+tools/check_notes.py    checks that every note has the required structure and footer
+tools/link_notes.py     inserts [notes](...) links into roadmap items based on each note's footer
 tools/check_links.py    checks every external link in the markdown files
 NN-<domain>/README.md   one roadmap per domain (the checklist + curated resources)
 NN-<domain>/notes/*.md  short explainers ("notes") that teach one concept each
@@ -68,7 +70,7 @@ Do not link to content farms. Verify links with `python3 tools/check_links.py`.
 
 ## 5. Workflow
 
-- 5.1 After editing any README or note, run `python3 tools/build.py`. It regenerates `site/data.js` and fails on broken local links or duplicate IDs. Commit the regenerated `site/data.js`.
+- 5.1 After writing a note, run `python3 tools/check_notes.py` and `python3 tools/link_notes.py` (it adds the `[notes]` link to the items named in the footer). After editing any README or note, run `python3 tools/build.py`. It regenerates `site/data.js` and fails on broken local links or duplicate IDs. Commit the regenerated `site/data.js`.
 - 5.2 Run `python3 tools/check_links.py` before committing a batch of new external links.
 - 5.3 Commit messages are one plain sentence describing the change. No trailers.
 - 5.4 Record ideas for later in `NOTES.md` instead of leaving half-written content in the roadmaps.

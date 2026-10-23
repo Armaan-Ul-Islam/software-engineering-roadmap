@@ -1,0 +1,21 @@
+name: Validate roadmap
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate roadmap structure and local links
+        run: python3 tools/build.py --check
+      - name: Validate note conventions
+        run: python3 tools/check_notes.py
+      - name: Check that every note is linked from its items
+        run: python3 tools/link_notes.py --check
