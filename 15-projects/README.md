@@ -53,7 +53,7 @@
 - [ ] 4.2 CI/CD: a GitHub Actions pipeline with unit and Testcontainers tests, image scan, SBOM, image push, and deployment to a staging environment · [GitHub Actions documentation](https://docs.github.com/en/actions)
 - [ ] 4.3 Kubernetes deployment: manifests or a Helm chart, probes, requests and limits, HPA, a rolling update that includes an expand-contract database migration, a PodDisruptionBudget · [Kubernetes documentation](https://kubernetes.io/docs/home/)
 - [ ] 4.4 An observability stack: OpenTelemetry, Prometheus, Grafana, Tempo or Jaeger, Loki; SLOs with burn-rate alerts; one game day · [Grafana tutorials](https://grafana.com/tutorials/)
-- [ ] 4.5 Deploy twice with Terraform: Azure (Container Apps and Azure Database for PostgreSQL) and AWS (ECS Fargate and RDS); price both; tear both down · [Terraform tutorials](https://developer.hashicorp.com/terraform/tutorials)
+- [ ] 4.5 Deploy twice with Terraform: Azure (Container Apps and Azure Database for PostgreSQL) and AWS (ECS Fargate and RDS); price both; tear both down · [notes](notes/deploy-twice-and-price-it-spec.md) · [Terraform tutorials](https://developer.hashicorp.com/terraform/tutorials)
   - [ ] 4.5.1 Done when: the README has a cost table for both clouds at two traffic levels, and the measured RSS of the JVM matches the container memory you requested
 - [ ] 4.6 Failure drills: kill the database, exhaust the connection pool, inject latency into Kafka; fix with timeouts, retries, circuit breakers and load shedding · [Principles of Chaos Engineering](https://principlesofchaos.org/)
 
