@@ -9,7 +9,7 @@ This script reads that footer for every note, finds the matching checklist items
 domain README, and inserts `[notes](notes/<file>.md)` as the first link of each item line
 when it is not already there. It is idempotent and reports footers it cannot match.
 
-Usage: python3 tools/link_notes.py [--check]
+Usage: python3 tools/link_notes.py [--check] [domain-folder ...]
 """
 
 from __future__ import annotations
@@ -82,10 +82,13 @@ def process_domain(domain_directory: pathlib.Path, check_only: bool) -> tuple[in
 
 def main(arguments: list[str]) -> int:
     check_only = "--check" in arguments
+    selected = {argument.strip("/") for argument in arguments if not argument.startswith("--")}
     total_changed = 0
     all_problems: list[str] = []
     for domain_directory in sorted(REPOSITORY_ROOT.iterdir()):
         if not (domain_directory.is_dir() and DOMAIN_DIRECTORY_PATTERN.match(domain_directory.name)):
+            continue
+        if selected and domain_directory.name not in selected:
             continue
         changed, problems = process_domain(domain_directory, check_only)
         total_changed += changed
