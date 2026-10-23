@@ -112,7 +112,7 @@
 ### Courses and videos
 
 - [Hussein Nasser](https://www.youtube.com/@hnasr) · deep, practical videos on HTTP versions, proxies, TLS and backend networking.
-- [Kurose & Ross video lectures](https://gaia.cs.umass.edu/kurose_ross/videos.php) · free university-level networking lectures.
+- [Kurose & Ross video lectures](https://gaia.cs.umass.edu/kurose_ross/lectures.php) · free university-level networking lectures.
 - [Julia Evans: wizard zines](https://wizardzines.com/) · the HTTP and DNS zines are the fastest way to fix a shaky mental model (some free comics, zines are paid).
 
 ### References

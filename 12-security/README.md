@@ -66,7 +66,7 @@
 - [ ] 6.1 Structure: header, claims, signature; JWS vs JWE; the standard claims (`iss`, `sub`, `aud`, `exp`, `nbf`, `iat`, `jti`) · [RFC 7519: JSON Web Token](https://www.rfc-editor.org/rfc/rfc7519) · [jwt.io: Introduction](https://jwt.io/introduction)
 - [ ] 6.2 Validation checklist: algorithm allow-list, signature, issuer, audience, expiry with clock skew, key rotation via JWKS · [RFC 8725: JSON Web Token Best Current Practices](https://www.rfc-editor.org/rfc/rfc8725)
 - [ ] 6.3 Known attacks: `alg: none`, RS256-to-HS256 confusion, key injection, weak HMAC secrets · [PortSwigger: JWT attacks](https://portswigger.net/web-security/jwt)
-- [ ] 6.4 Design trade-offs: statelessness vs revocation, short expiry plus refresh, what belongs in a token, size and privacy · [OWASP: JSON Web Token Cheat Sheet for Java](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
+- [ ] 6.4 Design trade-offs: statelessness vs revocation, short expiry plus refresh, what belongs in a token, size and privacy · [OWASP: JSON Web Token Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html)
 
 ### 7. TLS and certificates
 

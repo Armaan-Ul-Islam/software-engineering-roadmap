@@ -22,7 +22,7 @@
 - [ ] 1.3 `equals`, `hashCode`, `compareTo`, `toString`: the contracts, and what breaks when they are violated · [Baeldung: equals() and hashCode() contracts](https://www.baeldung.com/java-equals-hashcode-contracts)
 - [ ] 1.4 Classes and interfaces: default/static/private interface methods, abstract classes, nested and inner classes, enums with behaviour · [dev.java: Classes and Objects](https://dev.java/learn/classes-objects/)
 - [ ] 1.5 Immutability and value-based design: records, `final`, defensive copies, builders · [dev.java: Using Record to Model Immutable Data](https://dev.java/learn/records/)
-- [ ] 1.6 Sealed types, pattern matching for `instanceof` and `switch`, record patterns: modelling a domain as algebraic data types · [dev.java: Pattern Matching](https://dev.java/learn/pattern-matching/) · [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+- [ ] 1.6 Sealed types, pattern matching for `instanceof` and `switch`, record patterns: modelling a domain as algebraic data types · [dev.java: Pattern Matching](https://dev.java/learn/language/fp/pattern-matching/) · [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
 - [ ] 1.7 Generics: invariance, bounded types, wildcards and PECS, type erasure and its consequences · [Baeldung: The Basics of Java Generics](https://www.baeldung.com/java-generics) · [Angelika Langer: Java Generics FAQ](http://www.angelikalanger.com/GenericsFAQ/JavaGenericsFAQ.html)
 - [ ] 1.8 Exceptions: checked vs unchecked, try-with-resources, suppressed exceptions, exception translation and design · [dev.java: Exceptions](https://dev.java/learn/exceptions/)
 - [ ] 1.9 Lambdas, functional interfaces, method references, effectively final and captured variables · [dev.java: Lambda Expressions](https://dev.java/learn/lambdas/)
@@ -37,7 +37,7 @@
 - [ ] 2.3 `ArrayList` vs `LinkedList` vs `ArrayDeque`; `PriorityQueue`; growth strategies and amortised cost · [Baeldung: ArrayList vs. LinkedList](https://www.baeldung.com/java-arraylist-linkedlist)
 - [ ] 2.4 Immutable collections (`List.of`, `copyOf`), unmodifiable views, `Collections` utilities, defensive copying · [dev.java: Immutable Collections](https://dev.java/learn/api/collections-framework/immutable-collections/)
 - [ ] 2.5 Iteration: fail-fast iterators and `ConcurrentModificationException`; `Comparator` composition; sequenced collections · [JEP 431: Sequenced Collections](https://openjdk.org/jeps/431)
-- [ ] 2.6 Streams: pipelines, laziness, short-circuiting, stateful operations, collectors (`groupingBy`, `toMap`, `teeing`), the `toMap` duplicate-key trap · [dev.java: The Stream API](https://dev.java/learn/api/streams/) · [Baeldung: The Java Stream API](https://www.baeldung.com/java-8-streams)
+- [ ] 2.6 Streams: pipelines, laziness, short-circuiting, stateful operations, collectors (`groupingBy`, `toMap`, `teeing`), the `toMap` duplicate-key trap · [dev.java: The Stream API](https://dev.java/learn/api/collections-and-streams/streams/) · [Baeldung: The Java Stream API](https://www.baeldung.com/java-8-streams)
 - [ ] 2.7 Parallel streams: when they help, when they hurt, and the shared common pool problem · [Baeldung: When to Use a Parallel Stream](https://www.baeldung.com/java-when-to-use-parallel-stream)
 - [ ] 2.8 Stream gatherers (Java 24+): custom intermediate operations · [JEP 485: Stream Gatherers](https://openjdk.org/jeps/485)
 

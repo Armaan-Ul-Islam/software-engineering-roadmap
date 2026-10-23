@@ -128,5 +128,5 @@
 - [Can I use](https://caniuse.com/) · browser support tables.
 - [TkDodo's blog](https://tkdodo.eu/blog/) · the best writing on React Query and React patterns.
 - [Josh Comeau](https://www.joshwcomeau.com/) · interactive explanations of CSS and React.
-- [Lydia Hallie: JavaScript Visualized](https://www.lydiahallie.com/blog) · animated explanations of the event loop, promises and more.
+- [Lydia Hallie: JavaScript Visualized](https://dev.to/lydiahallie) · animated explanations of the event loop, promises and more.
 - [roadmap.sh: JavaScript](https://roadmap.sh/javascript), [TypeScript](https://roadmap.sh/typescript), [Node.js](https://roadmap.sh/nodejs), [React](https://roadmap.sh/react), [Frontend](https://roadmap.sh/frontend) · visual overviews.

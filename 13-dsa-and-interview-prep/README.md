@@ -61,7 +61,7 @@
 ### 6. Java for coding interviews
 
 - [ ] 6.1 Idioms: `ArrayDeque` over `Stack`, `PriorityQueue` with comparators, `Map.merge` and `computeIfAbsent`, records for pairs, `Arrays.fill`, `Collections.nCopies` · [Baeldung: Guide to the Java ArrayDeque](https://www.baeldung.com/java-array-deque)
-- [ ] 6.2 Pitfalls: `Integer` equality and the cache, overflow (use `long`), `char` arithmetic, sort stability, mutable keys in a `HashMap`, `substring` cost · [Baeldung: Java Integer cache](https://www.baeldung.com/java-integer-cache)
+- [ ] 6.2 Pitfalls: `Integer` equality and the cache, overflow (use `long`), `char` arithmetic, sort stability, mutable keys in a `HashMap`, `substring` cost · [JLS 5.1.7: Boxing Conversion](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html#jls-5.1.7)
 - [ ] 6.3 Fast input and output, a reusable template, and when to avoid streams in interview code · [Baeldung: Fast I/O? BufferedReader](https://www.baeldung.com/java-buffered-reader)
 - [ ] 6.4 Complexity of Java collection operations at a glance · [Big-O Cheat Sheet](https://www.bigocheatsheet.com/)
 

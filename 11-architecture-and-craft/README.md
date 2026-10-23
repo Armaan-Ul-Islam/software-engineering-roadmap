@@ -39,7 +39,7 @@
 - [ ] 3.3 Behavioural: Strategy, Template Method, Observer, Command, Chain of Responsibility, State; replacing conditionals with polymorphism · [refactoring.guru: Behavioral patterns](https://refactoring.guru/design-patterns/behavioral-patterns)
 - [ ] 3.4 Enterprise patterns: Repository, Unit of Work, Service Layer, DTO, Specification; where Spring Data and JPA fit · [Fowler: Catalog of Patterns of Enterprise Application Architecture](https://martinfowler.com/eaaCatalog/)
 - [ ] 3.5 Anti-patterns: god class, anemic domain model, service locator, singletons as globals, primitive obsession · [Fowler: Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
-- [ ] 3.6 Functional patterns in Java: pure functions, higher-order functions, pipelines; sealed types with pattern matching instead of Visitor · [dev.java: Pattern Matching](https://dev.java/learn/pattern-matching/)
+- [ ] 3.6 Functional patterns in Java: pure functions, higher-order functions, pipelines; sealed types with pattern matching instead of Visitor · [dev.java: Pattern Matching](https://dev.java/learn/language/fp/pattern-matching/)
 
 ### 4. Refactoring
 

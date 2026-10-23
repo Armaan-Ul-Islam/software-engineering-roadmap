@@ -28,7 +28,9 @@ USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 roadmap-link-check/1.0"
 )
-BLOCKED_STATUSES = {401, 403, 429, 999}
+BLOCKED_STATUSES = {401, 403, 406, 429, 999}
+# Hosts that reject non-browser clients at the connection level; report them as BLOCKED, not BROKEN.
+MANUAL_CHECK_HOSTS = {"cwe.mitre.org", "itrevolution.com", "www.uber.com"}
 
 
 def collect_links(paths: list[pathlib.Path]) -> dict[str, set[str]]:
@@ -46,6 +48,9 @@ def collect_links(paths: list[pathlib.Path]) -> dict[str, set[str]]:
 
 
 def fetch_status(url: str, timeout: float) -> tuple[str, str]:
+    from urllib.parse import urlparse
+    if urlparse(url).netloc.lower() in MANUAL_CHECK_HOSTS:
+        return "BLOCKED", "manual"
     context = ssl.create_default_context()
     headers = {"User-Agent": USER_AGENT, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9"}
     for method in ("HEAD", "GET"):
