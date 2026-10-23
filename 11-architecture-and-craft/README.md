@@ -17,79 +17,79 @@
 
 ### 1. Readable code
 
-- [ ] 1.1 Naming: intention-revealing names, full words, one vocabulary per concept; names as the first design tool · [A Philosophy of Software Design](https://web.stanford.edu/~ouster/cgi-bin/book.php) · [Kevlin Henney: Seven Ineffective Coding Habits of Many Programmers](https://www.youtube.com/watch?v=ZsHMHukIlJY)
-- [ ] 1.2 Functions and classes: deep modules, one reason to change, cohesion and coupling, the cost of shallow abstractions · [John Ousterhout: A Philosophy of Software Design (talk)](https://www.youtube.com/watch?v=bmSAYlu0NcY)
-- [ ] 1.3 Comments and documentation: why over what; when a comment is a smell; docs that live next to the code · [Google Java Style Guide: Javadoc](https://google.github.io/styleguide/javaguide.html#s7-javadoc)
-- [ ] 1.4 Errors and nulls: fail fast, exceptions vs result types, `Optional`, parse-don't-validate, the billion-dollar mistake · [Alexis King: Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) · [Tony Hoare: Null References, The Billion Dollar Mistake](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/)
-- [ ] 1.5 Immutability and value objects; making illegal states unrepresentable with types · [Fowler: Value Object](https://martinfowler.com/bliki/ValueObject.html)
+- [ ] 1.1 Naming: intention-revealing names, full words, one vocabulary per concept; names as the first design tool · [notes](notes/naming-and-readable-code.md) · [A Philosophy of Software Design](https://web.stanford.edu/~ouster/cgi-bin/book.php) · [Kevlin Henney: Seven Ineffective Coding Habits of Many Programmers](https://www.youtube.com/watch?v=ZsHMHukIlJY)
+- [ ] 1.2 Functions and classes: deep modules, one reason to change, cohesion and coupling, the cost of shallow abstractions · [notes](notes/naming-and-readable-code.md) · [John Ousterhout: A Philosophy of Software Design (talk)](https://www.youtube.com/watch?v=bmSAYlu0NcY)
+- [ ] 1.3 Comments and documentation: why over what; when a comment is a smell; docs that live next to the code · [notes](notes/naming-and-readable-code.md) · [Google Java Style Guide: Javadoc](https://google.github.io/styleguide/javaguide.html#s7-javadoc)
+- [ ] 1.4 Errors and nulls: fail fast, exceptions vs result types, `Optional`, parse-don't-validate, the billion-dollar mistake · [notes](notes/parse-dont-validate-and-value-objects.md) · [Alexis King: Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) · [Tony Hoare: Null References, The Billion Dollar Mistake](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/)
+- [ ] 1.5 Immutability and value objects; making illegal states unrepresentable with types · [notes](notes/parse-dont-validate-and-value-objects.md) · [Fowler: Value Object](https://martinfowler.com/bliki/ValueObject.html)
 - [ ] 1.6 Code smells: a shared vocabulary for code review · [refactoring.guru: Code Smells](https://refactoring.guru/refactoring/smells)
 
 ### 2. Design principles
 
-- [ ] 2.1 SOLID: the problem each principle prevents, with Java examples, and the cases where it does not apply · [Baeldung: SOLID Principles](https://www.baeldung.com/solid-principles) · [Robert C. Martin: Solid Relevance](https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html)
-- [ ] 2.2 DRY, KISS, YAGNI, and the duplication that is cheaper than the wrong abstraction · [Sandi Metz: The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction)
-- [ ] 2.3 Coupling and cohesion; connascence; dependency direction and dependency inversion in practice · [Connascence](https://connascence.io/)
+- [ ] 2.1 SOLID: the problem each principle prevents, with Java examples, and the cases where it does not apply · [notes](notes/solid-in-practice.md) · [Baeldung: SOLID Principles](https://www.baeldung.com/solid-principles) · [Robert C. Martin: Solid Relevance](https://blog.cleancoder.com/uncle-bob/2020/10/18/Solid-Relevance.html)
+- [ ] 2.2 DRY, KISS, YAGNI, and the duplication that is cheaper than the wrong abstraction · [notes](notes/coupling-cohesion-and-the-wrong-abstraction.md) · [Sandi Metz: The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction)
+- [ ] 2.3 Coupling and cohesion; connascence; dependency direction and dependency inversion in practice · [notes](notes/coupling-cohesion-and-the-wrong-abstraction.md) · [Connascence](https://connascence.io/)
 - [ ] 2.4 Composition over inheritance; interfaces as roles; Law of Demeter; Tell, Don't Ask · [Composition over inheritance](https://en.wikipedia.org/wiki/Composition_over_inheritance) · [Fowler: Tell, Don't Ask](https://martinfowler.com/bliki/TellDontAsk.html)
 - [ ] 2.5 Information hiding and modularity (Parnas); deep vs shallow modules · [Parnas: On the Criteria To Be Used in Decomposing Systems into Modules](https://www.win.tue.nl/~wstomv/edu/2ip30/references/criteria_for_modularization.pdf)
 
 ### 3. Design patterns that earn their keep
 
-- [ ] 3.1 Creational: Builder, Factory Method, Abstract Factory; when plain `new` is fine · [refactoring.guru: Design Patterns](https://refactoring.guru/design-patterns) · [Java Design Patterns](https://java-design-patterns.com/)
-- [ ] 3.2 Structural: Adapter, Decorator, Facade, Proxy, Composite; where Spring uses each · [refactoring.guru: Structural patterns](https://refactoring.guru/design-patterns/structural-patterns)
-- [ ] 3.3 Behavioural: Strategy, Template Method, Observer, Command, Chain of Responsibility, State; replacing conditionals with polymorphism · [refactoring.guru: Behavioral patterns](https://refactoring.guru/design-patterns/behavioral-patterns)
+- [ ] 3.1 Creational: Builder, Factory Method, Abstract Factory; when plain `new` is fine · [notes](notes/design-patterns-you-actually-use.md) · [refactoring.guru: Design Patterns](https://refactoring.guru/design-patterns) · [Java Design Patterns](https://java-design-patterns.com/)
+- [ ] 3.2 Structural: Adapter, Decorator, Facade, Proxy, Composite; where Spring uses each · [notes](notes/design-patterns-you-actually-use.md) · [refactoring.guru: Structural patterns](https://refactoring.guru/design-patterns/structural-patterns)
+- [ ] 3.3 Behavioural: Strategy, Template Method, Observer, Command, Chain of Responsibility, State; replacing conditionals with polymorphism · [notes](notes/design-patterns-you-actually-use.md) · [refactoring.guru: Behavioral patterns](https://refactoring.guru/design-patterns/behavioral-patterns)
 - [ ] 3.4 Enterprise patterns: Repository, Unit of Work, Service Layer, DTO, Specification; where Spring Data and JPA fit · [Fowler: Catalog of Patterns of Enterprise Application Architecture](https://martinfowler.com/eaaCatalog/)
 - [ ] 3.5 Anti-patterns: god class, anemic domain model, service locator, singletons as globals, primitive obsession · [Fowler: Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html)
 - [ ] 3.6 Functional patterns in Java: pure functions, higher-order functions, pipelines; sealed types with pattern matching instead of Visitor · [dev.java: Pattern Matching](https://dev.java/learn/language/fp/pattern-matching/)
 
 ### 4. Refactoring
 
-- [ ] 4.1 The catalogue: extract and inline method/class, move, rename, replace conditional with polymorphism, introduce parameter object · [Refactoring (Fowler)](https://refactoring.com/) · [refactoring.guru: Refactoring](https://refactoring.guru/refactoring)
-- [ ] 4.2 Working safely: characterisation tests, seams, small steps, IDE refactorings, one commit per step · [Working Effectively with Legacy Code](https://www.oreilly.com/library/view/working-effectively-with/0131177052/)
+- [ ] 4.1 The catalogue: extract and inline method/class, move, rename, replace conditional with polymorphism, introduce parameter object · [notes](notes/refactoring-safely.md) · [Refactoring (Fowler)](https://refactoring.com/) · [refactoring.guru: Refactoring](https://refactoring.guru/refactoring)
+- [ ] 4.2 Working safely: characterisation tests, seams, small steps, IDE refactorings, one commit per step · [notes](notes/refactoring-safely.md) · [Working Effectively with Legacy Code](https://www.oreilly.com/library/view/working-effectively-with/0131177052/)
 - [ ] 4.3 Refactoring at scale: strangler fig, branch by abstraction, parallel change, the Mikado method · [Fowler: Branch By Abstraction](https://martinfowler.com/bliki/BranchByAbstraction.html) · [The Mikado Method](https://mikadomethod.info/)
 - [ ] 4.4 Technical debt: naming it, making it visible, paying it down deliberately · [Fowler: Technical Debt Quadrant](https://martinfowler.com/bliki/TechnicalDebtQuadrant.html)
 - [ ] 4.5 Tidyings: the small, safe cleanups to make before and after a change · [Kent Beck: Tidy First?](https://www.oreilly.com/library/view/tidy-first/9781098151232/)
 
 ### 5. Testing strategy
 
-- [ ] 5.1 Why we test: fast feedback, design pressure, regression safety; the test pyramid and the testing trophy · [Ham Vocke: The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) · [Kent C. Dodds: The Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
-- [ ] 5.2 Unit tests that survive refactoring: test behaviour not implementation, one reason to fail, naming, arrange-act-assert · [Unit Testing Principles, Practices, and Patterns](https://www.manning.com/books/unit-testing)
-- [ ] 5.3 Test doubles: dummies, stubs, fakes, mocks, spies; classicist vs mockist; when mocks hurt · [Fowler: Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html) · [Fowler: Test Double](https://martinfowler.com/bliki/TestDouble.html)
+- [ ] 5.1 Why we test: fast feedback, design pressure, regression safety; the test pyramid and the testing trophy · [notes](notes/testing-strategy.md) · [Ham Vocke: The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) · [Kent C. Dodds: The Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
+- [ ] 5.2 Unit tests that survive refactoring: test behaviour not implementation, one reason to fail, naming, arrange-act-assert · [notes](notes/testing-strategy.md) · [Unit Testing Principles, Practices, and Patterns](https://www.manning.com/books/unit-testing)
+- [ ] 5.3 Test doubles: dummies, stubs, fakes, mocks, spies; classicist vs mockist; when mocks hurt · [notes](notes/testing-strategy.md) · [Fowler: Mocks Aren't Stubs](https://martinfowler.com/articles/mocksArentStubs.html) · [Fowler: Test Double](https://martinfowler.com/bliki/TestDouble.html)
 - [ ] 5.4 Integration tests with real infrastructure (Testcontainers), consumer-driven contract tests (Pact), and few, valuable end-to-end tests · [Testcontainers](https://testcontainers.com/) · [Pact](https://docs.pact.io/)
 - [ ] 5.5 TDD as a design practice; outside-in development with acceptance tests · [Growing Object-Oriented Software, Guided by Tests](http://www.growing-object-oriented-software.com/) · [Kent Beck: Canon TDD](https://tidyfirst.substack.com/p/canon-tdd)
 - [ ] 5.6 Test quality: flaky tests, test data builders, property-based and mutation testing, coverage as a smell detector · [Kent Beck: Test Desiderata](https://testdesiderata.com/) · [Fowler: Eradicating Non-Determinism in Tests](https://martinfowler.com/articles/nonDeterminism.html)
 
 ### 6. Domain-driven design
 
-- [ ] 6.1 Strategic design: ubiquitous language, bounded contexts, context maps, core vs supporting vs generic subdomains · [Fowler: Bounded Context](https://martinfowler.com/bliki/BoundedContext.html) · [Eric Evans: Domain-Driven Design Reference](https://www.domainlanguage.com/ddd/reference/)
-- [ ] 6.2 Tactical design: entities, value objects, aggregates and invariants, repositories, domain services, domain events · [Vaughn Vernon: Effective Aggregate Design](https://www.dddcommunity.org/library/vernon_2011/)
-- [ ] 6.3 Aggregates and transactions: one aggregate per transaction, eventual consistency between aggregates, keeping aggregates small · [Vaughn Vernon: Effective Aggregate Design](https://www.dddcommunity.org/library/vernon_2011/)
+- [ ] 6.1 Strategic design: ubiquitous language, bounded contexts, context maps, core vs supporting vs generic subdomains · [notes](notes/domain-driven-design-essentials.md) · [Fowler: Bounded Context](https://martinfowler.com/bliki/BoundedContext.html) · [Eric Evans: Domain-Driven Design Reference](https://www.domainlanguage.com/ddd/reference/)
+- [ ] 6.2 Tactical design: entities, value objects, aggregates and invariants, repositories, domain services, domain events · [notes](notes/domain-driven-design-essentials.md) · [Vaughn Vernon: Effective Aggregate Design](https://www.dddcommunity.org/library/vernon_2011/)
+- [ ] 6.3 Aggregates and transactions: one aggregate per transaction, eventual consistency between aggregates, keeping aggregates small · [notes](notes/domain-driven-design-essentials.md) · [Vaughn Vernon: Effective Aggregate Design](https://www.dddcommunity.org/library/vernon_2011/)
 - [ ] 6.4 Anti-corruption layers and integrating with legacy or external systems · [Azure Architecture Center: Anti-corruption Layer pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer)
 - [ ] 6.5 Domain discovery: event storming and domain storytelling · [EventStorming](https://www.eventstorming.com/) · [Domain Storytelling](https://domainstorytelling.org/)
 - [ ] 6.6 DDD in Java and Spring: domain model vs JPA entities, where annotations go, mapping at the edges, Spring Modulith · [Herberto Graça: DDD, Hexagonal, Onion, Clean, CQRS... how I put it all together](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/) · [Spring Modulith](https://docs.spring.io/spring-modulith/reference/)
 
 ### 7. Application architecture
 
-- [ ] 7.1 Layered architecture, its failure modes, and the dependency rule · [Fowler: Presentation Domain Data Layering](https://martinfowler.com/bliki/PresentationDomainDataLayering.html)
-- [ ] 7.2 Hexagonal (ports and adapters), onion and clean architecture: the shared idea and the differences · [Alistair Cockburn: Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/) · [Robert C. Martin: The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [ ] 7.3 Modular monolith: package by feature, enforcing boundaries (ArchUnit, Spring Modulith, JPMS), extracting services later · [ArchUnit](https://www.archunit.org/) · [Spring Modulith](https://docs.spring.io/spring-modulith/reference/)
+- [ ] 7.1 Layered architecture, its failure modes, and the dependency rule · [notes](notes/hexagonal-architecture-with-spring-boot.md) · [Fowler: Presentation Domain Data Layering](https://martinfowler.com/bliki/PresentationDomainDataLayering.html)
+- [ ] 7.2 Hexagonal (ports and adapters), onion and clean architecture: the shared idea and the differences · [notes](notes/hexagonal-architecture-with-spring-boot.md) · [Alistair Cockburn: Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/) · [Robert C. Martin: The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [ ] 7.3 Modular monolith: package by feature, enforcing boundaries (ArchUnit, Spring Modulith, JPMS), extracting services later · [notes](notes/modular-monolith.md) · [ArchUnit](https://www.archunit.org/) · [Spring Modulith](https://docs.spring.io/spring-modulith/reference/)
 - [ ] 7.4 Vertical slices and use-case-centred organisation · [Jimmy Bogard: Vertical Slice Architecture](https://www.jimmybogard.com/vertical-slice-architecture/)
 - [ ] 7.5 Architecture characteristics and trade-off analysis; "the hard parts" · [Fundamentals of Software Architecture](https://fundamentalsofsoftwarearchitecture.com/) · [Software Architecture: The Hard Parts](https://www.oreilly.com/library/view/software-architecture-the/9781492086888/)
 - [ ] 7.6 Evolutionary architecture and fitness functions · [Building Evolutionary Architectures](https://evolutionaryarchitecture.com/)
 
 ### 8. API design
 
-- [ ] 8.1 Designing an API as a product: consumers first, consistency, discoverability, documentation · [Zalando RESTful API Guidelines](https://opensource.zalando.com/restful-api-guidelines/)
-- [ ] 8.2 Resource modelling, naming, errors, pagination, filtering, idempotency, versioning (mechanics in Web & HTTP) · [Google API Improvement Proposals](https://google.aip.dev/) · [Microsoft REST API Guidelines](https://github.com/microsoft/api-guidelines)
+- [ ] 8.1 Designing an API as a product: consumers first, consistency, discoverability, documentation · [notes](notes/api-design-guidelines.md) · [Zalando RESTful API Guidelines](https://opensource.zalando.com/restful-api-guidelines/)
+- [ ] 8.2 Resource modelling, naming, errors, pagination, filtering, idempotency, versioning (mechanics in Web & HTTP) · [notes](notes/api-design-guidelines.md) · [Google API Improvement Proposals](https://google.aip.dev/) · [Microsoft REST API Guidelines](https://github.com/microsoft/api-guidelines)
 - [ ] 8.3 Contract-first with OpenAPI; generated clients and servers; consumer-driven contracts · [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) · [Pact](https://docs.pact.io/)
-- [ ] 8.4 Evolving APIs: additive changes, deprecation policy, `Sunset` and `Deprecation` headers, compatibility tests · [Zalando guidelines: Compatibility](https://opensource.zalando.com/restful-api-guidelines/#compatibility)
+- [ ] 8.4 Evolving APIs: additive changes, deprecation policy, `Sunset` and `Deprecation` headers, compatibility tests · [notes](notes/api-design-guidelines.md) · [Zalando guidelines: Compatibility](https://opensource.zalando.com/restful-api-guidelines/#compatibility)
 - [ ] 8.5 Library and internal API design: minimal surface, immutability, naming, hard to misuse · [Joshua Bloch: How to Design a Good API and Why it Matters](https://www.youtube.com/watch?v=aAb7hSCtvGw)
 
 ### 9. Engineering communication
 
-- [ ] 9.1 Design documents: problem, constraints, options considered, decision, risks; one page when possible · [Malte Ubl: Design Docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/)
-- [ ] 9.2 Architecture Decision Records: when to write one, the template, keeping them alive · [ADR GitHub organisation](https://adr.github.io/) · [Michael Nygard: Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+- [ ] 9.1 Design documents: problem, constraints, options considered, decision, risks; one page when possible · [notes](notes/design-docs-and-adrs.md) · [Malte Ubl: Design Docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/)
+- [ ] 9.2 Architecture Decision Records: when to write one, the template, keeping them alive · [notes](notes/design-docs-and-adrs.md) · [ADR GitHub organisation](https://adr.github.io/) · [Michael Nygard: Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [ ] 9.3 Diagrams that communicate: the C4 model, sequence diagrams, diagrams as code in the repo · [C4 model](https://c4model.com/) · [Mermaid](https://mermaid.js.org/)
-- [ ] 9.4 Code review that helps: what to look for, how to comment, how to receive feedback, review turnaround · [Google: Code Review Developer Guide](https://google.github.io/eng-practices/review/) · [Google: The Change Author's Guide](https://google.github.io/eng-practices/review/developer/)
+- [ ] 9.4 Code review that helps: what to look for, how to comment, how to receive feedback, review turnaround · [notes](notes/code-review-that-helps.md) · [Google: Code Review Developer Guide](https://google.github.io/eng-practices/review/) · [Google: The Change Author's Guide](https://google.github.io/eng-practices/review/developer/)
 - [ ] 9.5 Technical writing: clear sentences, structure, writing for the reader who skims · [Google: Technical Writing Courses](https://developers.google.com/tech-writing)
 - [ ] 9.6 Estimation and planning: breaking work down, confidence ranges, surfacing risk early, saying no · [Jacob Kaplan-Moss: Software Estimation Is Hard](https://jacobian.org/2021/may/20/estimation/)
 
