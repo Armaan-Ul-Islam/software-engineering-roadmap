@@ -330,6 +330,7 @@
       (domain.abilities.length
         ? '<div class="abilities"><b>Done when you can</b><ul>' + domain.abilities.map((ability) => "<li>" + escapeHtml(ability) + "</li>").join("") + "</ul></div>"
         : "") +
+      renderNotesList(domain) +
       "</div>";
     const body = details.querySelector(".domain-body");
     for (const section of domain.sections) {
@@ -348,6 +349,26 @@
     };
     details.updateCount();
     return details;
+  }
+
+  function domainNotes(domain) {
+    const prefix = domain.directory + "/";
+    return Object.entries(data.notes)
+      .filter(([path]) => path.startsWith(prefix))
+      .map(([path, note]) => ({ path, title: note.title, summary: note.summary }))
+      .sort((left, right) => left.title.localeCompare(right.title));
+  }
+
+  function renderNotesList(domain) {
+    const notes = domainNotes(domain);
+    if (!notes.length) {
+      return "";
+    }
+    return '<details class="notes-list"><summary><span class="chevron">▶</span><h4>Notes in this domain</h4><span class="count">' + notes.length + "</span></summary><ul>" +
+      notes.map((note) =>
+        '<li><a class="chip note" href="#note=' + encodeURIComponent(note.path) + '" data-note="' + escapeHtml(note.path) + '">' + escapeHtml(note.title) + "</a>" +
+        (note.summary ? '<span class="note-summary">' + escapeHtml(note.summary) + "</span>" : "") + "</li>"
+      ).join("") + "</ul></details>";
   }
 
   function renderDomains() {
