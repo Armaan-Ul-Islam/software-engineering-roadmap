@@ -1,6 +1,6 @@
 # Brief: writing explainer notes (used for every note-writing wave; paths are relative to the repository root)
 
-Repository: /Users/armaan/Workspace/repos/software-engineering-roadmap (a git repo; do NOT commit, do NOT push, do NOT edit any README.md or any file outside the notes folder you are assigned).
+Repository: the repository root (a git repo; do NOT commit, do NOT push, do NOT edit any README.md or any file outside the notes folder you are assigned).
 
 ## What a note is
 
