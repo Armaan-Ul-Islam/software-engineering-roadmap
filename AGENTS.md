@@ -16,6 +16,8 @@ tools/check_links.py    checks every external link in the markdown files
 tools/status.py         prints coverage figures (items, notes, tracks) for status updates
 tools/export_anki.py    regenerates anki/*.tsv from the notes' Check yourself questions
 anki/                   generated flashcard decks; regenerate after notes change, commit the result
+progress/<profile>.json saved progress per person; written by the tracker's Save file button, never by hand
+.github/workflows/      validate.yml runs the checks; pages.yml rebuilds data.js and deploys the tracker to GitHub Pages
 NN-<domain>/README.md   one roadmap per domain (the checklist + curated resources)
 NN-<domain>/notes/*.md  short explainers ("notes") that teach one concept each
 tracks/<name>.md        time-boxed subsets of the map; parsed by the build into the tracker's track selector

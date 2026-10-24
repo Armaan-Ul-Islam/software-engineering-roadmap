@@ -6,8 +6,10 @@
   const UI_STATE_KEY = "roadmap.ui.v1";
   const THEME_KEY = "roadmap.theme";
 
-  const progress = loadJson(PROGRESS_KEY, {});
   const uiState = loadJson(UI_STATE_KEY, { open: {} });
+  const repositoryProfiles = Array.isArray(data.profiles) ? data.profiles : [];
+  let activeProfile = null;
+  let progress = {};
   const domainsBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
   const itemElements = new Map();
   const tracks = Array.isArray(data.tracks) ? data.tracks : [];
@@ -37,6 +39,196 @@
 
   function progressKey(domain, item) {
     return domain.slug + ":" + item.id;
+  }
+
+  /* ---------- profiles ---------- */
+
+  function storageKeyFor(profileName) {
+    return PROGRESS_KEY + ":" + profileName;
+  }
+
+  function knownProfileNames() {
+    const names = new Set(repositoryProfiles.map((profile) => profile.name));
+    for (const name of uiState.localProfiles || []) {
+      names.add(name);
+    }
+    if (activeProfile) {
+      names.add(activeProfile);
+    }
+    return Array.from(names).sort();
+  }
+
+  function repositoryProfile(profileName) {
+    return repositoryProfiles.find((profile) => profile.name === profileName) || null;
+  }
+
+  function saveProgress() {
+    saveJson(storageKeyFor(activeProfile), progress);
+  }
+
+  function loadProfile(profileName) {
+    activeProfile = profileName;
+    uiState.profile = profileName;
+    uiState.localProfiles = Array.from(new Set([...(uiState.localProfiles || []), profileName]));
+    const local = loadJson(storageKeyFor(profileName), null);
+    const fromRepository = repositoryProfile(profileName);
+    progress = local ? local : {};
+    if (fromRepository) {
+      uiState.mergedVersions = uiState.mergedVersions || {};
+      const alreadyMerged = uiState.mergedVersions[profileName] === fromRepository.updatedAt;
+      if (!local || !alreadyMerged) {
+        for (const [key, value] of Object.entries(fromRepository.progress)) {
+          if (!progress[key]) {
+            progress[key] = value;
+          }
+        }
+        uiState.mergedVersions[profileName] = fromRepository.updatedAt;
+      }
+    }
+    saveProgress();
+    saveJson(UI_STATE_KEY, uiState);
+  }
+
+  function migrateLegacyProgress() {
+    const legacy = loadJson(PROGRESS_KEY, null);
+    if (legacy && Object.keys(legacy).length && !loadJson(storageKeyFor("me"), null)) {
+      saveJson(storageKeyFor("me"), legacy);
+      uiState.localProfiles = Array.from(new Set([...(uiState.localProfiles || []), "me"]));
+    }
+  }
+
+  function unsavedChangeCount() {
+    const fromRepository = repositoryProfile(activeProfile);
+    const baseline = fromRepository ? fromRepository.progress : {};
+    let count = 0;
+    for (const key of Object.keys(progress)) {
+      if (!baseline[key]) {
+        count += 1;
+      }
+    }
+    for (const key of Object.keys(baseline)) {
+      if (!progress[key]) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  function renderProfileStatus() {
+    const status = document.getElementById("profile-status");
+    const fromRepository = repositoryProfile(activeProfile);
+    const unsaved = unsavedChangeCount();
+    let text = "Profile " + activeProfile;
+    if (fromRepository) {
+      text += " · repository copy " + (fromRepository.updatedAt ? fromRepository.updatedAt.slice(0, 10) : "saved");
+    } else {
+      text += " · not yet saved in the repository";
+    }
+    if (unsaved) {
+      text += " · " + unsaved + " change" + (unsaved === 1 ? "" : "s") + " not saved to the repository";
+    }
+    status.textContent = text;
+  }
+
+  function setupProfileSelectorValue() {
+    const select = document.getElementById("profile-select");
+    if (select && Array.from(select.options).some((option) => option.value === activeProfile)) {
+      select.value = activeProfile;
+    }
+  }
+
+  function setupProfileSelector() {
+    const select = document.getElementById("profile-select");
+    function fill() {
+      select.innerHTML = knownProfileNames()
+        .map((name) => '<option value="' + escapeHtml(name) + '">' + escapeHtml(name) + (repositoryProfile(name) ? " (in repository)" : "") + "</option>")
+        .join("") + '<option value="__new__">New profile…</option>';
+      select.value = activeProfile;
+    }
+    fill();
+    select.addEventListener("change", () => {
+      if (select.value === "__new__") {
+        const name = (window.prompt("Profile name (letters, digits, dot, dash or underscore):", "") || "").trim().toLowerCase();
+        if (!/^[a-z0-9][a-z0-9._-]{0,39}$/.test(name)) {
+          select.value = activeProfile;
+          return;
+        }
+        loadProfile(name);
+      } else {
+        loadProfile(select.value);
+      }
+      fill();
+      renderDomains();
+      refreshCounts();
+      applyFilters(document.getElementById("search").value);
+    });
+  }
+
+  /* ---------- progress in a link ---------- */
+
+  function canonicalItemKeys() {
+    const keys = [];
+    for (const domain of data.domains) {
+      for (const section of domain.sections) {
+        for (const item of flattenItems(section.items, [])) {
+          keys.push(domain.slug + ":" + item.id);
+        }
+      }
+    }
+    return keys;
+  }
+
+  function encodeProgressLink() {
+    const keys = canonicalItemKeys();
+    const bytes = new Uint8Array(Math.ceil(keys.length / 8));
+    keys.forEach((key, index) => {
+      if (progress[key]) {
+        bytes[index >> 3] |= 1 << (index & 7);
+      }
+    });
+    let binary = "";
+    bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+    const encoded = btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    return location.href.split("#")[0] + "#p=" + encodeURIComponent(activeProfile) + "." + keys.length + "." + encoded;
+  }
+
+  function importProgressFromHash(hash) {
+    const match = /^p=([^.]+)\.(\d+)\.([A-Za-z0-9_-]+)$/.exec(hash);
+    if (!match) {
+      return false;
+    }
+    const profileName = decodeURIComponent(match[1]);
+    const count = Number(match[2]);
+    const keys = canonicalItemKeys();
+    if (count !== keys.length) {
+      window.alert("This progress link was made for a different version of the roadmap and cannot be applied safely.");
+      return true;
+    }
+    const binary = atob(match[3].replace(/-/g, "+").replace(/_/g, "/"));
+    if (/^[a-z0-9][a-z0-9._-]{0,39}$/.test(profileName) && profileName !== activeProfile) {
+      loadProfile(profileName);
+    }
+    let added = 0;
+    keys.forEach((key, index) => {
+      const byte = binary.charCodeAt(index >> 3);
+      if ((byte >> (index & 7)) & 1 && !progress[key]) {
+        progress[key] = new Date().toISOString().slice(0, 10);
+        added += 1;
+      }
+    });
+    saveProgress();
+    window.alert("Loaded " + added + " completed item" + (added === 1 ? "" : "s") + " from the link into profile " + activeProfile + ".");
+    return true;
+  }
+
+  function copyProgressLink() {
+    const link = encodeProgressLink();
+    const done = () => window.alert("Link copied. Open it on any device to load this progress into profile " + activeProfile + ".");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(done, () => window.prompt("Copy this link:", link));
+    } else {
+      window.prompt("Copy this link:", link);
+    }
   }
 
   function isDone(domain, item) {
@@ -412,7 +604,7 @@
     } else {
       delete progress[key];
     }
-    saveJson(PROGRESS_KEY, progress);
+    saveProgress();
     const entry = itemElements.get(key);
     if (entry) {
       entry.element.classList.toggle("done", done);
@@ -442,6 +634,7 @@
     if (activeTrack) {
       renderTrackPanel();
     }
+    renderProfileStatus();
   }
 
   function openDomain(slug, scroll) {
@@ -688,13 +881,14 @@
     const payload = {
       format: "software-engineering-roadmap-progress",
       version: 1,
+      profile: activeProfile,
       exportedAt: new Date().toISOString(),
       progress,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const anchor = document.createElement("a");
     anchor.href = URL.createObjectURL(blob);
-    anchor.download = "roadmap-progress-" + new Date().toISOString().slice(0, 10) + ".json";
+    anchor.download = activeProfile + ".json";
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
@@ -714,11 +908,11 @@
             count += 1;
           }
         }
-        saveJson(PROGRESS_KEY, progress);
+        saveProgress();
         renderDomains();
         refreshCounts();
         applyFilters(document.getElementById("search").value);
-        window.alert("Imported " + count + " completed items.");
+        window.alert("Imported " + count + " completed items into profile " + activeProfile + ".");
       } catch (error) {
         window.alert("That file does not look like an exported progress file.");
       }
@@ -727,13 +921,13 @@
   }
 
   function resetProgress() {
-    if (!window.confirm("Clear all progress stored in this browser? Export first if you want a backup.")) {
+    if (!window.confirm("Clear the progress of profile " + activeProfile + " in this browser? Save a file first if you want a backup.")) {
       return;
     }
     for (const key of Object.keys(progress)) {
       delete progress[key];
     }
-    saveJson(PROGRESS_KEY, progress);
+    saveProgress();
     renderDomains();
     refreshCounts();
   }
@@ -741,7 +935,18 @@
   /* ---------- routing ---------- */
 
   function handleHash() {
-    const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+    const rawHash = location.hash.replace(/^#/, "");
+    if (rawHash.startsWith("p=")) {
+      if (importProgressFromHash(rawHash)) {
+        history.replaceState(null, "", location.pathname + location.search);
+        renderDomains();
+        refreshCounts();
+        applyFilters(document.getElementById("search").value);
+        setupProfileSelectorValue();
+      }
+      return;
+    }
+    const hash = decodeURIComponent(rawHash);
     if (!hash) {
       return;
     }
@@ -761,15 +966,20 @@
 
   function boot() {
     applyTheme(localStorage.getItem(THEME_KEY));
+    migrateLegacyProgress();
+    const initialProfile = uiState.profile || (uiState.localProfiles || [])[0] || (repositoryProfiles[0] ? repositoryProfiles[0].name : "me");
+    loadProfile(initialProfile);
     renderMap();
     renderDomains();
     refreshCounts();
+    setupProfileSelector();
     setupTrackSelector();
     renderTrackPanel();
     applyFilters("");
 
     document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
     document.getElementById("export-btn").addEventListener("click", exportProgress);
+    document.getElementById("link-btn").addEventListener("click", copyProgressLink);
     document.getElementById("reset-btn").addEventListener("click", resetProgress);
     document.getElementById("import-input").addEventListener("change", (event) => {
       const [file] = event.target.files;

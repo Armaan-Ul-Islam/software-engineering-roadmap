@@ -281,6 +281,50 @@ def flatten_items(items: list[dict]) -> list[dict]:
     return flattened
 
 
+PROFILE_NAME_PATTERN = re.compile(r"^[a-z0-9][a-z0-9._-]{0,39}$")
+
+
+def parse_profiles(domains: list[dict], errors: list[str], warnings: list[str]) -> list[dict]:
+    profiles: list[dict] = []
+    progress_directory = REPOSITORY_ROOT / "progress"
+    if not progress_directory.is_dir():
+        return profiles
+    known_keys = {
+        f"{domain['slug']}:{item['id']}"
+        for domain in domains
+        for section in domain["sections"]
+        for item in flatten_items(section["items"])
+    }
+    for profile_file in sorted(progress_directory.glob("*.json")):
+        relative = profile_file.relative_to(REPOSITORY_ROOT).as_posix()
+        try:
+            payload = json.loads(profile_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as decode_error:
+            errors.append(f"{relative}: invalid JSON ({decode_error})")
+            continue
+        if payload.get("format") != "software-engineering-roadmap-progress" or not isinstance(payload.get("progress"), dict):
+            errors.append(f"{relative}: not a tracker progress file")
+            continue
+        name = str(payload.get("profile") or profile_file.stem).lower()
+        if name != profile_file.stem:
+            errors.append(f"{relative}: profile name '{name}' does not match the file name")
+        if not PROFILE_NAME_PATTERN.match(name):
+            errors.append(f"{relative}: profile name '{name}' is not allowed (a-z, 0-9, dot, dash, underscore)")
+        progress = {}
+        for key, value in payload["progress"].items():
+            if key not in known_keys:
+                warnings.append(f"{relative}: unknown item '{key}' ignored")
+                continue
+            if value:
+                progress[key] = value if isinstance(value, str) else "unknown"
+        profiles.append({
+            "name": name,
+            "updatedAt": str(payload.get("exportedAt", "")),
+            "progress": progress,
+        })
+    return profiles
+
+
 def count_items(items: list[dict]) -> int:
     return sum(1 + count_items(item["children"]) for item in items)
 
@@ -329,6 +373,7 @@ def build(check_only: bool) -> int:
                 errors.append(f"{domain['directory']}/README.md: unknown prerequisite domain '{prerequisite}'")
 
     tracks = parse_tracks(domains, errors)
+    profiles = parse_profiles(domains, errors, warnings)
 
     for warning in warnings:
         print(f"warning: {warning}")
@@ -345,11 +390,14 @@ def build(check_only: bool) -> int:
         "domains": domains,
         "notes": notes,
         "tracks": tracks,
+        "profiles": profiles,
     }
     total_items = sum(domain["itemCount"] for domain in domains)
     print(f"{len(domains)} domains, {total_items} checklist items, {len(notes)} notes, {len(tracks)} track(s).")
     for track in tracks:
         print(f"  track {track['slug']:<30} {len(track['items']):>4} items")
+    for profile in profiles:
+        print(f"  profile {profile['name']:<28} {len(profile['progress']):>4} items done")
     for domain in domains:
         print(f"  {domain['directory']:<32} {domain['itemCount']:>4} items {domain['noteCount']:>3} notes")
 

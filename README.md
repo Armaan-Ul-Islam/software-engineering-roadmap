@@ -66,15 +66,26 @@ To add a track, copy the file's shape: a title, a summary blockquote, an `**Hour
 
 The tracker is static files, so any static host works and none of them costs anything for a repository like this.
 
-- 6.1 **GitHub Pages (simplest).** Push `main`, then in the repository settings open *Pages*, choose *Deploy from a branch*, select `main` and the root folder, and save. The site appears at `https://<user>.github.io/<repository>/` within a minute or two. The `.nojekyll` file in the root tells Pages to serve the files as they are instead of running them through Jekyll, which would otherwise try to process the markdown. Pages is free for public repositories; for a private repository it needs a paid GitHub plan, in which case use the next option.
+- 6.1 **GitHub Pages (what this repository uses).** The workflow in `.github/workflows/pages.yml` rebuilds `site/data.js` from the markdown and the progress files on every push to `main` and deploys the repository root to Pages. The site appears at `https://<user>.github.io/<repository>/` a minute or two after a push. Pages is free for public repositories.
 - 6.2 **Cloudflare Pages or Netlify.** Both have free tiers that deploy from a private GitHub repository: connect the repository, leave the build command empty, set the output directory to `/`, and every push deploys. Both give you a free `*.pages.dev` or `*.netlify.app` address.
 - 6.3 Progress stays in each visitor's browser either way. Use Export and Import in the top bar to move it between machines.
 
-## 7. Spaced repetition
+## 7. Saving your progress
+
+Ticks are kept in your browser under a **profile** (pick a name in the top bar; no login, anyone can create one). To make them permanent and shared across devices:
+
+- 7.1 Click **Save file** in the tracker; it downloads `<profile>.json`.
+- 7.2 Put that file in the repository's [`progress/`](progress/) folder and commit it: `python3 tools/save_progress.py ~/Downloads/<profile>.json --commit` does the copy, rebuilds the data and commits; or upload the file through GitHub's *Add file* button in the `progress/` folder.
+- 7.3 Push. The hosted site rebuilds within a minute and every browser that selects that profile starts from the saved state (the saved file is the baseline; local ticks are kept on top).
+- 7.4 For a quick transfer without a commit, **Copy link** puts the whole progress of the profile into a link; opening it on another device loads it.
+
+Several people can use one repository: one file per profile.
+
+## 8. Spaced repetition
 
 `python3 tools/export_anki.py` turns every note's "Check yourself" questions into an Anki deck (`anki/all-notes.tsv`); add `--track <slug>` for a track-only deck. The decks are committed, so you can also download them straight from GitHub. Import with tab-separated fields, HTML allowed, and the third field as tags.
 
-## 8. What is in the repository
+## 9. What is in the repository
 
 ```
 index.html             the tracker (open it directly; no build or server needed)
@@ -83,12 +94,14 @@ NN-<domain>/README.md  the roadmap for one domain
 NN-<domain>/notes/     short explainers for the concepts in that domain
 tracks/                time-boxed subsets of the map with a schedule (selectable in the tracker)
 anki/                  generated flashcard decks (tab-separated, importable into Anki)
+progress/              one JSON file per profile with that person's saved progress
 tools/build.py         regenerates site/data.js from the markdown and validates links and IDs
 tools/check_notes.py   checks note structure and conventions
 tools/link_notes.py    links each note into the roadmap items named in its footer
 tools/check_links.py   checks every external link
 tools/status.py        prints items, notes, coverage and per-track coverage
 tools/export_anki.py   writes the Anki decks from the notes' Check yourself questions
+tools/save_progress.py copies a downloaded progress file into progress/ and rebuilds
 AGENTS.md              conventions for editing this repository (for people and for coding agents)
 NOTES.md               backlog of content to add and open questions
 ```
@@ -102,18 +115,18 @@ python3 tools/link_notes.py   # add [notes] links to the roadmap items each note
 python3 tools/check_links.py  # optional: check external links (writes tools/link-report.txt)
 ```
 
-The same checks run in GitHub Actions on every push. To publish the tracker as a website, enable GitHub Pages for the repository with the `main` branch and the root folder as the source; `index.html` needs no build step.
+The same checks run in GitHub Actions on every push, and a second workflow rebuilds the data and deploys the tracker to GitHub Pages (see section 6).
 
-## 9. Curation principles
+## 10. Curation principles
 
-- 9.1 Primary sources first: official documentation, specifications and the original paper or post, then excellent free courses and books, then practitioner blogs. Paid material is marked as paid.
-- 9.2 One excellent link beats five decent ones. Every link should be something you would send to a colleague.
-- 9.3 Checklist items are concrete and testable. "Explain why column order in a composite index matters", not "learn indexes".
-- 9.4 Notes teach one concept each, with a real example, the pitfalls people actually hit, and questions to check understanding.
-- 9.5 Nothing is included because it is popular. Things are removed when they go stale.
+- 10.1 Primary sources first: official documentation, specifications and the original paper or post, then excellent free courses and books, then practitioner blogs. Paid material is marked as paid.
+- 10.2 One excellent link beats five decent ones. Every link should be something you would send to a colleague.
+- 10.3 Checklist items are concrete and testable. "Explain why column order in a composite index matters", not "learn indexes".
+- 10.4 Notes teach one concept each, with a real example, the pitfalls people actually hit, and questions to check understanding.
+- 10.5 Nothing is included because it is popular. Things are removed when they go stale.
 
 The sources this roadmap leans on most: the official documentation of PostgreSQL, Java, Spring and MDN; [roadmap.sh](https://roadmap.sh/); [ByteByteGo](https://bytebytego.com/); [Designing Data-Intensive Applications](https://dataintensive.net/); [Marco Behler's guides](https://www.marcobehler.com/guides); [Vlad Mihalcea](https://vladmihalcea.com/); [Baeldung](https://www.baeldung.com/); [Use The Index, Luke](https://use-the-index-luke.com/); [High Performance Browser Networking](https://hpbn.co/); [OSTEP](https://pages.cs.wisc.edu/~remzi/OSTEP/); [CMU 15-445](https://15445.courses.cs.cmu.edu/); the [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/); [Martin Fowler](https://martinfowler.com/); the [Google SRE books](https://sre.google/books/); [LeetCode](https://leetcode.com/) and [NeetCode](https://neetcode.io/); and [GeeksforGeeks](https://www.geeksforgeeks.org/) for breadth.
 
-## 10. Contributing
+## 11. Contributing
 
 Read [`AGENTS.md`](AGENTS.md) for the file conventions, then open a pull request. Good contributions: a better link than the one listed (say why), a note for an item that lacks one, a correction with a source, a project with a sharper definition of done.

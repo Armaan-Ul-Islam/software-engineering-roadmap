@@ -18,13 +18,16 @@
     <div class="overall" title="Overall progress">
       <div class="bar"><div class="fill" id="overall-fill"></div></div>
       <span class="overall-text" id="overall-text">0 / 0</span>
+      <span class="profile-status" id="profile-status"></span>
     </div>
     <div class="actions">
+      <select id="profile-select" class="btn" aria-label="Choose a profile" title="Whose progress this is"></select>
       <select id="track-select" class="btn" aria-label="Choose a track"></select>
       <input id="search" type="search" placeholder="Search topics… (press /)" autocomplete="off" aria-label="Search topics">
       <button id="theme-toggle" class="btn icon" title="Toggle light/dark theme" aria-label="Toggle theme">◐</button>
-      <button id="export-btn" class="btn" title="Download your progress as JSON">Export</button>
-      <label class="btn" title="Load progress from an exported JSON file">Import<input id="import-input" type="file" accept="application/json" hidden></label>
+      <button id="export-btn" class="btn" title="Download this profile's progress as <profile>.json; put it in the progress/ folder of the repository to save it for every device">Save file</button>
+      <label class="btn" title="Load progress from a saved file into this profile">Import<input id="import-input" type="file" accept="application/json" hidden></label>
+      <button id="link-btn" class="btn" title="Copy a link that carries this profile's progress; open it on another device to load it">Copy link</button>
       <button id="reset-btn" class="btn danger" title="Clear all progress stored in this browser">Reset</button>
     </div>
   </header>
@@ -37,7 +40,7 @@
         <li>2. Each domain is a checklist. Tick an item when you can explain it to a colleague without notes and have used it at least once.</li>
         <li>3. Items marked <span class="chip note">notes</span> open a short explainer right here. The other chips open the best external resource for that item in a new tab.</li>
         <li>4. Pick a <b>track</b> in the top bar to time-box the roadmap: only the track's items are shown, and every progress bar then measures the track instead of the whole map.</li>
-        <li>5. Progress is saved in this browser only. Use <b>Export</b> to back it up or move it to another machine, and <b>Import</b> to restore it.</li>
+        <li>5. Pick or create a <b>profile</b> (your name). Your ticks are kept in this browser under that profile. To keep them for good, click <b>Save file</b> and put the downloaded <code>&lt;profile&gt;.json</code> into the repository's <code>progress/</code> folder (commit it, or upload it through GitHub's "Add file"); the site rebuilds and every device starts from it. <b>Copy link</b> gives you a link that carries your progress for a quick transfer.</li>
         <li>6. Read the roadmap source on GitHub if you prefer plain markdown; every checklist and note is a file in the repository.</li>
       </ol>
     </details>
