@@ -2,7 +2,7 @@
 
 A curated roadmap for backend-leaning software engineers who want to be genuinely good, not just employable: checklists that say exactly what to learn, short explainers that teach the hard concepts with examples, and only the best links for each topic. Java and Spring are the worked examples; the ideas are language-neutral.
 
-**Open [`index.html`](index.html) in a browser** to track progress, see how the domains build on each other, read the notes in place, and jump to the resources. Progress stays in your browser; export it when you switch machines.
+**Live tracker: [armaan-ul-islam.github.io/software-engineering-roadmap](https://armaan-ul-islam.github.io/software-engineering-roadmap/)**, or open [`index.html`](index.html) locally, to track progress, see how the domains build on each other, read the notes in place, and jump to the resources. Progress stays in your browser; export it when you switch machines.
 
 ## 1. The map
 
