@@ -13,6 +13,9 @@ tools/build.py          parses the roadmaps + notes into site/data.js and valida
 tools/check_notes.py    checks that every note has the required structure and footer
 tools/link_notes.py     inserts [notes](...) links into roadmap items based on each note's footer
 tools/check_links.py    checks every external link in the markdown files
+tools/status.py         prints coverage figures (items, notes, tracks) for status updates
+tools/export_anki.py    regenerates anki/*.tsv from the notes' Check yourself questions
+anki/                   generated flashcard decks; regenerate after notes change, commit the result
 NN-<domain>/README.md   one roadmap per domain (the checklist + curated resources)
 NN-<domain>/notes/*.md  short explainers ("notes") that teach one concept each
 tracks/<name>.md        time-boxed subsets of the map; parsed by the build into the tracker's track selector
@@ -79,6 +82,7 @@ Do not link to content farms. Verify links with `python3 tools/check_links.py`.
 
 ## 5. Workflow
 
+- 5.0 After a batch of notes, run `python3 tools/export_anki.py` and `python3 tools/export_anki.py --track two-month-backend-core` and commit the regenerated decks.
 - 5.1 After writing a note, run `python3 tools/check_notes.py` and `python3 tools/link_notes.py` (it adds the `[notes]` link to the items named in the footer). After editing any README or note, run `python3 tools/build.py`. It regenerates `site/data.js` and fails on broken local links or duplicate IDs. Commit the regenerated `site/data.js`.
 - 5.2 Run `python3 tools/check_links.py` before committing a batch of new external links.
 - 5.3 Commit messages are one plain sentence describing the change. No trailers.

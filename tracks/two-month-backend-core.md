@@ -31,6 +31,15 @@
 - 1.3 The project is not optional. It is where the database, concurrency and Spring items turn into skill, and its milestones are scheduled below so that each one uses what you learned that week.
 - 1.4 Everything outside the track is deliberately deferred. When a task at work needs one of those items, read it then; otherwise it is the next box.
 
+## Review and retention
+
+The box is only worth running if the concepts are still there in month four. Build review into the schedule:
+
+- 2.1 Flashcards: `python3 tools/export_anki.py --track two-month-backend-core` writes `anki/two-month-backend-core.tsv`, one card per "Check yourself" question in the track's notes (about 200 cards). Import it into Anki and review for ten minutes a day. Say the answer out loud, then open the note to check; grade yourself honestly.
+- 2.2 Weekly review (30 minutes, end of each week): re-read your mistakes log, re-explain the week's three hardest items from memory, untick anything you cannot re-explain.
+- 2.3 Teach-back: once a week, explain one item to a colleague or write it up in your own words. The items that resist explanation go back on the list.
+- 2.4 Week 10 is consolidation as much as new material: redo the Anki cards you failed most, and run the mock interview using your own project as the case.
+
 ## Week by week
 
 | Week | Focus | Items | Project milestone |
