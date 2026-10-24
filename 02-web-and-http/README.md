@@ -19,7 +19,7 @@
 
 - [ ] 1.1 From URL to pixels: DNS lookup, TCP handshake, TLS handshake, request, response, parsing and rendering · [notes](notes/what-happens-when-you-type-a-url.md) · [What happens when...](https://github.com/alex/what-happens-when) · [HPBN: Primer on Latency and Bandwidth](https://hpbn.co/primer-on-latency-and-bandwidth/)
 - [ ] 1.2 Who sits between you and the user: browsers, proxies, reverse proxies, gateways, load balancers, CDNs · [MDN: An overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)
-- [ ] 1.3 URLs and URIs: scheme, host, port, path, query, fragment, percent-encoding, and the bugs they cause · [MDN: URIs](https://developer.mozilla.org/en-US/docs/Web/URI)
+- [ ] 1.3 URLs and URIs: scheme, host, port, path, query, fragment, percent-encoding, and the bugs they cause · [notes](notes/urls-and-percent-encoding.md) · [MDN: URIs](https://developer.mozilla.org/en-US/docs/Web/URI)
 
 ### 2. DNS
 
@@ -30,10 +30,10 @@
 
 ### 3. TCP, TLS and connections
 
-- [ ] 3.1 TCP from the application's view: handshake cost, slow start, Nagle, keep-alive, and why connection reuse is the cheapest optimisation · [HPBN: Building Blocks of TCP](https://hpbn.co/building-blocks-of-tcp/)
+- [ ] 3.1 TCP from the application's view: handshake cost, slow start, Nagle, keep-alive, and why connection reuse is the cheapest optimisation · [notes](notes/connection-management-timeouts-and-pools.md) · [HPBN: Building Blocks of TCP](https://hpbn.co/building-blocks-of-tcp/)
 - [ ] 3.2 TLS: handshake, certificates and chains, SNI, ALPN, session resumption, what TLS 1.3 changed · [notes](notes/tls-handshake-and-certificates.md) · [Cloudflare: What happens in a TLS handshake?](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/) · [HPBN: Transport Layer Security](https://hpbn.co/transport-layer-security-tls/) · [How HTTPS works](https://howhttps.works/)
 - [ ] 3.3 Certificates in practice: CAs, Let's Encrypt and ACME, expiry, wildcard vs SAN, trust stores and the Java `cacerts` errors you will meet · [notes](notes/tls-handshake-and-certificates.md) · [Let's Encrypt: How it works](https://letsencrypt.org/how-it-works/)
-- [ ] 3.4 Connection management: connect/read/write timeouts, pools, head-of-line blocking, and what happens when a pool is exhausted · [MDN: Connection management in HTTP/1.x](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Connection_management_in_HTTP_1.x)
+- [ ] 3.4 Connection management: connect/read/write timeouts, pools, head-of-line blocking, and what happens when a pool is exhausted · [notes](notes/connection-management-timeouts-and-pools.md) · [MDN: Connection management in HTTP/1.x](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Connection_management_in_HTTP_1.x)
 
 ### 4. HTTP semantics
 
@@ -42,10 +42,10 @@
   - [ ] 4.2.1 2xx and 3xx: 200 vs 201 vs 202 vs 204; 301/302/303/307/308 and method preservation · [MDN: Redirections](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Redirections)
   - [ ] 4.2.2 4xx: 400 vs 422, 401 vs 403, 404 vs 410, 405, 406, 409, 412, 415, 429 · [MDN: 401 Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401)
   - [ ] 4.2.3 5xx: 500 vs 502 vs 503 vs 504, `Retry-After`, and why "200 with an error body" breaks clients · [MDN: Retry-After](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Retry-After)
-- [ ] 4.3 Headers and content negotiation: `Content-Type` and charsets, `Accept*`, `Content-Length` vs chunked transfer, `Range`, `Location` · [MDN: Content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Content_negotiation) · [MDN: HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers)
-- [ ] 4.4 Representations: JSON, form encoding, multipart uploads, streaming bodies, compression (gzip, Brotli, zstd) · [MDN: Compression in HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Compression)
-- [ ] 4.5 Conditional requests: `ETag`/`If-None-Match`, `If-Match` for optimistic concurrency over HTTP, `If-Modified-Since` · [MDN: Conditional requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Conditional_requests)
-- [ ] 4.6 Inspecting all of the above with `curl` (`-v`, `-I`, `--write-out`, `--resolve`) and browser DevTools · [Everything curl](https://everything.curl.dev/) · [Chrome DevTools: Network panel](https://developer.chrome.com/docs/devtools/network)
+- [ ] 4.3 Headers and content negotiation: `Content-Type` and charsets, `Accept*`, `Content-Length` vs chunked transfer, `Range`, `Location` · [notes](notes/content-negotiation-compression-and-conditional-requests.md) · [MDN: Content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Content_negotiation) · [MDN: HTTP headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers)
+- [ ] 4.4 Representations: JSON, form encoding, multipart uploads, streaming bodies, compression (gzip, Brotli, zstd) · [notes](notes/content-negotiation-compression-and-conditional-requests.md) · [MDN: Compression in HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Compression)
+- [ ] 4.5 Conditional requests: `ETag`/`If-None-Match`, `If-Match` for optimistic concurrency over HTTP, `If-Modified-Since` · [notes](notes/content-negotiation-compression-and-conditional-requests.md) · [MDN: Conditional requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Conditional_requests)
+- [ ] 4.6 Inspecting all of the above with `curl` (`-v`, `-I`, `--write-out`, `--resolve`) and browser DevTools · [notes](notes/curl-for-http-debugging.md) · [Everything curl](https://everything.curl.dev/) · [Chrome DevTools: Network panel](https://developer.chrome.com/docs/devtools/network)
 
 ### 5. Caching
 
@@ -70,16 +70,16 @@
 
 - [ ] 8.1 HTTP/1.1 pipelining's failure, HTTP/2 multiplexing and header compression, and why server push died · [notes](notes/http1-http2-http3.md) · [HTTP/2 explained](https://http2-explained.haxx.se/) · [MDN: Evolution of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP)
 - [ ] 8.2 HTTP/3 and QUIC: why UDP, 0-RTT, connection migration, what changes for your server · [notes](notes/http1-http2-http3.md) · [HTTP/3 explained](https://http3-explained.haxx.se/) · [Cloudflare: What is HTTP/3?](https://www.cloudflare.com/learning/performance/what-is-http3/)
-- [ ] 8.3 A latency budget: DNS, TCP, TLS, time to first byte, download; measuring each with `curl --write-out` and DevTools · [curl: --write-out variables](https://everything.curl.dev/usingcurl/verbose/writeout.html)
+- [ ] 8.3 A latency budget: DNS, TCP, TLS, time to first byte, download; measuring each with `curl --write-out` and DevTools · [notes](notes/curl-for-http-debugging.md) · [curl: --write-out variables](https://everything.curl.dev/usingcurl/verbose/writeout.html)
 
 ### 9. API styles over HTTP
 
 - [ ] 9.1 REST as Fielding defined it, the pragmatic REST everyone builds, and the Richardson maturity model · [notes](notes/rest-api-design-essentials.md) · [Fielding: REST dissertation, ch. 5](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) · [Richardson Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
 - [ ] 9.2 Designing resources: naming, nesting, pagination (offset vs cursor), filtering, sorting, versioning, partial updates · [notes](notes/rest-api-design-essentials.md) · [Zalando RESTful API Guidelines](https://opensource.zalando.com/restful-api-guidelines/) · [Google API Improvement Proposals](https://google.aip.dev/)
 - [ ] 9.3 Error responses with Problem Details (RFC 9457), and consistent validation errors · [notes](notes/rest-api-design-essentials.md) · [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html)
-- [ ] 9.4 OpenAPI: describing an API, generating clients and servers, contract-first vs code-first · [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) · [Swagger Editor](https://editor.swagger.io/)
-- [ ] 9.5 GraphQL and gRPC: the problems they solve, their costs, and when plain REST remains the answer · [GraphQL: Learn](https://graphql.org/learn/) · [gRPC: Introduction](https://grpc.io/docs/what-is-grpc/introduction/)
-- [ ] 9.6 Webhooks: delivery guarantees, retries, signatures, idempotent receivers · [Stripe docs: Webhooks](https://docs.stripe.com/webhooks) · [Standard Webhooks](https://www.standardwebhooks.com/)
+- [ ] 9.4 OpenAPI: describing an API, generating clients and servers, contract-first vs code-first · [notes](notes/openapi-contract-first.md) · [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) · [Swagger Editor](https://editor.swagger.io/)
+- [ ] 9.5 GraphQL and gRPC: the problems they solve, their costs, and when plain REST remains the answer · [notes](notes/graphql-and-grpc-vs-rest.md) · [GraphQL: Learn](https://graphql.org/learn/) · [gRPC: Introduction](https://grpc.io/docs/what-is-grpc/introduction/)
+- [ ] 9.6 Webhooks: delivery guarantees, retries, signatures, idempotent receivers · [notes](notes/webhooks-done-right.md) · [Stripe docs: Webhooks](https://docs.stripe.com/webhooks) · [Standard Webhooks](https://www.standardwebhooks.com/)
 
 ### 10. Real-time and streaming
 
