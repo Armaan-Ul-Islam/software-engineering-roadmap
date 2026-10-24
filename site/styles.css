@@ -243,3 +243,20 @@ mark { background: var(--accent-soft); color: inherit; border-radius: 3px; paddi
 .notes-list li:hover { background: var(--surface-2); }
 .notes-list .chip.note { font-size: 12px; }
 .note-summary { font-size: 13px; color: var(--muted); }
+
+#track-select { max-width: 240px; }
+.track-panel { margin: 0 0 20px; padding: 14px 18px; border: 1px solid var(--accent); border-radius: var(--radius); background: var(--surface); }
+.track-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.track-head h2 { margin: 0 0 4px; font-size: 18px; }
+.track-head p { margin: 0; max-width: 720px; }
+.track-progress { display: flex; align-items: center; gap: 10px; min-width: 280px; }
+.track-progress .bar { width: 160px; flex: none; }
+.track-progress .count { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.track-plan { margin-top: 10px; }
+.track-plan > summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+.track-plan .markdown { font-size: 14px; }
+.track-plan .markdown h1 { display: none; }
+.track-plan .markdown blockquote { display: none; }
+.map .node.off-track { opacity: 0.35; }
+.item.context > .item-row { opacity: 0.55; }
+.item.context > .item-row .item-text::after { content: " (context, not in track)"; color: var(--muted); font-size: 12px; }

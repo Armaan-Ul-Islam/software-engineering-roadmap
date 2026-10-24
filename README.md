@@ -45,22 +45,31 @@ Item IDs (`4.3`, `6.5.2`) are stable, so you can reference them in your own note
 4. **Full stack.** JavaScript & Frontend, then Projects section 3.
 5. **AI features.** AI Engineering after Spring and Databases, then Projects section 5.
 
-## 4. How to learn this well
+## 4. Time-boxed tracks
 
-- 4.1 **Active recall beats rereading.** After each note, close it and write the explanation from memory. The "Check yourself" questions exist for this.
-- 4.2 **Space it out.** Revisit a topic after a day, a week, and a month. A flashcard tool such as [Anki](https://apps.ankiweb.net/) works well for definitions, numbers and commands.
-- 4.3 **Build to learn.** Reading about MVCC teaches vocabulary; reproducing a lost update in two `psql` sessions teaches MVCC.
-- 4.4 **Teach it back.** Explain the concept to someone, or write it up. If the explanation needs the notes, you are not done.
-- 4.5 **Practise with feedback.** Mock interviews, code review, benchmarks and tests are feedback. Reading alone is not.
-- 4.6 **Keep a mistakes log.** Every bug you caused and every interview question you missed goes in a file with the lesson. Review it monthly.
+The full map is more than a year of learning. A track is a subset with a schedule, so you can finish a box instead of browsing a map. Tracks live in [`tracks/`](tracks/) and appear in the tracker's top bar; selecting one hides everything else and makes every progress bar measure the track.
 
-## 5. What is in the repository
+- 4.1 [Two-month backend core](tracks/two-month-backend-core.md): 113 items across Web & HTTP, Databases, Memory & Concurrency, Spring and System Design, plus the order-management project, scheduled week by week for nine to ten weeks at about 15 hours a week.
+
+To add a track, copy the file's shape: a title, a summary blockquote, an `**Hours:**` line, an `## Items` section with one `### <domain-slug>` heading per domain followed by comma-separated item IDs, and whatever plan you like after it. `python3 tools/build.py` validates that every ID exists.
+
+## 5. How to learn this well
+
+- 5.1 **Active recall beats rereading.** After each note, close it and write the explanation from memory. The "Check yourself" questions exist for this.
+- 5.2 **Space it out.** Revisit a topic after a day, a week, and a month. A flashcard tool such as [Anki](https://apps.ankiweb.net/) works well for definitions, numbers and commands.
+- 5.3 **Build to learn.** Reading about MVCC teaches vocabulary; reproducing a lost update in two `psql` sessions teaches MVCC.
+- 5.4 **Teach it back.** Explain the concept to someone, or write it up. If the explanation needs the notes, you are not done.
+- 5.5 **Practise with feedback.** Mock interviews, code review, benchmarks and tests are feedback. Reading alone is not.
+- 5.6 **Keep a mistakes log.** Every bug you caused and every interview question you missed goes in a file with the lesson. Review it monthly.
+
+## 6. What is in the repository
 
 ```
 index.html             the tracker (open it directly; no build or server needed)
 site/                  the tracker's script, styles, generated data, and a vendored markdown parser
 NN-<domain>/README.md  the roadmap for one domain
 NN-<domain>/notes/     short explainers for the concepts in that domain
+tracks/                time-boxed subsets of the map with a schedule (selectable in the tracker)
 tools/build.py         regenerates site/data.js from the markdown and validates links and IDs
 tools/check_notes.py   checks note structure and conventions
 tools/link_notes.py    links each note into the roadmap items named in its footer
@@ -80,16 +89,16 @@ python3 tools/check_links.py  # optional: check external links (writes tools/lin
 
 The same checks run in GitHub Actions on every push. To publish the tracker as a website, enable GitHub Pages for the repository with the `main` branch and the root folder as the source; `index.html` needs no build step.
 
-## 6. Curation principles
+## 7. Curation principles
 
-- 6.1 Primary sources first: official documentation, specifications and the original paper or post, then excellent free courses and books, then practitioner blogs. Paid material is marked as paid.
-- 6.2 One excellent link beats five decent ones. Every link should be something you would send to a colleague.
-- 6.3 Checklist items are concrete and testable. "Explain why column order in a composite index matters", not "learn indexes".
-- 6.4 Notes teach one concept each, with a real example, the pitfalls people actually hit, and questions to check understanding.
-- 6.5 Nothing is included because it is popular. Things are removed when they go stale.
+- 7.1 Primary sources first: official documentation, specifications and the original paper or post, then excellent free courses and books, then practitioner blogs. Paid material is marked as paid.
+- 7.2 One excellent link beats five decent ones. Every link should be something you would send to a colleague.
+- 7.3 Checklist items are concrete and testable. "Explain why column order in a composite index matters", not "learn indexes".
+- 7.4 Notes teach one concept each, with a real example, the pitfalls people actually hit, and questions to check understanding.
+- 7.5 Nothing is included because it is popular. Things are removed when they go stale.
 
 The sources this roadmap leans on most: the official documentation of PostgreSQL, Java, Spring and MDN; [roadmap.sh](https://roadmap.sh/); [ByteByteGo](https://bytebytego.com/); [Designing Data-Intensive Applications](https://dataintensive.net/); [Marco Behler's guides](https://www.marcobehler.com/guides); [Vlad Mihalcea](https://vladmihalcea.com/); [Baeldung](https://www.baeldung.com/); [Use The Index, Luke](https://use-the-index-luke.com/); [High Performance Browser Networking](https://hpbn.co/); [OSTEP](https://pages.cs.wisc.edu/~remzi/OSTEP/); [CMU 15-445](https://15445.courses.cs.cmu.edu/); the [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/); [Martin Fowler](https://martinfowler.com/); the [Google SRE books](https://sre.google/books/); [LeetCode](https://leetcode.com/) and [NeetCode](https://neetcode.io/); and [GeeksforGeeks](https://www.geeksforgeeks.org/) for breadth.
 
-## 7. Contributing
+## 8. Contributing
 
 Read [`AGENTS.md`](AGENTS.md) for the file conventions, then open a pull request. Good contributions: a better link than the one listed (say why), a note for an item that lacks one, a correction with a source, a project with a sharper definition of done.

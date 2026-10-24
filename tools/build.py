@@ -215,6 +215,72 @@ def collect_notes(domain_directory: pathlib.Path, errors: list[str]) -> dict[str
     return notes
 
 
+TRACK_ITEMS_HEADING_PATTERN = re.compile(r"^### ([a-z0-9-]+)\s*$")
+TRACK_HOURS_PATTERN = re.compile(r"^\*\*Hours:\*\*\s*(.+?)\s*$")
+
+
+def parse_tracks(domains: list[dict], errors: list[str]) -> list[dict]:
+    tracks: list[dict] = []
+    tracks_directory = REPOSITORY_ROOT / "tracks"
+    if not tracks_directory.is_dir():
+        return tracks
+    item_ids_by_slug = {
+        domain["slug"]: {item["id"] for section in domain["sections"] for item in flatten_items(section["items"])}
+        for domain in domains
+    }
+    for track_file in sorted(tracks_directory.glob("*.md")):
+        content = track_file.read_text(encoding="utf-8")
+        lines = content.splitlines()
+        title = next((line[2:].strip() for line in lines if line.startswith("# ")), track_file.stem)
+        summary = " ".join(line[2:].strip() for line in lines if line.startswith("> "))
+        hours = next((match.group(1) for line in lines if (match := TRACK_HOURS_PATTERN.match(line))), "")
+        items: list[str] = []
+        current_slug = None
+        in_items = False
+        for line_number, line in enumerate(lines, 1):
+            if line.startswith("## "):
+                in_items = line[3:].strip().lower() == "items"
+                current_slug = None
+                continue
+            if not in_items:
+                continue
+            heading = TRACK_ITEMS_HEADING_PATTERN.match(line)
+            if heading:
+                current_slug = heading.group(1)
+                if current_slug not in item_ids_by_slug:
+                    errors.append(f"tracks/{track_file.name}:{line_number}: unknown domain '{current_slug}'")
+                continue
+            if current_slug and line.strip():
+                for item_id in [part.strip() for part in line.split(",") if part.strip()]:
+                    if current_slug in item_ids_by_slug and item_id not in item_ids_by_slug[current_slug]:
+                        errors.append(f"tracks/{track_file.name}:{line_number}: item {item_id} does not exist in {current_slug}")
+                    key = f"{current_slug}:{item_id}"
+                    if key in items:
+                        errors.append(f"tracks/{track_file.name}:{line_number}: item {key} listed twice")
+                    items.append(key)
+        if not items:
+            errors.append(f"tracks/{track_file.name}: no '## Items' section with items")
+        for line_number, line in enumerate(lines, 1):
+            extract_links(track_file, line, errors, line_number)
+        tracks.append({
+            "slug": track_file.stem,
+            "title": title,
+            "summary": summary,
+            "hours": hours,
+            "items": items,
+            "content": content,
+        })
+    return tracks
+
+
+def flatten_items(items: list[dict]) -> list[dict]:
+    flattened: list[dict] = []
+    for item in items:
+        flattened.append(item)
+        flattened.extend(flatten_items(item["children"]))
+    return flattened
+
+
 def count_items(items: list[dict]) -> int:
     return sum(1 + count_items(item["children"]) for item in items)
 
@@ -262,6 +328,8 @@ def build(check_only: bool) -> int:
             if prerequisite not in known_slugs:
                 errors.append(f"{domain['directory']}/README.md: unknown prerequisite domain '{prerequisite}'")
 
+    tracks = parse_tracks(domains, errors)
+
     for warning in warnings:
         print(f"warning: {warning}")
     if errors:
@@ -276,9 +344,12 @@ def build(check_only: bool) -> int:
         "branch": DEFAULT_BRANCH,
         "domains": domains,
         "notes": notes,
+        "tracks": tracks,
     }
     total_items = sum(domain["itemCount"] for domain in domains)
-    print(f"{len(domains)} domains, {total_items} checklist items, {len(notes)} notes.")
+    print(f"{len(domains)} domains, {total_items} checklist items, {len(notes)} notes, {len(tracks)} track(s).")
+    for track in tracks:
+        print(f"  track {track['slug']:<30} {len(track['items']):>4} items")
     for domain in domains:
         print(f"  {domain['directory']:<32} {domain['itemCount']:>4} items {domain['noteCount']:>3} notes")
 

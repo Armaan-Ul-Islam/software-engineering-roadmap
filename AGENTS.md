@@ -15,6 +15,7 @@ tools/link_notes.py     inserts [notes](...) links into roadmap items based on e
 tools/check_links.py    checks every external link in the markdown files
 NN-<domain>/README.md   one roadmap per domain (the checklist + curated resources)
 NN-<domain>/notes/*.md  short explainers ("notes") that teach one concept each
+tracks/<name>.md        time-boxed subsets of the map; parsed by the build into the tracker's track selector
 NOTES.md                backlog: ideas and gaps to fill later
 ```
 
@@ -60,6 +61,14 @@ template in `TEMPLATE-note.md`. Every note:
 - 3.4 Ends with "Check yourself" questions and a short "Go deeper" list.
 - 3.5 Links back to its roadmap item (`Part of [Databases](../README.md) · item 3.2`).
 - 3.6 Contains no filler, no marketing tone, and no unverified claims. When unsure about a detail, say so or leave it out.
+
+## 3b. Track conventions
+
+A track file in `tracks/` has: `# Title`, a `> summary` blockquote, an `**Hours:**` line, an `## Items`
+section containing one `### <domain-slug>` heading per domain (the slug is the folder name without
+its numeric prefix) followed by comma-separated item IDs, and then any plan text. The build validates
+every ID and embeds the file so the tracker can show the plan. Never rename a track file; the
+tracker remembers the selected track by file name.
 
 ## 4. Curation bar for external links
 

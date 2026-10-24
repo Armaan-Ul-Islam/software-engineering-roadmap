@@ -20,6 +20,7 @@
       <span class="overall-text" id="overall-text">0 / 0</span>
     </div>
     <div class="actions">
+      <select id="track-select" class="btn" aria-label="Choose a track"></select>
       <input id="search" type="search" placeholder="Search topics… (press /)" autocomplete="off" aria-label="Search topics">
       <button id="theme-toggle" class="btn icon" title="Toggle light/dark theme" aria-label="Toggle theme">◐</button>
       <button id="export-btn" class="btn" title="Download your progress as JSON">Export</button>
@@ -35,10 +36,13 @@
         <li>1. Start with the map below. Arrows point from a prerequisite to what builds on it. Click a domain to jump to it.</li>
         <li>2. Each domain is a checklist. Tick an item when you can explain it to a colleague without notes and have used it at least once.</li>
         <li>3. Items marked <span class="chip note">notes</span> open a short explainer right here. The other chips open the best external resource for that item in a new tab.</li>
-        <li>4. Progress is saved in this browser only. Use <b>Export</b> to back it up or move it to another machine, and <b>Import</b> to restore it.</li>
-        <li>5. Read the roadmap source on GitHub if you prefer plain markdown; every checklist and note is a file in the repository.</li>
+        <li>4. Pick a <b>track</b> in the top bar to time-box the roadmap: only the track's items are shown, and every progress bar then measures the track instead of the whole map.</li>
+        <li>5. Progress is saved in this browser only. Use <b>Export</b> to back it up or move it to another machine, and <b>Import</b> to restore it.</li>
+        <li>6. Read the roadmap source on GitHub if you prefer plain markdown; every checklist and note is a file in the repository.</li>
       </ol>
     </details>
+
+    <section id="track-panel" class="track-panel hidden" aria-live="polite"></section>
 
     <section id="map-section" class="map-section">
       <div class="section-head">

@@ -10,6 +10,13 @@
   const uiState = loadJson(UI_STATE_KEY, { open: {} });
   const domainsBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
   const itemElements = new Map();
+  const tracks = Array.isArray(data.tracks) ? data.tracks : [];
+  let activeTrack = tracks.find((track) => track.slug === uiState.track) || null;
+  let trackItemKeys = new Set(activeTrack ? activeTrack.items : []);
+
+  function inTrack(domain, item) {
+    return !activeTrack || trackItemKeys.has(domain.slug + ":" + item.id);
+  }
 
   function loadJson(key, fallback) {
     try {
@@ -49,7 +56,7 @@
     for (const section of domain.sections) {
       flattenItems(section.items, accumulator);
     }
-    return accumulator;
+    return accumulator.filter((item) => inTrack(domain, item));
   }
 
   function countDone(domain, items) {
@@ -216,7 +223,8 @@
     const items = domainItems(domain);
     const done = countDone(domain, items);
     const percent = items.length ? Math.round((done / items.length) * 100) : 0;
-    node.querySelector('[data-role="pct"]').textContent = percent + "%";
+    node.querySelector('[data-role="pct"]').textContent = items.length ? percent + "%" : "–";
+    node.classList.toggle("off-track", Boolean(activeTrack) && items.length === 0);
     const progressBar = node.querySelector('[data-role="progress"]');
     progressBar.setAttribute("width", String(Number(progressBar.getAttribute("data-track")) * percent / 100));
   }
@@ -270,7 +278,7 @@
     const stateKey = domain.slug + "/" + section.id;
     details.dataset.sectionKey = stateKey;
     details.open = uiState.open[stateKey] !== false;
-    const items = flattenItems(section.items, []);
+    const items = flattenItems(section.items, []).filter((item) => inTrack(domain, item));
     details.innerHTML =
       '<summary><span class="chevron">▶</span><h4>' + section.id + ". " + escapeHtml(section.title) + "</h4>" +
       '<span class="count" data-role="count"></span>' +
@@ -431,6 +439,9 @@
     const percent = total ? Math.round((done / total) * 100) : 0;
     document.getElementById("overall-fill").style.width = percent + "%";
     document.getElementById("overall-text").textContent = done + " / " + total + " · " + percent + "%";
+    if (activeTrack) {
+      renderTrackPanel();
+    }
   }
 
   function openDomain(slug, scroll) {
@@ -463,37 +474,42 @@
     setTimeout(() => row.classList.remove("flash"), 2500);
   }
 
-  /* ---------- search ---------- */
+  /* ---------- filters: track and search ---------- */
 
   let searchTimer = null;
 
-  function applySearch(query) {
-    const normalised = query.trim().toLowerCase();
+  function restoreOpenStates(domainsContainer) {
+    domainsContainer.querySelectorAll("details").forEach((details) => {
+      if (details.classList.contains("domain")) {
+        details.open = uiState.open[details.id.replace("domain-", "")] === true;
+      } else if (details.dataset.sectionKey) {
+        details.open = uiState.open[details.dataset.sectionKey] !== false;
+      }
+    });
+  }
+
+  function applyFilters(query) {
+    const normalised = (query || "").trim().toLowerCase();
     const domainsContainer = document.getElementById("domains");
-    if (!normalised) {
-      domainsContainer.querySelectorAll(".hidden").forEach((element) => element.classList.remove("hidden"));
-      domainsContainer.querySelectorAll("details").forEach((details) => {
-        const key = details.classList.contains("domain") ? details.id.replace("domain-", "") : null;
-        if (key) {
-          details.open = uiState.open[key] === true;
-        } else if (details.dataset.sectionKey) {
-          details.open = uiState.open[details.dataset.sectionKey] !== false;
-        }
-      });
-      return;
-    }
-    for (const { element, item } of itemElements.values()) {
+    const filtering = Boolean(normalised) || Boolean(activeTrack);
+    for (const { element, domain, item } of itemElements.values()) {
       const haystack = (item.id + " " + item.text + " " + item.links.map((link) => link.label).join(" ")).toLowerCase();
-      const selfMatch = haystack.includes(normalised);
-      element.classList.toggle("hidden", !selfMatch);
-      element.dataset.match = selfMatch ? "1" : "0";
+      const matches = !normalised || haystack.includes(normalised);
+      element.dataset.match = matches && inTrack(domain, item) ? "1" : "0";
+      element.classList.add("hidden");
+      element.classList.remove("context");
     }
     for (const { element } of itemElements.values()) {
       if (element.dataset.match === "1") {
-        let ancestor = element.parentElement;
+        let ancestor = element;
         while (ancestor && ancestor.id !== "domains") {
-          ancestor.classList.remove("hidden");
-          if (ancestor.tagName === "DETAILS") {
+          if (ancestor.classList && ancestor.classList.contains("hidden") && ancestor.tagName === "LI") {
+            ancestor.classList.remove("hidden");
+            if (ancestor.dataset.match === "0") {
+              ancestor.classList.add("context");
+            }
+          }
+          if (ancestor.tagName === "DETAILS" && filtering) {
             ancestor.open = true;
           }
           ancestor = ancestor.parentElement;
@@ -507,10 +523,68 @@
     domainsContainer.querySelectorAll(".domain").forEach((domain) => {
       const visible = domain.querySelectorAll(".rsection:not(.hidden)").length > 0;
       domain.classList.toggle("hidden", !visible);
-      if (visible) {
+      if (visible && normalised) {
         domain.open = true;
       }
     });
+    if (!filtering) {
+      restoreOpenStates(domainsContainer);
+    }
+  }
+
+  /* ---------- tracks ---------- */
+
+  function trackProgress(track) {
+    let done = 0;
+    for (const key of track.items) {
+      if (progress[key]) {
+        done += 1;
+      }
+    }
+    return { done, total: track.items.length };
+  }
+
+  function renderTrackPanel() {
+    const panel = document.getElementById("track-panel");
+    if (!activeTrack) {
+      panel.classList.add("hidden");
+      return;
+    }
+    const { done, total } = trackProgress(activeTrack);
+    const percent = total ? Math.round((done / total) * 100) : 0;
+    const planMarkdown = activeTrack.content.replace(/^## Items[\s\S]*?(?=^## )/m, "");
+    panel.innerHTML =
+      '<div class="track-head"><div><h2>' + escapeHtml(activeTrack.title) + "</h2>" +
+      '<p class="muted">' + escapeHtml(activeTrack.summary) + "</p></div>" +
+      '<div class="track-progress"><div class="bar"><div class="fill" style="width:' + percent + '%"></div></div>' +
+      '<span class="count">' + done + " / " + total + " items · " + percent + "%" + (activeTrack.hours ? " · " + escapeHtml(activeTrack.hours) : "") + "</span></div></div>" +
+      '<details class="track-plan"><summary>Plan and week-by-week schedule</summary><div class="markdown">' +
+      (window.marked ? window.marked.parse(planMarkdown) : "<pre>" + escapeHtml(planMarkdown) + "</pre>") +
+      "</div></details>";
+    panel.classList.remove("hidden");
+  }
+
+  function selectTrack(slug) {
+    activeTrack = tracks.find((track) => track.slug === slug) || null;
+    trackItemKeys = new Set(activeTrack ? activeTrack.items : []);
+    uiState.track = activeTrack ? activeTrack.slug : "";
+    saveJson(UI_STATE_KEY, uiState);
+    renderDomains();
+    refreshCounts();
+    renderTrackPanel();
+    applyFilters(document.getElementById("search").value);
+  }
+
+  function setupTrackSelector() {
+    const select = document.getElementById("track-select");
+    if (!tracks.length) {
+      select.classList.add("hidden");
+      return;
+    }
+    select.innerHTML = '<option value="">All items</option>' +
+      tracks.map((track) => '<option value="' + escapeHtml(track.slug) + '">Track: ' + escapeHtml(track.title) + "</option>").join("");
+    select.value = activeTrack ? activeTrack.slug : "";
+    select.addEventListener("change", () => selectTrack(select.value));
   }
 
   /* ---------- reader ---------- */
@@ -643,7 +717,7 @@
         saveJson(PROGRESS_KEY, progress);
         renderDomains();
         refreshCounts();
-        applySearch(document.getElementById("search").value);
+        applyFilters(document.getElementById("search").value);
         window.alert("Imported " + count + " completed items.");
       } catch (error) {
         window.alert("That file does not look like an exported progress file.");
@@ -690,6 +764,9 @@
     renderMap();
     renderDomains();
     refreshCounts();
+    setupTrackSelector();
+    renderTrackPanel();
+    applyFilters("");
 
     document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
     document.getElementById("export-btn").addEventListener("click", exportProgress);
@@ -707,7 +784,7 @@
     const searchInput = document.getElementById("search");
     searchInput.addEventListener("input", () => {
       clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => applySearch(searchInput.value), 120);
+      searchTimer = setTimeout(() => applyFilters(searchInput.value), 120);
     });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
@@ -715,7 +792,7 @@
           closeReader();
         } else if (document.activeElement === searchInput && searchInput.value) {
           searchInput.value = "";
-          applySearch("");
+          applyFilters("");
         }
       }
       if (event.key === "/" && document.activeElement !== searchInput && !event.metaKey && !event.ctrlKey) {
