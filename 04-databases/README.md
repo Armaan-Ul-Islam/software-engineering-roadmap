@@ -18,10 +18,10 @@
 ### 1. The relational model and SQL
 
 - [ ] 1.1 Relations, keys, constraints, and `NULL` with its three-valued logic · [PostgreSQL Tutorial: The SQL Language](https://www.postgresql.org/docs/current/tutorial-sql.html) · [Modern SQL](https://modern-sql.com/)
-- [ ] 1.2 Joins (inner, left, full, cross, semi and anti joins with `EXISTS`), grouping, aggregates, `HAVING` · [SQLBolt](https://sqlbolt.com/) · [PostgreSQL Exercises](https://pgexercises.com/)
-- [ ] 1.3 Window functions, common table expressions, recursive queries, `LATERAL` joins · [PostgreSQL: Window Functions](https://www.postgresql.org/docs/current/tutorial-window.html) · [PostgreSQL: WITH Queries](https://www.postgresql.org/docs/current/queries-with.html)
-- [ ] 1.4 Data types that matter: `numeric` for money, `text`, `timestamptz` vs `timestamp`, `uuid`, `jsonb`, arrays, enums · [PostgreSQL: Data Types](https://www.postgresql.org/docs/current/datatype.html) · [PostgreSQL wiki: Don't Do This](https://wiki.postgresql.org/wiki/Don%27t_Do_This)
-- [ ] 1.5 Upserts with `INSERT ... ON CONFLICT`, `MERGE`, `RETURNING`, bulk loading with `COPY` · [PostgreSQL: INSERT](https://www.postgresql.org/docs/current/sql-insert.html) · [PostgreSQL: MERGE](https://www.postgresql.org/docs/current/sql-merge.html)
+- [ ] 1.2 Joins (inner, left, full, cross, semi and anti joins with `EXISTS`), grouping, aggregates, `HAVING` · [notes](notes/sql-joins-explained.md) · [SQLBolt](https://sqlbolt.com/) · [PostgreSQL Exercises](https://pgexercises.com/)
+- [ ] 1.3 Window functions, common table expressions, recursive queries, `LATERAL` joins · [notes](notes/window-functions-and-ctes.md) · [PostgreSQL: Window Functions](https://www.postgresql.org/docs/current/tutorial-window.html) · [PostgreSQL: WITH Queries](https://www.postgresql.org/docs/current/queries-with.html)
+- [ ] 1.4 Data types that matter: `numeric` for money, `text`, `timestamptz` vs `timestamp`, `uuid`, `jsonb`, arrays, enums · [notes](notes/postgresql-data-types-that-matter.md) · [PostgreSQL: Data Types](https://www.postgresql.org/docs/current/datatype.html) · [PostgreSQL wiki: Don't Do This](https://wiki.postgresql.org/wiki/Don%27t_Do_This)
+- [ ] 1.5 Upserts with `INSERT ... ON CONFLICT`, `MERGE`, `RETURNING`, bulk loading with `COPY` · [notes](notes/upserts-and-merge.md) · [PostgreSQL: INSERT](https://www.postgresql.org/docs/current/sql-insert.html) · [PostgreSQL: MERGE](https://www.postgresql.org/docs/current/sql-merge.html)
 - [ ] 1.6 Pagination done right: keyset (seek) pagination instead of `OFFSET` · [notes](notes/keyset-pagination.md) · [Use The Index, Luke: We need tool support for keyset pagination](https://use-the-index-luke.com/no-offset)
 - [ ] 1.7 Parameterised queries and why string concatenation is an injection (details in Security) · [OWASP: SQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
 
@@ -37,9 +37,9 @@
 - [ ] 3.1 B-tree index anatomy: how equality and range lookups walk the tree; index-only scans and the visibility map · [notes](notes/b-tree-indexes-explained.md) · [Use The Index, Luke: Anatomy of an SQL Index](https://use-the-index-luke.com/sql/anatomy)
 - [ ] 3.2 Composite indexes and column order: the leftmost-prefix rule and "equality first, then range" · [notes](notes/b-tree-indexes-explained.md) · [Use The Index, Luke: Concatenated Indexes](https://use-the-index-luke.com/sql/where-clause/the-equals-operator/concatenated-keys)
 - [ ] 3.3 Covering, partial, expression and unique indexes; selectivity; when an index makes things slower · [notes](notes/b-tree-indexes-explained.md) · [PostgreSQL: Indexes](https://www.postgresql.org/docs/current/indexes.html) · [PostgreSQL: Partial Indexes](https://www.postgresql.org/docs/current/indexes-partial.html)
-- [ ] 3.4 Beyond B-trees: hash, GIN (for `jsonb` and full-text), GiST, BRIN; what each is for · [PostgreSQL: Index Types](https://www.postgresql.org/docs/current/indexes-types.html)
+- [ ] 3.4 Beyond B-trees: hash, GIN (for `jsonb` and full-text), GiST, BRIN; what each is for · [notes](notes/gin-gist-brin-and-other-index-types.md) · [PostgreSQL: Index Types](https://www.postgresql.org/docs/current/indexes-types.html)
 - [ ] 3.5 How to make the database ignore your index: functions on columns, implicit casts, leading-wildcard `LIKE`, `OR`, type mismatches · [notes](notes/why-the-database-ignores-your-index.md) · [Use The Index, Luke: Function-Based Indexes](https://use-the-index-luke.com/sql/where-clause/functions)
-- [ ] 3.6 Index cost: write amplification, bloat, `REINDEX`, `CREATE INDEX CONCURRENTLY` and its failure modes · [PostgreSQL: Building Indexes Concurrently](https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY)
+- [ ] 3.6 Index cost: write amplification, bloat, `REINDEX`, `CREATE INDEX CONCURRENTLY` and its failure modes · [notes](notes/gin-gist-brin-and-other-index-types.md) · [PostgreSQL: Building Indexes Concurrently](https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY)
 
 ### 4. Query planning and performance
 
@@ -47,8 +47,8 @@
 - [ ] 4.2 Join algorithms: nested loop, hash join, merge join; why the planner picks each · [notes](notes/reading-explain-plans.md) · [PostgreSQL: Planner/Optimizer](https://www.postgresql.org/docs/current/planner-optimizer.html) · [CMU 15-445 lectures](https://15445.courses.cs.cmu.edu/)
 - [ ] 4.3 Statistics and `ANALYZE`; estimation errors; why a query is fast in development and slow in production · [notes](notes/reading-explain-plans.md) · [PostgreSQL: Statistics Used by the Planner](https://www.postgresql.org/docs/current/planner-stats.html)
 - [ ] 4.4 The N+1 problem and ORM-generated SQL; set-based thinking and batching (JPA specifics in Spring) · [notes](notes/set-based-sql-and-the-n-plus-one-problem.md) · [Vlad Mihalcea: N+1 query problem](https://vladmihalcea.com/n-plus-1-query-problem/)
-- [ ] 4.5 Finding slow queries: `pg_stat_statements`, `log_min_duration_statement`, `auto_explain` · [PostgreSQL: pg_stat_statements](https://www.postgresql.org/docs/current/pgstatstatements.html)
-- [ ] 4.6 A tuning method: measure, take the top query by total time, fix the plan, verify, repeat · [Use The Index, Luke](https://use-the-index-luke.com/) · [SQL Performance Explained](https://sql-performance-explained.com/)
+- [ ] 4.5 Finding slow queries: `pg_stat_statements`, `log_min_duration_statement`, `auto_explain` · [notes](notes/finding-slow-queries-with-pg-stat-statements.md) · [PostgreSQL: pg_stat_statements](https://www.postgresql.org/docs/current/pgstatstatements.html)
+- [ ] 4.6 A tuning method: measure, take the top query by total time, fix the plan, verify, repeat · [notes](notes/finding-slow-queries-with-pg-stat-statements.md) · [Use The Index, Luke](https://use-the-index-luke.com/) · [SQL Performance Explained](https://sql-performance-explained.com/)
 
 ### 5. Transactions
 
@@ -73,7 +73,7 @@
 - [ ] 7.1 Replication: WAL shipping, streaming replication, synchronous vs asynchronous, logical replication · [notes](notes/replication-lag-and-read-your-writes.md) · [PostgreSQL: High Availability, Load Balancing, and Replication](https://www.postgresql.org/docs/current/high-availability.html) · [Designing Data-Intensive Applications, ch. 5](https://dataintensive.net/)
 - [ ] 7.2 Replication lag and its anomalies: read-your-writes, monotonic reads; routing reads to replicas safely · [notes](notes/replication-lag-and-read-your-writes.md) · [Jepsen: Consistency Models](https://jepsen.io/consistency)
 - [ ] 7.3 Failover, split brain and fencing; what managed services (RDS, Aurora, Azure Database for PostgreSQL) automate · [Patroni](https://patroni.readthedocs.io/)
-- [ ] 7.4 Partitioning (range, list, hash) vs sharding; choosing a shard key; cross-shard queries and rebalancing · [PostgreSQL: Table Partitioning](https://www.postgresql.org/docs/current/ddl-partitioning.html) · [Citus documentation](https://docs.citusdata.com/en/stable/)
+- [ ] 7.4 Partitioning (range, list, hash) vs sharding; choosing a shard key; cross-shard queries and rebalancing · [notes](notes/partitioning-vs-sharding.md) · [PostgreSQL: Table Partitioning](https://www.postgresql.org/docs/current/ddl-partitioning.html) · [Citus documentation](https://docs.citusdata.com/en/stable/)
 - [ ] 7.5 Connection pooling: why connections are expensive, pool sizing, HikariCP, PgBouncer, pool-exhaustion symptoms · [notes](notes/connection-pooling-and-sizing.md) · [HikariCP: About Pool Sizing](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing) · [PgBouncer](https://www.pgbouncer.org/)
 - [ ] 7.6 Backups and restores: logical vs physical, point-in-time recovery, and actually testing a restore · [PostgreSQL: Backup and Restore](https://www.postgresql.org/docs/current/backup.html)
 
@@ -82,21 +82,21 @@
 - [ ] 8.1 Normalisation (1NF to BCNF) as a tool, and deliberate denormalisation with its maintenance cost · [notes](notes/schema-design-keys-and-constraints.md) · [Database normalization](https://en.wikipedia.org/wiki/Database_normalization)
 - [ ] 8.2 Keys: natural vs surrogate; sequences and identity columns vs UUIDs (v4 vs v7) and what they do to your indexes · [notes](notes/schema-design-keys-and-constraints.md) · [Vlad Mihalcea: The best UUID type for a database primary key](https://vladmihalcea.com/uuid-database-primary-key/)
 - [ ] 8.3 Constraints as the last line of defence: `NOT NULL`, `CHECK`, foreign keys, `UNIQUE`, exclusion constraints · [notes](notes/schema-design-keys-and-constraints.md) · [PostgreSQL: Constraints](https://www.postgresql.org/docs/current/ddl-constraints.html)
-- [ ] 8.4 Modelling the hard things: time and time zones, money, soft deletes, audit trails, hierarchies, many-to-many · [PostgreSQL wiki: Don't Do This](https://wiki.postgresql.org/wiki/Don%27t_Do_This)
+- [ ] 8.4 Modelling the hard things: time and time zones, money, soft deletes, audit trails, hierarchies, many-to-many · [notes](notes/postgresql-data-types-that-matter.md) · [PostgreSQL wiki: Don't Do This](https://wiki.postgresql.org/wiki/Don%27t_Do_This)
 - [ ] 8.5 Migrations: Flyway and Liquibase, versioned vs repeatable, expand-contract for zero-downtime changes, locks taken by DDL · [Flyway documentation](https://documentation.red-gate.com/flyway) · [PostgreSQL at Scale: Database Schema Changes Without Downtime](https://medium.com/paypal-tech/postgresql-at-scale-database-schema-changes-without-downtime-20d3749ed680)
 - [ ] 8.6 `jsonb` in a relational schema: when it is right, and when it is a schema you have not designed yet · [PostgreSQL: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
 
 ### 9. Beyond relational
 
-- [ ] 9.1 The NoSQL landscape: key-value, document, wide-column, graph, search, time-series; what each trades away · [Designing Data-Intensive Applications, ch. 2](https://dataintensive.net/) · [Martin Fowler: NoSQL Distilled](https://martinfowler.com/books/nosql.html)
-- [ ] 9.2 Redis as a cache and data-structure server: data types, TTLs, eviction policies, persistence, and the classic mistakes · [Redis documentation](https://redis.io/docs/latest/) · [Redis: Data types](https://redis.io/docs/latest/develop/data-types/)
+- [ ] 9.1 The NoSQL landscape: key-value, document, wide-column, graph, search, time-series; what each trades away · [notes](notes/choosing-a-database.md) · [Designing Data-Intensive Applications, ch. 2](https://dataintensive.net/) · [Martin Fowler: NoSQL Distilled](https://martinfowler.com/books/nosql.html)
+- [ ] 9.2 Redis as a cache and data-structure server: data types, TTLs, eviction policies, persistence, and the classic mistakes · [notes](notes/redis-as-a-cache.md) · [Redis documentation](https://redis.io/docs/latest/) · [Redis: Data types](https://redis.io/docs/latest/develop/data-types/)
 - [ ] 9.3 Document stores (MongoDB): when the document model fits, embedding vs referencing · [MongoDB: Data Modeling](https://www.mongodb.com/docs/manual/data-modeling/)
 - [ ] 9.4 Search: inverted indexes and relevance; Elasticsearch/OpenSearch vs PostgreSQL full-text search · [PostgreSQL: Full Text Search](https://www.postgresql.org/docs/current/textsearch.html) · [Elasticsearch](https://www.elastic.co/elasticsearch)
-- [ ] 9.5 Choosing a database: a checklist (consistency needs, access patterns, scale, operations maturity, team skills) · [Things I Wished More Developers Knew About Databases](https://rakyll.medium.com/things-i-wished-more-developers-knew-about-databases-2d0178464f78)
+- [ ] 9.5 Choosing a database: a checklist (consistency needs, access patterns, scale, operations maturity, team skills) · [notes](notes/choosing-a-database.md) · [Things I Wished More Developers Knew About Databases](https://rakyll.medium.com/things-i-wished-more-developers-knew-about-databases-2d0178464f78)
 
 ### 10. Databases from Java
 
-- [ ] 10.1 JDBC fundamentals: drivers, connections, prepared statements, result sets, batching, fetch size, autocommit · [Marco Behler: JDBC guide](https://www.marcobehler.com/guides/jdbc)
+- [ ] 10.1 JDBC fundamentals: drivers, connections, prepared statements, result sets, batching, fetch size, autocommit · [notes](notes/jdbc-fundamentals.md) · [Marco Behler: JDBC guide](https://www.marcobehler.com/guides/jdbc)
 - [ ] 10.2 The ORM trade-off: the impedance mismatch, what JPA/Hibernate buys and costs (deep dive in Spring) · [Marco Behler: Java & Databases](https://www.marcobehler.com/guides/java-databases)
 - [ ] 10.3 Testing against a real database with Testcontainers instead of H2 · [Testcontainers: PostgreSQL module](https://java.testcontainers.org/modules/databases/postgres/)
 
