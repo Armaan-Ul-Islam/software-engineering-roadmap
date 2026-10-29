@@ -21,7 +21,7 @@
 - [ ] 1.2 Complexity analysis, fast: counting loops, recursion trees, the master theorem at a glance, amortised cost · [notes](notes/complexity-analysis-fast.md) · [Big-O Cheat Sheet](https://www.bigocheatsheet.com/) · [MIT 6.006](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/)
 - [ ] 1.3 Communicating while coding: thinking aloud, clarifying questions, stating assumptions, using hints · [notes](notes/problem-solving-protocol.md) · [Tech Interview Handbook: Coding interview techniques](https://www.techinterviewhandbook.org/coding-interview-techniques/)
 - [ ] 1.4 Testing by hand: edge cases (empty, single element, duplicates, negatives, overflow), tracing a small example · [notes](notes/problem-solving-protocol.md) · [Tech Interview Handbook: Coding interview cheatsheet](https://www.techinterviewhandbook.org/coding-interview-cheatsheet/)
-- [ ] 1.5 Deliberate practice: spaced repetition of patterns, timeboxing, studying solutions, keeping a mistakes log · [NeetCode roadmap](https://neetcode.io/roadmap)
+- [ ] 1.5 Deliberate practice: spaced repetition of patterns, timeboxing, studying solutions, keeping a mistakes log · [notes](notes/mock-interviews-and-deliberate-practice.md) · [NeetCode roadmap](https://neetcode.io/roadmap)
 
 ### 2. Patterns: arrays, strings and hashing
 
@@ -30,23 +30,23 @@
 - [ ] 2.3 Sliding window: fixed and variable windows, longest substring without repeats, minimum window substring · [notes](notes/patterns-two-pointers-and-sliding-window.md) · [NeetCode roadmap](https://neetcode.io/roadmap)
 - [ ] 2.4 Stack and monotonic stack: valid parentheses, next greater element, daily temperatures, largest rectangle in a histogram · [notes](notes/patterns-stack-and-monotonic-stack.md) · [Tech Interview Handbook: Stack cheatsheet](https://www.techinterviewhandbook.org/algorithms/stack/)
 - [ ] 2.5 Binary search: on indices, on the answer space, rotated arrays, first and last occurrence · [notes](notes/patterns-binary-search.md) · [Tech Interview Handbook: Sorting and searching cheatsheet](https://www.techinterviewhandbook.org/algorithms/sorting-searching/)
-- [ ] 2.6 Intervals: merge, insert, meeting rooms; sort by start · [Tech Interview Handbook: Interval cheatsheet](https://www.techinterviewhandbook.org/algorithms/interval/)
-- [ ] 2.7 Strings: parsing, anagrams, building strings efficiently, encodings · [Tech Interview Handbook: String cheatsheet](https://www.techinterviewhandbook.org/algorithms/string/)
-- [ ] 2.8 Matrices and grids: traversal, rotation, spiral order, grids as graphs · [Tech Interview Handbook: Matrix cheatsheet](https://www.techinterviewhandbook.org/algorithms/matrix/)
+- [ ] 2.6 Intervals: merge, insert, meeting rooms; sort by start · [notes](notes/patterns-intervals-and-greedy.md) · [Tech Interview Handbook: Interval cheatsheet](https://www.techinterviewhandbook.org/algorithms/interval/)
+- [ ] 2.7 Strings: parsing, anagrams, building strings efficiently, encodings · [notes](notes/patterns-strings-and-matrices.md) · [Tech Interview Handbook: String cheatsheet](https://www.techinterviewhandbook.org/algorithms/string/)
+- [ ] 2.8 Matrices and grids: traversal, rotation, spiral order, grids as graphs · [notes](notes/patterns-strings-and-matrices.md) · [Tech Interview Handbook: Matrix cheatsheet](https://www.techinterviewhandbook.org/algorithms/matrix/)
 
 ### 3. Patterns: linked lists, trees, heaps and tries
 
 - [ ] 3.1 Linked lists: dummy heads, fast and slow pointers, reversal, merging, cycle detection · [notes](notes/patterns-linked-lists.md) · [Tech Interview Handbook: Linked list cheatsheet](https://www.techinterviewhandbook.org/algorithms/linked-list/)
 - [ ] 3.2 Trees: DFS orders, BFS by level, recursion that returns values, BST invariants, lowest common ancestor, serialisation · [notes](notes/patterns-trees-and-bst.md) · [Tech Interview Handbook: Tree cheatsheet](https://www.techinterviewhandbook.org/algorithms/tree/) · [VisuAlgo: Binary Search Tree](https://visualgo.net/en/bst)
 - [ ] 3.3 Heaps and priority queues: top-k, k-way merge, median of a stream, scheduling · [notes](notes/patterns-heaps-and-top-k.md) · [Tech Interview Handbook: Heap cheatsheet](https://www.techinterviewhandbook.org/algorithms/heap/)
-- [ ] 3.4 Tries: prefix search, word search, autocomplete · [Tech Interview Handbook: Trie cheatsheet](https://www.techinterviewhandbook.org/algorithms/trie/)
-- [ ] 3.5 Union-find: connected components, cycle detection, Kruskal's algorithm · [William Fiset: Union Find](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsBI1C-mR6ZhHTyfoEJWlxvq)
+- [ ] 3.4 Tries: prefix search, word search, autocomplete · [notes](notes/patterns-tries-and-union-find.md) · [Tech Interview Handbook: Trie cheatsheet](https://www.techinterviewhandbook.org/algorithms/trie/)
+- [ ] 3.5 Union-find: connected components, cycle detection, Kruskal's algorithm · [notes](notes/patterns-tries-and-union-find.md) · [William Fiset: Union Find](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsBI1C-mR6ZhHTyfoEJWlxvq)
 
 ### 4. Patterns: graphs
 
 - [ ] 4.1 Representations, BFS and DFS, grids as graphs (islands, flood fill, rotting oranges) · [notes](notes/patterns-graphs-bfs-dfs-and-topological-sort.md) · [Tech Interview Handbook: Graph cheatsheet](https://www.techinterviewhandbook.org/algorithms/graph/) · [William Fiset: Graph Theory](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P)
 - [ ] 4.2 Topological sort (Kahn's algorithm and DFS): course schedule, dependency resolution · [notes](notes/patterns-graphs-bfs-dfs-and-topological-sort.md) · [William Fiset: Graph Theory](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P)
-- [ ] 4.3 Shortest paths (Dijkstra, Bellman-Ford, 0-1 BFS) and minimum spanning trees (Prim, Kruskal) · [William Fiset: Graph Theory](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P)
+- [ ] 4.3 Shortest paths (Dijkstra, Bellman-Ford, 0-1 BFS) and minimum spanning trees (Prim, Kruskal) · [notes](notes/patterns-shortest-paths-and-minimum-spanning-trees.md) · [William Fiset: Graph Theory](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P)
 - [ ] 4.4 Advanced, at a glance: bipartite check, bridges and articulation points, strongly connected components, A* · [William Fiset: Graph Theory](https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P)
 
 ### 5. Patterns: recursion, backtracking, dynamic programming and greedy
@@ -55,8 +55,8 @@
 - [ ] 5.2 Backtracking: subsets, permutations, combinations, N-queens, word search; pruning · [notes](notes/patterns-backtracking.md) · [NeetCode roadmap](https://neetcode.io/roadmap)
 - [ ] 5.3 Dynamic programming in one dimension: climbing stairs, house robber, coin change, longest increasing subsequence, decode ways · [notes](notes/patterns-dynamic-programming.md) · [Tech Interview Handbook: Dynamic programming cheatsheet](https://www.techinterviewhandbook.org/algorithms/dynamic-programming/) · [Aditya Verma: Dynamic Programming playlist](https://www.youtube.com/playlist?list=PL_z_8CaSLPWekqhdCPmFohncHwz8TY2Go)
 - [ ] 5.4 Dynamic programming in two dimensions: grids, longest common subsequence, edit distance, the knapsack family, interval DP · [notes](notes/patterns-dynamic-programming.md) · [NeetCode roadmap](https://neetcode.io/roadmap)
-- [ ] 5.5 Greedy algorithms and the exchange argument: jump game, gas station, task scheduler · [Tech Interview Handbook: Coding interview techniques](https://www.techinterviewhandbook.org/coding-interview-techniques/)
-- [ ] 5.6 Bit manipulation and math: XOR tricks, counting bits, modular arithmetic, gcd, fast exponentiation · [Tech Interview Handbook: Binary cheatsheet](https://www.techinterviewhandbook.org/algorithms/binary/) · [Tech Interview Handbook: Math cheatsheet](https://www.techinterviewhandbook.org/algorithms/math/)
+- [ ] 5.5 Greedy algorithms and the exchange argument: jump game, gas station, task scheduler · [notes](notes/patterns-intervals-and-greedy.md) · [Tech Interview Handbook: Coding interview techniques](https://www.techinterviewhandbook.org/coding-interview-techniques/)
+- [ ] 5.6 Bit manipulation and math: XOR tricks, counting bits, modular arithmetic, gcd, fast exponentiation · [notes](notes/patterns-bit-manipulation-and-math.md) · [Tech Interview Handbook: Binary cheatsheet](https://www.techinterviewhandbook.org/algorithms/binary/) · [Tech Interview Handbook: Math cheatsheet](https://www.techinterviewhandbook.org/algorithms/math/)
 
 ### 6. Java for coding interviews
 
@@ -69,15 +69,15 @@
 
 - [ ] 7.1 Pick one curated list and finish it: NeetCode 150 (by pattern) or Grind 75 (by time budget); track solved problems and revisit failures · [notes](notes/a-12-week-study-plan.md) · [NeetCode roadmap](https://neetcode.io/roadmap) · [Grind 75](https://www.techinterviewhandbook.org/grind75/) · [LeetCode](https://leetcode.com/)
 - [ ] 7.2 Weekly structure: patterns on weekdays, a timed set or mock at the weekend, review notes · [notes](notes/a-12-week-study-plan.md) · [Tech Interview Handbook](https://www.techinterviewhandbook.org/)
-- [ ] 7.3 Mock interviews with peers or platforms; record yourself and watch it back · [Pramp](https://www.pramp.com/) · [interviewing.io](https://interviewing.io/)
+- [ ] 7.3 Mock interviews with peers or platforms; record yourself and watch it back · [notes](notes/mock-interviews-and-deliberate-practice.md) · [Pramp](https://www.pramp.com/) · [interviewing.io](https://interviewing.io/)
 - [ ] 7.4 Visualise algorithms and trace code: VisuAlgo, Python Tutor (supports Java) · [VisuAlgo](https://visualgo.net/en) · [Python Tutor](https://pythontutor.com/)
 
 ### 8. System design, Java and low-level design interviews
 
 - [ ] 8.1 System design interviews: the framework and practice list live in the System Design roadmap, section 6 · [System Design roadmap](../07-system-design/README.md)
-- [ ] 8.2 Java and Spring questions as a self-check: JVM, collections, concurrency, the container, transactions, JPA, security · [Baeldung: Java interview questions](https://www.baeldung.com/java-interview-questions) · [Baeldung: Spring interview questions](https://www.baeldung.com/spring-interview-questions)
-- [ ] 8.3 Database and SQL questions: joins, indexes, isolation levels, reading a plan · [PostgreSQL Exercises](https://pgexercises.com/) · [roadmap.sh: Backend interview questions](https://roadmap.sh/questions/backend)
-- [ ] 8.4 Low-level design: classes and interfaces for a parking lot, an elevator, a cache, a rate limiter; SOLID in action · [awesome-low-level-design](https://github.com/ashishps1/awesome-low-level-design)
+- [ ] 8.2 Java and Spring questions as a self-check: JVM, collections, concurrency, the container, transactions, JPA, security · [notes](notes/java-and-spring-interview-questions-self-check.md) · [Baeldung: Java interview questions](https://www.baeldung.com/java-interview-questions) · [Baeldung: Spring interview questions](https://www.baeldung.com/spring-interview-questions)
+- [ ] 8.3 Database and SQL questions: joins, indexes, isolation levels, reading a plan · [notes](notes/java-and-spring-interview-questions-self-check.md) · [PostgreSQL Exercises](https://pgexercises.com/) · [roadmap.sh: Backend interview questions](https://roadmap.sh/questions/backend)
+- [ ] 8.4 Low-level design: classes and interfaces for a parking lot, an elevator, a cache, a rate limiter; SOLID in action · [notes](notes/low-level-design-interviews.md) · [awesome-low-level-design](https://github.com/ashishps1/awesome-low-level-design)
 
 ### 9. Behavioural interviews and the process
 
