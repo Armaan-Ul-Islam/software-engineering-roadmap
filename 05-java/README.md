@@ -17,8 +17,8 @@
 
 ### 1. Language core
 
-- [ ] 1.1 Types and values: primitives vs wrappers, autoboxing and the `Integer` cache, overflow, `char` and Unicode · [dev.java: Numbers and Strings](https://dev.java/learn/numbers-strings/)
-- [ ] 1.2 Strings: immutability, the string pool, `StringBuilder`, formatting, text blocks, encodings · [dev.java: Strings](https://dev.java/learn/numbers-strings/strings/)
+- [ ] 1.1 Types and values: primitives vs wrappers, autoboxing and the `Integer` cache, overflow, `char` and Unicode · [notes](notes/autoboxing-integer-cache-and-numeric-pitfalls.md) · [dev.java: Numbers and Strings](https://dev.java/learn/numbers-strings/)
+- [ ] 1.2 Strings: immutability, the string pool, `StringBuilder`, formatting, text blocks, encodings · [notes](notes/strings-string-pool-and-text-blocks.md) · [dev.java: Strings](https://dev.java/learn/numbers-strings/strings/)
 - [ ] 1.3 `equals`, `hashCode`, `compareTo`, `toString`: the contracts, and what breaks when they are violated · [notes](notes/equals-hashcode-and-value-semantics.md) · [Baeldung: equals() and hashCode() contracts](https://www.baeldung.com/java-equals-hashcode-contracts)
 - [ ] 1.4 Classes and interfaces: default/static/private interface methods, abstract classes, nested and inner classes, enums with behaviour · [dev.java: Classes and Objects](https://dev.java/learn/classes-objects/)
 - [ ] 1.5 Immutability and value-based design: records, `final`, defensive copies, builders · [notes](notes/equals-hashcode-and-value-semantics.md) · [dev.java: Using Record to Model Immutable Data](https://dev.java/learn/records/)
@@ -44,11 +44,11 @@
 ### 3. The standard library you should know
 
 - [ ] 3.1 `java.time`: `Instant`, `LocalDateTime`, `ZonedDateTime`, `Duration` vs `Period`, formatting, and the pitfalls (server zones, DST) · [notes](notes/java-time-essentials.md) · [Baeldung: Introduction to the Java Date/Time API](https://www.baeldung.com/java-8-date-time-intro)
-- [ ] 3.2 I/O and NIO: `Path` and `Files`, streams and readers, charsets, buffering, memory-mapped files · [dev.java: Java I/O](https://dev.java/learn/java-io/)
+- [ ] 3.2 I/O and NIO: `Path` and `Files`, streams and readers, charsets, buffering, memory-mapped files · [notes](notes/java-io-and-nio-essentials.md) · [dev.java: Java I/O](https://dev.java/learn/java-io/)
 - [ ] 3.3 Math and money: `BigDecimal` scale and rounding, random numbers (`SecureRandom`, `RandomGenerator`) · [Baeldung: BigDecimal and BigInteger](https://www.baeldung.com/java-bigdecimal-biginteger)
-- [ ] 3.4 Reflection, annotations and annotation processing: how Spring, Jackson and Lombok work under the hood · [Baeldung: Guide to Java Reflection](https://www.baeldung.com/java-reflection) · [Baeldung: Java Annotation Processing](https://www.baeldung.com/java-annotation-processing-builder)
-- [ ] 3.5 Serialisation: why Java serialisation is dangerous; Jackson for JSON (records, polymorphism, dates, visibility) · [Baeldung: Jackson JSON Tutorial](https://www.baeldung.com/jackson)
-- [ ] 3.6 `java.net.http.HttpClient`, `ProcessBuilder`, logging with SLF4J and Logback · [Baeldung: Java HttpClient](https://www.baeldung.com/java-9-http-client) · [SLF4J manual](https://www.slf4j.org/manual.html)
+- [ ] 3.4 Reflection, annotations and annotation processing: how Spring, Jackson and Lombok work under the hood · [notes](notes/reflection-annotations-and-how-frameworks-work.md) · [Baeldung: Guide to Java Reflection](https://www.baeldung.com/java-reflection) · [Baeldung: Java Annotation Processing](https://www.baeldung.com/java-annotation-processing-builder)
+- [ ] 3.5 Serialisation: why Java serialisation is dangerous; Jackson for JSON (records, polymorphism, dates, visibility) · [notes](notes/jackson-serialisation-pitfalls.md) · [Baeldung: Jackson JSON Tutorial](https://www.baeldung.com/jackson)
+- [ ] 3.6 `java.net.http.HttpClient`, `ProcessBuilder`, logging with SLF4J and Logback · [notes](notes/java-logging-with-slf4j-and-logback.md) · [Baeldung: Java HttpClient](https://www.baeldung.com/java-9-http-client) · [SLF4J manual](https://www.slf4j.org/manual.html)
 - [ ] 3.7 The module system at a glance: what JPMS is for, when you meet it (`jlink`, `--add-opens`) · [dev.java: Modules](https://dev.java/learn/modules/)
 
 ### 4. The JVM
@@ -73,7 +73,7 @@
 - [ ] 6.1 Maven: lifecycle and phases, `pom.xml`, scopes, plugins, multi-module builds; `mvn clean install` explained · [notes](notes/maven-essentials.md) · [Marco Behler: mvn clean install, a short guide to Maven](https://www.marcobehler.com/guides/mvn-clean-install-a-short-guide-to-maven) · [Maven: Getting Started](https://maven.apache.org/guides/getting-started/)
 - [ ] 6.2 Dependency management: transitive dependencies, nearest-wins mediation, BOMs, `dependency:tree`, exclusions, the enforcer plugin · [notes](notes/maven-essentials.md) · [Maven: Introduction to the Dependency Mechanism](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html)
 - [ ] 6.3 Gradle at a glance: Kotlin DSL, tasks, version catalogs; when teams choose it · [Gradle User Manual](https://docs.gradle.org/current/userguide/userguide.html)
-- [ ] 6.4 Java versions: the six-month cadence, LTS releases (17, 21, 25), what changed between them, choosing a distribution · [Java Almanac](https://javaalmanac.io/) · [Marco Behler: A Guide to Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)
+- [ ] 6.4 Java versions: the six-month cadence, LTS releases (17, 21, 25), what changed between them, choosing a distribution · [notes](notes/java-versions-what-changed-8-to-25.md) · [Java Almanac](https://javaalmanac.io/) · [Marco Behler: A Guide to Java Versions and Features](https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features)
 - [ ] 6.5 Static analysis and formatting: Error Prone, SpotBugs, Checkstyle, Spotless; `-Xlint:all` and `-Werror` · [Error Prone](https://errorprone.info/) · [SpotBugs](https://spotbugs.github.io/)
 - [ ] 6.6 Packaging and running: executable JARs, `jlink` runtimes, container images (details in DevOps & Delivery) · [Spring Boot: Container Images](https://docs.spring.io/spring-boot/reference/packaging/container-images/index.html)
 
@@ -83,15 +83,15 @@
 - [ ] 7.2 AssertJ fluent assertions and custom assertions · [AssertJ documentation](https://assertj.github.io/doc/)
 - [ ] 7.3 Mockito: stubs vs mocks vs spies, argument captors, `verify`, and when mocking is a design smell · [notes](notes/testing-with-junit5-mockito-and-testcontainers.md) · [Mockito](https://site.mockito.org/) · [Baeldung: Mockito Series](https://www.baeldung.com/mockito-series)
 - [ ] 7.4 Testcontainers for databases, brokers and anything with a Docker image · [notes](notes/testing-with-junit5-mockito-and-testcontainers.md) · [Testcontainers for Java](https://java.testcontainers.org/)
-- [ ] 7.5 Property-based testing (jqwik), mutation testing (PIT), coverage (JaCoCo) and what coverage does not tell you · [jqwik](https://jqwik.net/) · [PIT](https://pitest.org/) · [JaCoCo](https://www.jacoco.org/jacoco/)
+- [ ] 7.5 Property-based testing (jqwik), mutation testing (PIT), coverage (JaCoCo) and what coverage does not tell you · [notes](notes/property-based-and-mutation-testing.md) · [jqwik](https://jqwik.net/) · [PIT](https://pitest.org/) · [JaCoCo](https://www.jacoco.org/jacoco/)
 - [ ] 7.6 Micro-benchmarks with JMH, and why a `System.nanoTime` loop is wrong · [JMH samples](https://github.com/openjdk/jmh/tree/master/jmh-samples/src/main/java/org/openjdk/jmh/samples)
 
 ### 8. Troubleshooting a running JVM
 
 - [ ] 8.1 Thread dumps: `jcmd <pid> Thread.print`, thread states, finding deadlocks and hot loops · [notes](notes/jvm-troubleshooting-workflow.md) · [Oracle: Troubleshooting Guide](https://docs.oracle.com/en/java/javase/21/troubleshoot/)
 - [ ] 8.2 Heap dumps and leak hunting: `jcmd <pid> GC.heap_dump`, the dominator tree in Eclipse MAT, `HeapDumpOnOutOfMemoryError` · [notes](notes/jvm-troubleshooting-workflow.md) · [Eclipse Memory Analyzer](https://eclipse.dev/mat/)
-- [ ] 8.3 JDK Flight Recorder and Mission Control: always-on profiling of allocation, locks, GC and I/O · [JDK Mission Control](https://www.oracle.com/java/technologies/jdk-mission-control.html) · [Oracle: Flight Recorder API guide](https://docs.oracle.com/en/java/javase/21/jfapi/)
-- [ ] 8.4 async-profiler and flame graphs: CPU, allocation, lock and wall-clock profiles · [async-profiler](https://github.com/async-profiler/async-profiler) · [Brendan Gregg: Flame Graphs](https://www.brendangregg.com/flamegraphs.html)
+- [ ] 8.3 JDK Flight Recorder and Mission Control: always-on profiling of allocation, locks, GC and I/O · [notes](notes/jfr-and-async-profiler-in-practice.md) · [JDK Mission Control](https://www.oracle.com/java/technologies/jdk-mission-control.html) · [Oracle: Flight Recorder API guide](https://docs.oracle.com/en/java/javase/21/jfapi/)
+- [ ] 8.4 async-profiler and flame graphs: CPU, allocation, lock and wall-clock profiles · [notes](notes/jfr-and-async-profiler-in-practice.md) · [async-profiler](https://github.com/async-profiler/async-profiler) · [Brendan Gregg: Flame Graphs](https://www.brendangregg.com/flamegraphs.html)
 - [ ] 8.5 A workflow for the three classic incidents: high CPU, memory growth, stuck requests · [notes](notes/jvm-troubleshooting-workflow.md) · [Oracle: Troubleshooting Guide](https://docs.oracle.com/en/java/javase/21/troubleshoot/)
 - [ ] 8.6 Exposing JVM metrics: JMX, Micrometer, and what to alert on (details in Spring and DevOps & Delivery) · [Micrometer](https://micrometer.io/)
 
@@ -100,7 +100,7 @@
 - [ ] 9.1 Effective Java, item by item: object creation, common methods, classes and interfaces, generics, enums, lambdas, methods, exceptions, concurrency, serialisation · [Effective Java, 3rd edition](https://www.oreilly.com/library/view/effective-java/9780134686097/)
 - [ ] 9.2 Readable Java: small classes, intention-revealing names, explicit imports, immutable by default, no clever code · [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)
 - [ ] 9.3 Design patterns as they appear in the JDK and Spring: Builder, Factory, Strategy, Decorator, Template Method, Observer · [Java Design Patterns](https://java-design-patterns.com/)
-- [ ] 9.4 Lombok: what it generates, where it bites (`equals` on entities, builders on inheritance), and when records replace it · [Project Lombok features](https://projectlombok.org/features/)
+- [ ] 9.4 Lombok: what it generates, where it bites (`equals` on entities, builders on inheritance), and when records replace it · [notes](notes/lombok-records-and-what-they-generate.md) · [Project Lombok features](https://projectlombok.org/features/)
 
 ## Resources
 
