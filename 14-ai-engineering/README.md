@@ -24,17 +24,17 @@
 
 ### 2. Prompting and structured output
 
-- [ ] 2.1 System prompts, instructions, few-shot examples, delimiters, reasoning space; prompt versioning · [Prompt Engineering Guide](https://www.promptingguide.ai/) · [Anthropic documentation](https://docs.anthropic.com/)
+- [ ] 2.1 System prompts, instructions, few-shot examples, delimiters, reasoning space; prompt versioning · [notes](notes/prompting-and-context-engineering.md) · [Prompt Engineering Guide](https://www.promptingguide.ai/) · [Anthropic documentation](https://docs.anthropic.com/)
 - [ ] 2.2 Structured output: JSON schemas, constrained decoding, validating and retrying; mapping to Java records · [notes](notes/structured-output-and-validation.md) · [OpenAI: Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs) · [Spring AI: Structured Output Converter](https://docs.spring.io/spring-ai/reference/api/structured-output-converter.html)
-- [ ] 2.3 Context engineering: what goes in the window, ordering, summarisation, caching repeated prefixes · [Anthropic: Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- [ ] 2.4 Cost and latency: token budgets, streaming, prompt caching, batching, routing tasks to smaller models · [OpenAI: Latency optimization](https://platform.openai.com/docs/guides/latency-optimization)
+- [ ] 2.3 Context engineering: what goes in the window, ordering, summarisation, caching repeated prefixes · [notes](notes/prompting-and-context-engineering.md) · [Anthropic: Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [ ] 2.4 Cost and latency: token budgets, streaming, prompt caching, batching, routing tasks to smaller models · [notes](notes/cost-and-latency-engineering-for-llm-features.md) · [OpenAI: Latency optimization](https://platform.openai.com/docs/guides/latency-optimization)
 
 ### 3. Retrieval-augmented generation
 
 - [ ] 3.1 Embeddings and vector similarity; chunking strategies; metadata; hybrid search (BM25 plus vectors); reranking · [notes](notes/rag-pipeline-essentials.md) · [Pinecone: Retrieval-Augmented Generation](https://www.pinecone.io/learn/retrieval-augmented-generation/) · [Eugene Yan: Patterns for Building LLM-based Systems](https://eugeneyan.com/writing/llm-patterns/)
 - [ ] 3.2 pgvector in PostgreSQL: HNSW and IVFFlat indexes, filtering, when a dedicated vector database is justified · [notes](notes/rag-pipeline-essentials.md) · [pgvector](https://github.com/pgvector/pgvector) · [Spring AI: PGvector store](https://docs.spring.io/spring-ai/reference/api/vectordbs/pgvector.html)
 - [ ] 3.3 Evaluating retrieval: recall and precision at k, faithfulness, building a golden set · [notes](notes/rag-pipeline-essentials.md) · [Hamel Husain: Your AI Product Needs Evals](https://hamel.dev/blog/posts/evals/)
-- [ ] 3.4 Document pipelines: parsing PDFs and HTML, deduplication, refresh, access control on retrieved content · [LangChain4j: RAG](https://docs.langchain4j.dev/tutorials/rag)
+- [ ] 3.4 Document pipelines: parsing PDFs and HTML, deduplication, refresh, access control on retrieved content · [notes](notes/document-ingestion-pipelines.md) · [LangChain4j: RAG](https://docs.langchain4j.dev/tutorials/rag)
 
 ### 4. Tool use, agents and MCP
 
@@ -47,9 +47,9 @@
 ### 5. Evaluation, observability and operations
 
 - [ ] 5.1 Evals as tests: golden sets, LLM-as-judge with calibration against humans, regression suites in CI · [notes](notes/evals-for-llm-features.md) · [Hamel Husain: Your AI Product Needs Evals](https://hamel.dev/blog/posts/evals/) · [Eugene Yan: Evaluation and hallucination detection](https://eugeneyan.com/writing/evals/)
-- [ ] 5.2 Tracing LLM calls: prompts, tokens, latency, cost per request; OpenTelemetry GenAI conventions; tools such as Langfuse · [OpenTelemetry: Semantic conventions for generative AI](https://opentelemetry.io/docs/specs/semconv/gen-ai/) · [Langfuse](https://langfuse.com/)
-- [ ] 5.3 Reliability: timeouts, retries with backoff on 429 and 5xx, fallbacks between models, circuit breakers, graceful degradation · [AWS Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
-- [ ] 5.4 Cost control: budgets per feature, caching, model routing, monitoring token usage · [Artificial Analysis](https://artificialanalysis.ai/)
+- [ ] 5.2 Tracing LLM calls: prompts, tokens, latency, cost per request; OpenTelemetry GenAI conventions; tools such as Langfuse · [notes](notes/observability-and-reliability-for-llm-calls.md) · [OpenTelemetry: Semantic conventions for generative AI](https://opentelemetry.io/docs/specs/semconv/gen-ai/) · [Langfuse](https://langfuse.com/)
+- [ ] 5.3 Reliability: timeouts, retries with backoff on 429 and 5xx, fallbacks between models, circuit breakers, graceful degradation · [notes](notes/observability-and-reliability-for-llm-calls.md) · [AWS Builders' Library: Timeouts, retries, and backoff with jitter](https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/)
+- [ ] 5.4 Cost control: budgets per feature, caching, model routing, monitoring token usage · [notes](notes/cost-and-latency-engineering-for-llm-features.md) · [Artificial Analysis](https://artificialanalysis.ai/)
 - [ ] 5.5 Feedback loops: capturing user feedback, shipping behind flags, continuous improvement of prompts and data · [Chip Huyen: Building A Generative AI Platform](https://huyenchip.com/2024/07/25/genai-platform.html)
 
 ### 6. Security and responsible use
@@ -63,9 +63,9 @@
 
 - [ ] 7.1 Spring AI: `ChatClient`, advisors, structured output, tool calling, vector stores, evaluation support · [notes](notes/spring-ai-quickstart.md) · [Spring AI Reference](https://docs.spring.io/spring-ai/reference/)
 - [ ] 7.2 LangChain4j: AI services, RAG, tools, embedding stores · [LangChain4j](https://docs.langchain4j.dev/)
-- [ ] 7.3 Provider SDKs and raw HTTP: when a framework is overhead · [Anthropic documentation](https://docs.anthropic.com/) · [OpenAI API reference](https://platform.openai.com/docs/api-reference)
-- [ ] 7.4 Running models locally for development and tests: Ollama; recording and replaying responses in tests · [Ollama](https://ollama.com/)
-- [ ] 7.5 AI-assisted development as a skill: coding agents, reviewing generated code, keeping ownership of the design · [Simon Willison: Here's how I use LLMs to help me write code](https://simonwillison.net/2025/Mar/11/using-llms-for-code/)
+- [ ] 7.3 Provider SDKs and raw HTTP: when a framework is overhead · [notes](notes/local-models-and-testing-llm-features.md) · [Anthropic documentation](https://docs.anthropic.com/) · [OpenAI API reference](https://platform.openai.com/docs/api-reference)
+- [ ] 7.4 Running models locally for development and tests: Ollama; recording and replaying responses in tests · [notes](notes/local-models-and-testing-llm-features.md) · [Ollama](https://ollama.com/)
+- [ ] 7.5 AI-assisted development as a skill: coding agents, reviewing generated code, keeping ownership of the design · [notes](notes/ai-assisted-development-as-a-skill.md) · [Simon Willison: Here's how I use LLMs to help me write code](https://simonwillison.net/2025/Mar/11/using-llms-for-code/)
 
 ## Resources
 
