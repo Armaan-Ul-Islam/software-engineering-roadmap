@@ -26,7 +26,7 @@
 ### 2. Operating systems
 
 - [ ] 2.1 Processes vs threads: address spaces, the process control block, context switches and their cost · [notes](notes/processes-threads-and-virtual-memory.md) · [OSTEP: Processes](https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-intro.pdf) · [OSTEP: Threads](https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf)
-- [ ] 2.2 Scheduling: time slices, priorities, CPU-bound vs I/O-bound work, why too many threads hurt · [OSTEP: Scheduling](https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf)
+- [ ] 2.2 Scheduling: time slices, priorities, CPU-bound vs I/O-bound work, why too many threads hurt · [notes](notes/cpu-scheduling-and-why-too-many-threads-hurt.md) · [OSTEP: Scheduling](https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf)
 - [ ] 2.3 Virtual memory: pages, page tables, the TLB, page faults, swap; RSS vs virtual size in `top` · [notes](notes/processes-threads-and-virtual-memory.md) · [OSTEP: Address Translation](https://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf) · [OSTEP: Paging](https://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf)
 - [ ] 2.4 System calls, user vs kernel mode, and what a blocking call really costs · [notes](notes/syscalls-blocking-and-the-page-cache.md) · [OSTEP: Limited Direct Execution](https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-mechanisms.pdf) · [strace zine](https://jvns.ca/blog/2015/04/14/strace-zine/)
 - [ ] 2.5 Files and I/O: file descriptors, the page cache, buffering, `fsync` and what "durable" means · [notes](notes/syscalls-blocking-and-the-page-cache.md) · [OSTEP: Files and Directories](https://pages.cs.wisc.edu/~remzi/OSTEP/file-intro.pdf) · [OSTEP: Crash Consistency](https://pages.cs.wisc.edu/~remzi/OSTEP/file-journaling.pdf)
@@ -36,7 +36,7 @@
 ### 3. Networking fundamentals
 
 - [ ] 3.1 The layered model in practice: Ethernet, IP, TCP/UDP, application protocols; what each layer adds · [notes](notes/tcp-ip-essentials.md) · [Kurose & Ross](https://gaia.cs.umass.edu/kurose_ross/) · [Practical Networking](https://www.youtube.com/@PracticalNetworking)
-- [ ] 3.2 IP addressing: IPv4/IPv6, subnets and CIDR, private ranges, NAT, routing basics · [Cloudflare: What is an IP address?](https://www.cloudflare.com/learning/dns/glossary/what-is-my-ip-address/)
+- [ ] 3.2 IP addressing: IPv4/IPv6, subnets and CIDR, private ranges, NAT, routing basics · [notes](notes/ip-addressing-subnets-and-nat.md) · [Cloudflare: What is an IP address?](https://www.cloudflare.com/learning/dns/glossary/what-is-my-ip-address/)
 - [ ] 3.3 TCP: three-way handshake, sequence numbers, retransmission, flow and congestion control, head-of-line blocking; UDP and when to prefer it · [notes](notes/tcp-ip-essentials.md) · [HPBN: Building Blocks of TCP](https://hpbn.co/building-blocks-of-tcp/) · [HPBN: Building Blocks of UDP](https://hpbn.co/building-blocks-of-udp/)
 - [ ] 3.4 Sockets and ports: what "listening" means, accept queues, ephemeral ports, `TIME_WAIT`, connection limits · [notes](notes/tcp-ip-essentials.md) · [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/)
 - [ ] 3.5 DNS resolution path, record types, TTLs and caching (deep dive in Web & HTTP) · [How DNS works](https://howdns.works/)
@@ -60,8 +60,8 @@
 - [ ] 5.1 Filesystem layout, paths, permissions, users and groups, `sudo` · [notes](notes/linux-essentials-for-developers.md) · [Linux Journey](https://linuxjourney.com/) · [The Missing Semester](https://missing.csail.mit.edu/)
 - [ ] 5.2 Processes and jobs: `ps`, `top`/`htop`, `kill` and signals, background jobs, `nohup`, exit codes · [notes](notes/linux-essentials-for-developers.md) · [The Missing Semester: Command-line Environment](https://missing.csail.mit.edu/2020/command-line/)
 - [ ] 5.3 Pipes, redirection and text tools: `grep`, `sed`, `awk`, `cut`, `sort`, `uniq`, `xargs`, `jq` · [notes](notes/linux-essentials-for-developers.md) · [The Art of Command Line](https://github.com/jlevy/the-art-of-command-line) · [explainshell](https://explainshell.com/)
-- [ ] 5.4 Shell scripting basics, quoting, exit codes, `set -euo pipefail`, and when to stop scripting and write a program · [BashGuide](https://mywiki.wooledge.org/BashGuide) · [ShellCheck](https://www.shellcheck.net/)
-- [ ] 5.5 SSH: keys, agents, config, port forwarding, `scp`/`rsync` · [SSH Academy: SSH command](https://www.ssh.com/academy/ssh/command)
+- [ ] 5.4 Shell scripting basics, quoting, exit codes, `set -euo pipefail`, and when to stop scripting and write a program · [notes](notes/shell-scripting-with-safety-rails.md) · [BashGuide](https://mywiki.wooledge.org/BashGuide) · [ShellCheck](https://www.shellcheck.net/)
+- [ ] 5.5 SSH: keys, agents, config, port forwarding, `scp`/`rsync` · [notes](notes/ssh-keys-agents-and-tunnels.md) · [SSH Academy: SSH command](https://www.ssh.com/academy/ssh/command)
 - [ ] 5.6 Package managers, `PATH`, environment variables, dotfiles, and reproducible developer machines · [Missing Semester: Shell](https://missing.csail.mit.edu/2020/course-shell/)
 - [ ] 5.7 Finding what is eating CPU, memory, disk or sockets (deep dive in DevOps & Delivery) · [Linux Performance Analysis in 60 seconds](https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55) · [Brendan Gregg: Linux Performance](https://www.brendangregg.com/linuxperf.html)
 - [ ] 5.8 Reading `man` pages and `--help` faster than searching the web · [man7.org](https://man7.org/linux/man-pages/) · [tldr pages](https://tldr.sh/)
@@ -79,9 +79,9 @@
 
 - [ ] 7.1 Build and dependency management concepts: artifacts, transitive dependencies, version conflicts, lockfiles, reproducible builds (Maven and npm live in their domains) · [Semantic Versioning](https://semver.org/)
 - [ ] 7.2 Configuration and environments: dev/test/prod parity, config via environment, secrets never in code · [The Twelve-Factor App](https://12factor.net/)
-- [ ] 7.3 Debugging as a method: reproduce, form hypotheses, bisect, read the stack trace from the top, instrument · [Debugging: The 9 Indispensable Rules](https://debuggingrules.com/)
-- [ ] 7.4 Regular expressions you will actually use, and when a regex is the wrong tool · [RegexOne](https://regexone.com/) · [regex101](https://regex101.com/)
-- [ ] 7.5 Time and dates: UTC, offsets vs zones, DST, monotonic vs wall clocks, ISO 8601 · [Falsehoods programmers believe about time](https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca)
+- [ ] 7.3 Debugging as a method: reproduce, form hypotheses, bisect, read the stack trace from the top, instrument · [notes](notes/debugging-as-a-method.md) · [Debugging: The 9 Indispensable Rules](https://debuggingrules.com/)
+- [ ] 7.4 Regular expressions you will actually use, and when a regex is the wrong tool · [notes](notes/regular-expressions-you-actually-use.md) · [RegexOne](https://regexone.com/) · [regex101](https://regex101.com/)
+- [ ] 7.5 Time and dates: UTC, offsets vs zones, DST, monotonic vs wall clocks, ISO 8601 · [notes](notes/time-dates-and-time-zones.md) · [Falsehoods programmers believe about time](https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca)
 
 ## Resources
 
