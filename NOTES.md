@@ -3,22 +3,22 @@
 Ideas, gaps, and reminders captured while building the roadmap. Keep entries short and
 actionable. Remove an entry when it is done.
 
-## 0. Status (2026-10-29, after wave 3 batch 2)
+## 0. Status (2026-10-29, end of wave 3)
 
 | Measure | Value |
 |---|---|
 | Domains | 15 |
 | Checklist items | 728 |
-| Explainer notes | 265 (about 409,000 words) |
-| Items with a linked note | 471 of 728 (64%) |
+| Explainer notes | 300 (about 468,000 words) |
+| Items with a linked note | 527 of 728 (72%) |
 | Sixty-day track items with a note | 144 of 157 (91%) |
-| Anki cards | 1,060 (all notes), 384 (sixty-day track) |
+| Anki cards | 1,200 (all notes), 384 (sixty-day track) |
 | External links checked | about 2,300 unique URLs; all reachable except hosts that block scripts (see 3.0) |
 | Live site | https://armaan-ul-islam.github.io/software-engineering-roadmap/ (GitHub Pages, deployed by `.github/workflows/pages.yml` on every push to `main`) |
-| Commits | 46 local; the last push was commit 33, so `git push` publishes the rest |
+| Commits | 52 local; the last push was commit 33, so `git push` publishes the rest |
 
-- 0.1 Waves 1 and 2 (one writer per domain), wave 3 batch 1 (Web & HTTP, Memory & Concurrency, Databases, Spring, System Design) and wave 3 batch 2 (Foundations, Java, JavaScript & Frontend, Cloud, DevOps & Delivery) are complete. Every note passed `tools/check_notes.py`, local-link validation and an external link check; the writers compiled and ran the Java, SQL and shell examples; at least one note per domain and per batch was read in full during review.
-- 0.2 Remaining writing: wave 3 batch 3, listed in section 4 (the domains marked "to do"): 29 notes and 6 project specs. Each batch of five writers costs roughly one million tokens.
+- 0.1 Waves 1, 2 and 3 are complete (wave 3 ran in three batches of five writers: the five track domains, then Foundations, Java, JavaScript & Frontend, Cloud, DevOps & Delivery, then Architecture & Craft, Security, DSA & Interviews, AI Engineering, Projects). Every note passed `tools/check_notes.py`, local-link validation and an external link check; the writers compiled and ran the Java, SQL and shell examples; at least one note per domain and per batch was read in full during review.
+- 0.2 No writing batch is queued. Section 4 keeps the wave 3 lists for reference; 4.16 lists the sixty-day track items that still have no note, the only gap worth a small wave 4. Each batch of five writers costs roughly one million tokens.
 - 0.3 Decisions: do not aim for a note on every item; after wave 3, invest in hands-on labs (1.10) and the Anki habit rather than more breadth; the tracker, the sixty-day track and the "done when you can" lists are the real gates.
 - 0.6 The track file `tracks/two-month-backend-core.md` (file name kept so the tracker's saved selection and the Anki deck name still work) is now the sixty-day plan: Days 1 to 30 are language-neutral (Foundations, Web & HTTP, Databases, Memory & Concurrency), Days 31 to 42 are System Design plus Security, DevOps and Architecture essentials, Days 43 to 59 are Java and Spring built into the order-management project, Day 60 is consolidation. 157 items.
 - 0.4 How to run another batch: start one writer per domain with `tools/note-writer-brief.md` plus the domain's list from section 4; afterwards run `python3 tools/check_notes.py`, `python3 tools/link_notes.py`, `python3 tools/build.py`, `python3 tools/export_anki.py` (both decks), `python3 tools/check_links.py <domain>/notes`, and commit per domain with a one-sentence message and no trailers. Writers should write each file as soon as it is finished; spend limits have interrupted two batches, and finished files survive.
@@ -47,14 +47,14 @@ actionable. Remove an entry when it is done.
 
 ## 3. Maintenance reminders
 
-- 3.0 Link checks of 2026-10-24: about 2,300 unique links across roadmaps and notes, all reachable except hosts that block scripts (vladmihalcea.com, medium.com, leetcode.com, netflixtechblog.com, uber.com, cwe.mitre.org, itrevolution.com). Those are listed as BLOCKED by `tools/check_links.py`; spot-check them in a browser occasionally.
+- 3.0 Link checks of 2026-10-24: about 2,300 unique links across roadmaps and notes, all reachable except hosts that block scripts (vladmihalcea.com, medium.com, leetcode.com, netflixtechblog.com, uber.com, cwe.mitre.org, itrevolution.com). Those are listed as BLOCKED by `tools/check_links.py`; spot-check them in a browser occasionally. On 2026-10-29 www.rfc-editor.org answered `curl` but timed out in the checker for every RFC link; treat those timeouts as noise unless a browser also fails.
 
 - 3.1 Re-check links quarterly with `python3 tools/check_links.py`; MDN, Spring, and Microsoft Learn move pages often.
 - 3.2 When a new Java LTS or Spring Boot major ships, review the Java and Spring roadmaps for outdated items.
 
 ## 4. Third wave of notes
 
-Batch 1 (4.2, 4.3, 4.4, 4.6, 4.7) and batch 2 (4.1, 4.5, 4.8, 4.9, 4.10) are done. Batch 3 is the lines marked "to do". Each line is `file name · items`. The item numbers exist in the domain README. Writers follow `tools/note-writer-brief.md`.
+All three batches are done. The lines are kept so the file names and item mappings stay findable. Each line is `file name · items`. The item numbers exist in the domain README. Writers follow `tools/note-writer-brief.md`.
 
 - 4.1 01-foundations (done): ip-addressing-subnets-and-nat (3.2); cpu-scheduling-and-why-too-many-threads-hurt (2.2); shell-scripting-with-safety-rails (5.4); ssh-keys-agents-and-tunnels (5.5); debugging-as-a-method (7.3); regular-expressions-you-actually-use (7.4); time-dates-and-time-zones (7.5).
 - 4.2 02-web-and-http (done): urls-and-percent-encoding (1.3); connection-management-timeouts-and-pools (3.1, 3.4); content-negotiation-compression-and-conditional-requests (4.3, 4.4, 4.5); curl-for-http-debugging (4.6, 8.3); openapi-contract-first (9.4); graphql-and-grpc-vs-rest (9.5); webhooks-done-right (9.6).
@@ -66,8 +66,9 @@ Batch 1 (4.2, 4.3, 4.4, 4.6, 4.7) and batch 2 (4.1, 4.5, 4.8, 4.9, 4.10) are don
 - 4.8 08-javascript-and-frontend (done): building-an-http-api-with-fastify (3.4, 3.5); testing-javascript-with-vitest (3.6, 6.11); validating-at-the-boundary-with-zod-and-openapi-types (2.4, 8.4); dom-and-events (4.3); web-performance-and-core-web-vitals (4.6); react-forms-routing-and-state-management (6.6, 6.8, 6.9); rendering-strategies-csr-ssr-and-server-components (6.10); serving-and-deploying-a-spa-with-spring-boot (8.1, 8.5).
 - 4.9 09-cloud (done): secrets-and-key-management-in-the-cloud (2.3, 9.1); accounts-subscriptions-and-landing-zones (1.3, 2.4); private-connectivity-and-the-edge (3.4, 3.5); well-architected-review-in-practice (1.5, 8.5); cloud-observability-cloudwatch-azure-monitor-and-otel (8.1, 8.2); managed-nosql-and-caches (6.3); cloud-security-posture-basics (9.2, 9.3).
 - 4.10 10-devops-and-delivery (done): pull-requests-commits-and-versioning (1.2, 1.3); continuous-delivery-pipelines-and-promotion (2.4, 6.4); supply-chain-security-sboms-and-signing (2.5, 2.6, 3.6); helm-kustomize-and-gitops (4.7); systemd-and-journald-essentials (7.3); dora-metrics-and-the-sre-mindset (8.3, 8.4).
-- 4.11 11-architecture-and-craft (to do): code-smells-catalogue (1.6, 3.5); composition-over-inheritance-and-tell-dont-ask (2.4, 2.5); tdd-as-a-design-practice (5.5, 5.6); contract-testing-with-pact (5.4, 8.3); strangler-fig-and-refactoring-at-scale (4.3, 4.4); c4-diagrams-and-technical-writing (9.3, 9.5); architecture-trade-offs-and-fitness-functions (7.5, 7.6); estimation-and-saying-no (9.6).
-- 4.12 12-security (to do): owasp-api-security-top-10 (2.12, 4.3); mfa-passkeys-and-account-recovery (3.3, 3.5); mtls-and-service-to-service-auth (7.4); security-headers-explained (9.4, 7.5); input-validation-and-file-uploads (9.5); logging-privacy-and-gdpr-for-developers (10.1, 10.2); secure-sdlc-and-asvs (1.3, 1.4).
-- 4.13 13-dsa-and-interview-prep (to do): patterns-intervals-and-greedy (2.6, 5.5); patterns-tries-and-union-find (3.4, 3.5); patterns-shortest-paths-and-minimum-spanning-trees (4.3); patterns-bit-manipulation-and-math (5.6); patterns-strings-and-matrices (2.7, 2.8); java-and-spring-interview-questions-self-check (8.2, 8.3); low-level-design-interviews (8.4); mock-interviews-and-deliberate-practice (1.5, 7.3).
-- 4.14 14-ai-engineering (to do): prompting-and-context-engineering (2.1, 2.3); cost-and-latency-engineering-for-llm-features (2.4, 5.4); observability-and-reliability-for-llm-calls (5.2, 5.3); document-ingestion-pipelines (3.4); local-models-and-testing-llm-features (7.3, 7.4); ai-assisted-development-as-a-skill (7.5).
-- 4.15 15-projects (to do; specs in the shape of the two existing ones): http-server-from-sockets-spec (1.1); key-value-store-with-wal-spec (1.3); url-shortener-spec (2.1); authentication-service-spec (2.3); observability-stack-spec (4.4); rag-over-your-repositories-spec (5.1).
+- 4.11 11-architecture-and-craft (done): code-smells-catalogue (1.6, 3.5); composition-over-inheritance-and-tell-dont-ask (2.4, 2.5); tdd-as-a-design-practice (5.5, 5.6); contract-testing-with-pact (5.4, 8.3); strangler-fig-and-refactoring-at-scale (4.3, 4.4); c4-diagrams-and-technical-writing (9.3, 9.5); architecture-trade-offs-and-fitness-functions (7.5, 7.6); estimation-and-saying-no (9.6).
+- 4.12 12-security (done): owasp-api-security-top-10 (2.12, 4.3); mfa-passkeys-and-account-recovery (3.3, 3.5); mtls-and-service-to-service-auth (7.4); security-headers-explained (9.4, 7.5); input-validation-and-file-uploads (9.5); logging-privacy-and-gdpr-for-developers (10.1, 10.2); secure-sdlc-and-asvs (1.3, 1.4).
+- 4.13 13-dsa-and-interview-prep (done): patterns-intervals-and-greedy (2.6, 5.5); patterns-tries-and-union-find (3.4, 3.5); patterns-shortest-paths-and-minimum-spanning-trees (4.3); patterns-bit-manipulation-and-math (5.6); patterns-strings-and-matrices (2.7, 2.8); java-and-spring-interview-questions-self-check (8.2, 8.3); low-level-design-interviews (8.4); mock-interviews-and-deliberate-practice (1.5, 7.3).
+- 4.14 14-ai-engineering (done): prompting-and-context-engineering (2.1, 2.3); cost-and-latency-engineering-for-llm-features (2.4, 5.4); observability-and-reliability-for-llm-calls (5.2, 5.3); document-ingestion-pipelines (3.4); local-models-and-testing-llm-features (7.3, 7.4); ai-assisted-development-as-a-skill (7.5).
+- 4.15 15-projects (done; specs in the shape of the two earlier ones): http-server-from-sockets-spec (1.1); key-value-store-with-wal-spec (1.3); url-shortener-spec (2.1); authentication-service-spec (2.3); observability-stack-spec (4.4); rag-over-your-repositories-spec (5.1).
+- 4.16 Sixty-day track items without a note after wave 3 (the status-code sub-items 4.2.1 to 4.2.3 and the project "done when" sub-items are covered by their parents' notes): web-and-http 11.1 (what a web server does: thread-per-request vs event loop); databases 5.5 (transaction boundaries in application code) and 5.6 (idempotency keys and the outbox from the database side); memory-and-concurrency 3.1 (why a memory model exists) and 4.1 (what a platform thread costs); system-design 2.2 (load balancers and reverse proxies); spring 4.5 (Flyway and Liquibase in Boot) and 7.6 (testing transactions honestly). Eight notes; one writer.
