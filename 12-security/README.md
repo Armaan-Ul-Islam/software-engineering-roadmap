@@ -19,8 +19,8 @@
 
 - [ ] 1.1 Thinking like an attacker: assets, trust boundaries, attack surface; defence in depth, least privilege, fail secure · [notes](notes/threat-modelling-with-stride.md) · [OWASP: Threat Modeling](https://owasp.org/www-community/Threat_Modeling) · [OWASP: Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)
 - [ ] 1.2 STRIDE over a data-flow diagram; threat modelling that fits in a sprint · [notes](notes/threat-modelling-with-stride.md) · [Microsoft: STRIDE threats](https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats) · [Threat Modeling Manifesto](https://www.threatmodelingmanifesto.org/)
-- [ ] 1.3 Security requirements and verification with OWASP ASVS as the checklist · [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
-- [ ] 1.4 Security in the development lifecycle: design review, code review, SAST/SCA/DAST in CI, penetration tests, disclosure programmes · [OWASP SAMM](https://owaspsamm.org/)
+- [ ] 1.3 Security requirements and verification with OWASP ASVS as the checklist · [notes](notes/secure-sdlc-and-asvs.md) · [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
+- [ ] 1.4 Security in the development lifecycle: design review, code review, SAST/SCA/DAST in CI, penetration tests, disclosure programmes · [notes](notes/secure-sdlc-and-asvs.md) · [OWASP SAMM](https://owaspsamm.org/)
 
 ### 2. The OWASP Top 10, with Java and Spring defences
 
@@ -35,21 +35,21 @@
 - [ ] 2.9 Server-side request forgery: URL fetchers, webhooks, cloud metadata endpoints · [notes](notes/ssrf-explained.md) · [PortSwigger: SSRF](https://portswigger.net/web-security/ssrf) · [OWASP: SSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
 - [ ] 2.10 Cross-site scripting: contexts and output encoding, Content Security Policy, frameworks that escape by default · [notes](notes/xss-and-content-security-policy.md) · [PortSwigger: Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting) · [OWASP: XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
 - [ ] 2.11 Cross-site request forgery: the mechanism, `SameSite` cookies, synchroniser tokens, and why bearer-token APIs are immune · [notes](notes/csrf-explained.md) · [PortSwigger: CSRF](https://portswigger.net/web-security/csrf) · [OWASP: CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
-- [ ] 2.12 The OWASP API Security Top 10: BOLA, broken authentication, unrestricted resource consumption, mass assignment · [OWASP API Security Project](https://owasp.org/API-Security/)
+- [ ] 2.12 The OWASP API Security Top 10: BOLA, broken authentication, unrestricted resource consumption, mass assignment · [notes](notes/owasp-api-security-top-10.md) · [OWASP API Security Project](https://owasp.org/API-Security/)
 
 ### 3. Authentication and session management
 
 - [ ] 3.1 Password storage: bcrypt, scrypt, Argon2id, work factors, peppers; never plain hashes · [notes](notes/password-storage-and-authentication.md) · [OWASP: Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 - [ ] 3.2 Password policy done right (NIST 800-63B), breached-password checks, rate limiting and lockout, enumeration-safe messages · [notes](notes/password-storage-and-authentication.md) · [NIST SP 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html) · [Have I Been Pwned: Pwned Passwords](https://haveibeenpwned.com/Passwords)
-- [ ] 3.3 Multi-factor authentication: TOTP, WebAuthn and passkeys, recovery codes; phishing resistance · [passkeys.dev](https://passkeys.dev/) · [WebAuthn Guide](https://webauthn.guide/)
+- [ ] 3.3 Multi-factor authentication: TOTP, WebAuthn and passkeys, recovery codes; phishing resistance · [notes](notes/mfa-passkeys-and-account-recovery.md) · [passkeys.dev](https://passkeys.dev/) · [WebAuthn Guide](https://webauthn.guide/)
 - [ ] 3.4 Sessions: ID generation, cookie attributes, rotation on login, expiry, server-side invalidation · [notes](notes/password-storage-and-authentication.md) · [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
-- [ ] 3.5 Account lifecycle: registration, email verification, password reset tokens; recovery as the weakest link · [OWASP: Forgot Password Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html)
+- [ ] 3.5 Account lifecycle: registration, email verification, password reset tokens; recovery as the weakest link · [notes](notes/mfa-passkeys-and-account-recovery.md) · [OWASP: Forgot Password Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html)
 
 ### 4. Authorization
 
 - [ ] 4.1 Models: RBAC, ABAC, ReBAC; roles vs permissions; policy as code (Open Policy Agent, Cedar) · [notes](notes/authorization-models-and-idor.md) · [OWASP: Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html) · [Open Policy Agent](https://www.openpolicyagent.org/)
 - [ ] 4.2 Object-level and function-level checks; tenant isolation; deny by default in the service layer, not only at the URL · [notes](notes/authorization-models-and-idor.md) · [OWASP API Security: Broken Object Level Authorization](https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/)
-- [ ] 4.3 Authorization across services: propagating identity, token exchange, service-to-service authentication (client credentials, mTLS) · [RFC 8693: OAuth 2.0 Token Exchange](https://www.rfc-editor.org/rfc/rfc8693)
+- [ ] 4.3 Authorization across services: propagating identity, token exchange, service-to-service authentication (client credentials, mTLS) · [notes](notes/owasp-api-security-top-10.md) · [RFC 8693: OAuth 2.0 Token Exchange](https://www.rfc-editor.org/rfc/rfc8693)
 
 ### 5. OAuth 2.0 and OpenID Connect
 
@@ -73,8 +73,8 @@
 - [ ] 7.1 What TLS guarantees and what it does not; the handshake; cipher suites; TLS 1.2 vs 1.3 · [notes](notes/tls-certificates-and-java-trust-stores.md) · [Cloudflare: What happens in a TLS handshake?](https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/) · [HPBN: Transport Layer Security](https://hpbn.co/transport-layer-security-tls/)
 - [ ] 7.2 Certificates and PKI: certificate authorities, chains, SANs, expiry, revocation (CRL, OCSP), Certificate Transparency · [notes](notes/tls-certificates-and-java-trust-stores.md) · [Let's Encrypt: How it works](https://letsencrypt.org/how-it-works/) · [Cloudflare: What is a certificate authority?](https://www.cloudflare.com/learning/ssl/what-is-a-certificate-authority/)
 - [ ] 7.3 Java specifics: the `cacerts` trust store, `keytool`, "PKIX path building failed", custom trust in HTTP clients, never disabling verification · [notes](notes/tls-certificates-and-java-trust-stores.md) · [Baeldung: SSL Handshake Failures](https://www.baeldung.com/java-ssl-handshake-failures) · [keytool](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)
-- [ ] 7.4 Mutual TLS for service-to-service authentication; service meshes; certificate automation (ACME, cert-manager) · [Cloudflare: What is mTLS?](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/) · [cert-manager](https://cert-manager.io/)
-- [ ] 7.5 HSTS, why certificate pinning is usually wrong, and testing your TLS configuration · [SSL Labs Server Test](https://www.ssllabs.com/ssltest/) · [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/)
+- [ ] 7.4 Mutual TLS for service-to-service authentication; service meshes; certificate automation (ACME, cert-manager) · [notes](notes/mtls-and-service-to-service-auth.md) · [Cloudflare: What is mTLS?](https://www.cloudflare.com/learning/access-management/what-is-mutual-tls/) · [cert-manager](https://cert-manager.io/)
+- [ ] 7.5 HSTS, why certificate pinning is usually wrong, and testing your TLS configuration · [notes](notes/security-headers-explained.md) · [SSL Labs Server Test](https://www.ssllabs.com/ssltest/) · [Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/)
 
 ### 8. Cryptography for developers
 
@@ -90,13 +90,13 @@
 - [ ] 9.1 Secrets management: nothing in repos or images, vaults, runtime injection, rotation, leak scanning · [notes](notes/secrets-and-supply-chain.md) · [OWASP: Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html) · [gitleaks](https://github.com/gitleaks/gitleaks)
 - [ ] 9.2 Dependency security: software composition analysis, lockfiles and pinning, SBOMs, typosquatting · [notes](notes/secrets-and-supply-chain.md) · [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/) · [GitHub Advisory Database](https://github.com/advisories)
 - [ ] 9.3 Container and infrastructure security: image scanning, non-root, minimal images, network policies, least-privilege IAM · [OWASP: Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)
-- [ ] 9.4 Security headers: CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` · [OWASP: HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html) · [securityheaders.com](https://securityheaders.com/)
-- [ ] 9.5 Input validation and output encoding as a system: allow-lists, canonicalisation, file-upload safety, size limits · [OWASP: Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) · [OWASP: File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)
+- [ ] 9.4 Security headers: CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` · [notes](notes/security-headers-explained.md) · [OWASP: HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html) · [securityheaders.com](https://securityheaders.com/)
+- [ ] 9.5 Input validation and output encoding as a system: allow-lists, canonicalisation, file-upload safety, size limits · [notes](notes/input-validation-and-file-uploads.md) · [OWASP: Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) · [OWASP: File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)
 
 ### 10. Privacy, logging and compliance basics
 
-- [ ] 10.1 Logging safely: no secrets, tokens or personal data in logs; audit logs vs application logs; retention · [OWASP: Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
-- [ ] 10.2 GDPR for developers: lawful basis, data minimisation, purpose limitation, retention and deletion, data subject rights, pseudonymisation · [CNIL: GDPR developer's guide](https://www.cnil.fr/en/gdpr-developers-guide) · [Datatilsynet](https://www.datatilsynet.no/en/)
+- [ ] 10.1 Logging safely: no secrets, tokens or personal data in logs; audit logs vs application logs; retention · [notes](notes/logging-privacy-and-gdpr-for-developers.md) · [OWASP: Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+- [ ] 10.2 GDPR for developers: lawful basis, data minimisation, purpose limitation, retention and deletion, data subject rights, pseudonymisation · [notes](notes/logging-privacy-and-gdpr-for-developers.md) · [CNIL: GDPR developer's guide](https://www.cnil.fr/en/gdpr-developers-guide) · [Datatilsynet](https://www.datatilsynet.no/en/)
 - [ ] 10.3 Handling security incidents and vulnerability reports: detection, containment, disclosure duties · [OWASP: Vulnerability Disclosure Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Vulnerability_Disclosure_Cheat_Sheet.html)
 - [ ] 10.4 Security for AI features: prompt injection, data exfiltration through tools, excessive agency (details in AI Engineering) · [OWASP GenAI Security Project](https://genai.owasp.org/)
 
