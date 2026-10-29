@@ -38,6 +38,8 @@ Item IDs (`4.3`, `6.5.2`) are stable, so you can reference them in your own note
 
 ## 3. Suggested paths
 
+If you want a schedule rather than a map, start with the sixty-day track in section 4. The paths below are for working through whole domains.
+
 1. **Backend core (about six months, part time).** Foundations, then Web & HTTP, Java, Databases, Spring, Memory & Concurrency, finishing with Projects sections 1 and 2.
    1.1 If you already write Java daily, skim Foundations and start with Databases and Memory & Concurrency; they are where most working developers have gaps.
 2. **Senior or interview preparation (8 to 12 weeks).** DSA & Interviews alongside System Design, then Architecture & Craft and the Security basics, with weekly mock interviews.
@@ -49,7 +51,7 @@ Item IDs (`4.3`, `6.5.2`) are stable, so you can reference them in your own note
 
 The full map is more than a year of learning. A track is a subset with a schedule, so you can finish a box instead of browsing a map. Tracks live in [`tracks/`](tracks/) and appear in the tracker's top bar; selecting one hides everything else and makes every progress bar measure the track.
 
-- 4.1 [Two-month backend core](tracks/two-month-backend-core.md): 113 items across Web & HTTP, Databases, Memory & Concurrency, Spring and System Design, plus the order-management project, scheduled week by week for nine to ten weeks at about 15 hours a week.
+- 4.1 [Sixty-day backend core](tracks/two-month-backend-core.md): 157 items scheduled Day 1 to Day 60 at two and a half to three hours a day. The language-neutral material comes first (operating system and network basics, Web & HTTP, Databases, Memory & Concurrency), then System Design with the Security, DevOps and Architecture essentials, and only then Java and Spring, built into the order-management project.
 
 To add a track, copy the file's shape: a title, a summary blockquote, an `**Hours:**` line, an `## Items` section with one `### <domain-slug>` heading per domain followed by comma-separated item IDs, and whatever plan you like after it. `python3 tools/build.py` validates that every ID exists.
 

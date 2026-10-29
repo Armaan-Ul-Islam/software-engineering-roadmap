@@ -751,7 +751,7 @@
       '<p class="muted">' + escapeHtml(activeTrack.summary) + "</p></div>" +
       '<div class="track-progress"><div class="bar"><div class="fill" style="width:' + percent + '%"></div></div>' +
       '<span class="count">' + done + " / " + total + " items · " + percent + "%" + (activeTrack.hours ? " · " + escapeHtml(activeTrack.hours) : "") + "</span></div></div>" +
-      '<details class="track-plan"><summary>Plan and week-by-week schedule</summary><div class="markdown">' +
+      '<details class="track-plan"><summary>Plan and day-by-day schedule</summary><div class="markdown">' +
       (window.marked ? window.marked.parse(planMarkdown) : "<pre>" + escapeHtml(planMarkdown) + "</pre>") +
       "</div></details>";
     panel.classList.remove("hidden");
