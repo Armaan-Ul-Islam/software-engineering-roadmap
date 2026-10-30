@@ -2,7 +2,7 @@
 
 > What a backend developer needs from the other side: the JavaScript language and its runtime model, TypeScript, Node.js, how browsers work, enough HTML and CSS to be useful, React fundamentals, and wiring a frontend to a Spring API without fighting CORS and authentication.
 
-**Prerequisites:** [Web & HTTP](../02-web-and-http/README.md), [Foundations](../01-foundations/README.md)
+**Related domains:** [Web & HTTP](../02-web-and-http/README.md), [Spring](../06-spring/README.md), [Security](../12-security/README.md)
 
 **Done when you can:**
 

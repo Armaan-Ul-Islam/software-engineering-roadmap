@@ -2,7 +2,7 @@
 
 > Build-to-learn capstones that force the roadmap's ideas into your hands. Each project names the concepts it exercises, a definition of done, and stretch goals. Finish three and you will out-perform most candidates; finish them all and you will be hard to beat.
 
-**Prerequisites:** [Spring](../06-spring/README.md), [DevOps & Delivery](../10-devops-and-delivery/README.md)
+**Related domains:** [Spring](../06-spring/README.md), [DevOps & Delivery](../10-devops-and-delivery/README.md), [Cloud](../09-cloud/README.md)
 
 **Done when you can:**
 

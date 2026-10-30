@@ -36,10 +36,10 @@
     <details class="howto" id="howto">
       <summary>How to use this page</summary>
       <ol>
-        <li>1. Start with the map below. Arrows point from a prerequisite to what builds on it. Click a domain to jump to it.</li>
+        <li>1. Start with the map below. The domains are numbered in the order the sixty-day track takes them, but none is a prerequisite for another: start anywhere and run several side by side. Click a domain to jump to it. Two optional domains (AI Engineering, Projects) sit behind the <b>More</b> button under the list.</li>
         <li>2. Each domain is a checklist. Tick an item when you can explain it to a colleague without notes and have used it at least once.</li>
         <li>3. Items marked <span class="chip note">notes</span> open a short explainer right here. The other chips open the best external resource for that item in a new tab.</li>
-        <li>4. Pick a <b>track</b> in the top bar to time-box the roadmap: only the track's items are shown, and every progress bar then measures the track instead of the whole map.</li>
+        <li>4. Pick a <b>track</b> in the top bar to time-box the roadmap: only the track's items are shown, each item carries its <span class="chip day">Day</span> badge, the map shows which days cover each domain, and every progress bar then measures the track instead of the whole map.</li>
         <li>5. Pick or create a <b>profile</b> (your name). Your ticks are kept in this browser under that profile. To keep them for good, click <b>Save file</b> and put the downloaded <code>&lt;profile&gt;.json</code> into the repository's <code>progress/</code> folder (commit it, or upload it through GitHub's "Add file"); the site rebuilds and every device starts from it. <b>Copy link</b> gives you a link that carries your progress for a quick transfer.</li>
         <li>6. Read the roadmap source on GitHub if you prefer plain markdown; every checklist and note is a file in the repository.</li>
       </ol>
@@ -50,12 +50,25 @@
     <section id="map-section" class="map-section">
       <div class="section-head">
         <h2>The map</h2>
-        <p class="muted">Domains and how they build on each other. Progress is shown inside each node.</p>
+        <p class="muted">The thirteen core domains in reading order, top to bottom. Nothing is a prerequisite for anything else; the order is only the one the sixty-day track follows. Progress is shown inside each node.</p>
       </div>
       <div id="map" class="map"></div>
     </section>
 
-    <section id="domains" class="domains"></section>
+    <section id="domains" class="domains" aria-label="Core domains"></section>
+
+    <div class="more-row">
+      <button id="more-btn" class="btn" aria-expanded="false" aria-controls="optional-domains">More</button>
+    </div>
+
+    <section id="optional-domains" class="optional hidden" aria-label="Optional domains">
+      <div class="section-head">
+        <h2>Optional</h2>
+        <p class="muted">Extra domains for after the core, or when a task at work needs them. They are not part of the sixty-day track and do not count towards the progress bar in the top bar.</p>
+        <span class="muted" id="optional-count"></span>
+      </div>
+      <div id="optional-list" class="domains"></div>
+    </section>
   </main>
 
   <div id="reader-backdrop" class="reader-backdrop hidden"></div>

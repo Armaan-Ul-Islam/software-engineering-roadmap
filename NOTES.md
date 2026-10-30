@@ -3,7 +3,7 @@
 Ideas, gaps, and reminders captured while building the roadmap. Keep entries short and
 actionable. Remove an entry when it is done.
 
-## 0. Status (2026-10-29, end of wave 3)
+## 0. Status (2026-10-30, after the serial-order rework)
 
 | Measure | Value |
 |---|---|
@@ -11,16 +11,17 @@ actionable. Remove an entry when it is done.
 | Checklist items | 728 |
 | Explainer notes | 300 (about 468,000 words) |
 | Items with a linked note | 527 of 728 (72%) |
-| Sixty-day track items with a note | 144 of 157 (91%) |
-| Anki cards | 1,200 (all notes), 384 (sixty-day track) |
+| Sixty-day track items with a note | 168 of 176 (95%) |
+| Anki cards | 1,200 (all notes), 472 (sixty-day track) |
 | External links checked | about 2,300 unique URLs; all reachable except hosts that block scripts (see 3.0) |
 | Live site | https://armaan-ul-islam.github.io/software-engineering-roadmap/ (GitHub Pages, deployed by `.github/workflows/pages.yml` on every push to `main`) |
-| Commits | 52 local; the last push was commit 33, so `git push` publishes the rest |
+| Commits | 53 local before the 2026-10-30 rework; the last push was commit 33, so `git push` publishes the rest |
 
 - 0.1 Waves 1, 2 and 3 are complete (wave 3 ran in three batches of five writers: the five track domains, then Foundations, Java, JavaScript & Frontend, Cloud, DevOps & Delivery, then Architecture & Craft, Security, DSA & Interviews, AI Engineering, Projects). Every note passed `tools/check_notes.py`, local-link validation and an external link check; the writers compiled and ran the Java, SQL and shell examples; at least one note per domain and per batch was read in full during review.
 - 0.2 No writing batch is queued. Section 4 keeps the wave 3 lists for reference; 4.16 lists the sixty-day track items that still have no note, the only gap worth a small wave 4. Each batch of five writers costs roughly one million tokens.
 - 0.3 Decisions: do not aim for a note on every item; after wave 3, invest in hands-on labs (1.10) and the Anki habit rather than more breadth; the tracker, the sixty-day track and the "done when you can" lists are the real gates.
-- 0.6 The track file `tracks/two-month-backend-core.md` (file name kept so the tracker's saved selection and the Anki deck name still work) is now the sixty-day plan: Days 1 to 30 are language-neutral (Foundations, Web & HTTP, Databases, Memory & Concurrency), Days 31 to 42 are System Design plus Security, DevOps and Architecture essentials, Days 43 to 59 are Java and Spring built into the order-management project, Day 60 is consolidation. 157 items.
+- 0.6 The track file `tracks/two-month-backend-core.md` (file name kept so the tracker's saved selection and the Anki deck name still work) is the sixty-day plan over all thirteen core domains in map order, one block of days per domain (Foundations 1 to 4, Web & HTTP 5 to 10, Memory & Concurrency 11 to 16, Databases 17 to 25, System Design 26 to 32, Cloud 33 to 35, DevOps & Delivery 36 to 38, Architecture & Craft 39 to 41, Security 42 to 45, DSA & Interviews 46 to 48, Java 49 to 51, Spring 52 to 57, JavaScript & Frontend 58 to 59, consolidation on Day 60). 176 items, every one on a day; the build validates the schedule.
+- 0.7 Reading order and optional domains (2026-10-30): `SERIAL_ORDER` and `OPTIONAL_DOMAINS` in `tools/build.py` decide the order of the tracker's map and list (1 Foundations, 2 Web & HTTP, 3 Memory & Concurrency, 4 Databases, 5 System Design, 6 Cloud, 7 DevOps & Delivery, 8 Architecture & Craft, 9 Security, 10 DSA & Interviews, 11 Java, 12 Spring, 13 JavaScript & Frontend; AI Engineering and Projects are optional and hidden behind the tracker's More button). Prerequisites are gone: every README has a `**Related domains:**` line instead, the map is a roadmap.sh-style serial spine with no arrows, and the overall progress bar counts the core domains only.
 - 0.4 How to run another batch: start one writer per domain with `tools/note-writer-brief.md` plus the domain's list from section 4; afterwards run `python3 tools/check_notes.py`, `python3 tools/link_notes.py`, `python3 tools/build.py`, `python3 tools/export_anki.py` (both decks), `python3 tools/check_links.py <domain>/notes`, and commit per domain with a one-sentence message and no trailers. Writers should write each file as soon as it is finished; spend limits have interrupted two batches, and finished files survive.
 - 0.5 Progress profiles: the tracker keeps ticks per profile in the browser; `progress/<profile>.json` committed to the repository is the baseline for every device (Save file in the tracker, then `python3 tools/save_progress.py <download> --commit`). No profile files exist yet.
 
@@ -51,6 +52,7 @@ actionable. Remove an entry when it is done.
 
 - 3.1 Re-check links quarterly with `python3 tools/check_links.py`; MDN, Spring, and Microsoft Learn move pages often.
 - 3.2 When a new Java LTS or Spring Boot major ships, review the Java and Spring roadmaps for outdated items.
+- 3.3 The tracker overflows horizontally at phone width (about 420 px): the top bar's progress text and profile status push the page wider than the viewport. It predates the 2026-10-30 map rework; fix in `site/styles.css` when touching the top bar.
 
 ## 4. Third wave of notes
 
@@ -71,4 +73,4 @@ All three batches are done. The lines are kept so the file names and item mappin
 - 4.13 13-dsa-and-interview-prep (done): patterns-intervals-and-greedy (2.6, 5.5); patterns-tries-and-union-find (3.4, 3.5); patterns-shortest-paths-and-minimum-spanning-trees (4.3); patterns-bit-manipulation-and-math (5.6); patterns-strings-and-matrices (2.7, 2.8); java-and-spring-interview-questions-self-check (8.2, 8.3); low-level-design-interviews (8.4); mock-interviews-and-deliberate-practice (1.5, 7.3).
 - 4.14 14-ai-engineering (done): prompting-and-context-engineering (2.1, 2.3); cost-and-latency-engineering-for-llm-features (2.4, 5.4); observability-and-reliability-for-llm-calls (5.2, 5.3); document-ingestion-pipelines (3.4); local-models-and-testing-llm-features (7.3, 7.4); ai-assisted-development-as-a-skill (7.5).
 - 4.15 15-projects (done; specs in the shape of the two earlier ones): http-server-from-sockets-spec (1.1); key-value-store-with-wal-spec (1.3); url-shortener-spec (2.1); authentication-service-spec (2.3); observability-stack-spec (4.4); rag-over-your-repositories-spec (5.1).
-- 4.16 Sixty-day track items without a note after wave 3 (the status-code sub-items 4.2.1 to 4.2.3 and the project "done when" sub-items are covered by their parents' notes): web-and-http 11.1 (what a web server does: thread-per-request vs event loop); databases 5.5 (transaction boundaries in application code) and 5.6 (idempotency keys and the outbox from the database side); memory-and-concurrency 3.1 (why a memory model exists) and 4.1 (what a platform thread costs); system-design 2.2 (load balancers and reverse proxies); spring 4.5 (Flyway and Liquibase in Boot) and 7.6 (testing transactions honestly). Eight notes; one writer.
+- 4.16 Sixty-day track items without a note after the 2026-10-30 rework (the status-code sub-items 4.2.1 to 4.2.3 are covered by their parent's note): web-and-http 11.1 (what a web server does: thread-per-request vs event loop); memory-and-concurrency 3.1 (why a memory model exists) and 4.1 (what a platform thread costs); system-design 2.2 (load balancers and reverse proxies); spring 4.5 (Flyway and Liquibase in Boot). Five notes; one writer. Also worth a note although no longer in the track: databases 5.5 and 5.6, spring 7.6.

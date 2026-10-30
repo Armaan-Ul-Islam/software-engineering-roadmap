@@ -2,7 +2,7 @@
 
 > Application security for people who build backends: the attacker's mindset and threat modelling, the OWASP Top 10 with Java and Spring defences, authentication and sessions, OAuth 2.0 and OpenID Connect, JWT, TLS and certificates, cryptography you can use without being a cryptographer, secrets, supply chain, and privacy basics.
 
-**Prerequisites:** [Web & HTTP](../02-web-and-http/README.md)
+**Related domains:** [Web & HTTP](../02-web-and-http/README.md), [Spring](../06-spring/README.md), [Cloud](../09-cloud/README.md)
 
 **Done when you can:**
 

@@ -2,7 +2,7 @@
 
 > Relational databases from the inside out: SQL that scales, storage engines, indexes, query planning, transactions and isolation, MVCC and locking, replication, partitioning, connection pooling, schema design, and when NoSQL fits. PostgreSQL first, with MySQL differences noted.
 
-**Prerequisites:** [Foundations](../01-foundations/README.md)
+**Related domains:** [Foundations](../01-foundations/README.md), [Spring](../06-spring/README.md), [System Design](../07-system-design/README.md)
 
 **Done when you can:**
 

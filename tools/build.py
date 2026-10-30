@@ -9,6 +9,12 @@ The script reads every `NN-<slug>/README.md`, parses the `## Roadmap` checklist 
 sections and items, embeds every other markdown file in the domain folder as a note, and
 validates local links and item IDs. It fails (exit code 1) on broken local links, duplicate
 IDs, or structural problems, so it doubles as the repository's consistency check.
+
+Domains are emitted in the order the roadmap reads them (SERIAL_ORDER), with the optional
+domains (OPTIONAL_DOMAINS) last; the folder number only names the folder. A track's
+`## Day by day` tables are parsed into a schedule and checked: every scheduled item must be in
+the track's `## Items`, no day may be missing between Day 1 and the last day, and every track
+item should appear on some day.
 """
 
 from __future__ import annotations
@@ -25,11 +31,29 @@ OUTPUT_FILE = REPOSITORY_ROOT / "site" / "data.js"
 REPOSITORY_URL = "https://github.com/Armaan-Ul-Islam/software-engineering-roadmap"
 DEFAULT_BRANCH = "main"
 
+SERIAL_ORDER = [
+    "foundations",
+    "web-and-http",
+    "memory-and-concurrency",
+    "databases",
+    "system-design",
+    "cloud",
+    "devops-and-delivery",
+    "architecture-and-craft",
+    "security",
+    "dsa-and-interview-prep",
+    "java",
+    "spring",
+    "javascript-and-frontend",
+]
+OPTIONAL_DOMAINS = ["ai-engineering", "projects"]
+
 DOMAIN_DIRECTORY_PATTERN = re.compile(r"^(\d{2})-([a-z0-9-]+)$")
 SECTION_PATTERN = re.compile(r"^### (\d+)\.\s+(.+?)\s*$")
 ITEM_PATTERN = re.compile(r"^(\s*)- \[([ xX])\] (\d+(?:\.\d+)*)\s+(.*?)\s*$")
 LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)")
-PREREQUISITE_LINK_PATTERN = re.compile(r"\.\./(\d{2})-([a-z0-9-]+)/README\.md")
+RELATED_DOMAIN_LABELS = ("**Related domains:**", "**Prerequisites:**")
+DOMAIN_README_LINK_PATTERN = re.compile(r"\.\./(\d{2})-([a-z0-9-]+)/README\.md")
 SEPARATOR_PATTERN = re.compile(r"(\s*·\s*)+")
 
 
@@ -91,7 +115,7 @@ def parse_readme(domain_directory: pathlib.Path, errors: list[str]) -> dict:
 
     title = None
     summary_lines: list[str] = []
-    prerequisites: list[str] = []
+    related: list[str] = []
     abilities: list[str] = []
     sections: list[dict] = []
     seen_ids: set[str] = set()
@@ -111,15 +135,15 @@ def parse_readme(domain_directory: pathlib.Path, errors: list[str]) -> dict:
             item_stack = []
             continue
         if not in_roadmap:
-            if line.startswith("> ") and not sections and not prerequisites:
+            if line.startswith("> ") and not sections and not related:
                 summary_lines.append(line[2:].strip())
-            elif line.startswith("**Prerequisites:**"):
-                for _, prerequisite_slug in PREREQUISITE_LINK_PATTERN.findall(line):
-                    prerequisites.append(prerequisite_slug)
+            elif line.startswith(RELATED_DOMAIN_LABELS):
+                for _, related_slug in DOMAIN_README_LINK_PATTERN.findall(line):
+                    related.append(related_slug)
                 for label, url in LINK_PATTERN.findall(line):
                     target = normalise_local_target(readme, url)
                     if not target.exists():
-                        errors.append(f"{relative_to_root(readme)}:{line_number}: broken prerequisite link '{url}'")
+                        errors.append(f"{relative_to_root(readme)}:{line_number}: broken related-domain link '{url}'")
             elif line.startswith("**Done when you can:**"):
                 in_abilities = True
             elif in_abilities:
@@ -191,10 +215,37 @@ def parse_readme(domain_directory: pathlib.Path, errors: list[str]) -> dict:
         "directory": domain_directory.name,
         "title": title or slug,
         "summary": " ".join(summary_lines),
-        "prerequisites": prerequisites,
+        "related": related,
         "abilities": abilities,
         "sections": sections,
     }
+
+
+def assign_positions(domains: list[dict], errors: list[str]) -> list[dict]:
+    """Order the domains as the roadmap reads them: the serial core first, optional domains last."""
+    known_slugs = {domain["slug"] for domain in domains}
+    for slug in SERIAL_ORDER + OPTIONAL_DOMAINS:
+        if slug not in known_slugs:
+            errors.append(f"tools/build.py: ordered domain '{slug}' has no folder")
+    for domain in domains:
+        if domain["slug"] in SERIAL_ORDER:
+            domain["position"] = SERIAL_ORDER.index(domain["slug"]) + 1
+            domain["optional"] = False
+        elif domain["slug"] in OPTIONAL_DOMAINS:
+            domain["position"] = None
+            domain["optional"] = True
+        else:
+            errors.append(f"{domain['directory']}/README.md: domain '{domain['slug']}' is in neither SERIAL_ORDER nor OPTIONAL_DOMAINS in tools/build.py")
+            domain["position"] = None
+            domain["optional"] = True
+
+    def sort_key(domain: dict) -> tuple:
+        if domain["optional"]:
+            optional_index = OPTIONAL_DOMAINS.index(domain["slug"]) if domain["slug"] in OPTIONAL_DOMAINS else len(OPTIONAL_DOMAINS)
+            return (1, optional_index, domain["order"])
+        return (0, domain["position"], domain["order"])
+
+    return sorted(domains, key=sort_key)
 
 
 def collect_notes(domain_directory: pathlib.Path, errors: list[str]) -> dict[str, dict]:
@@ -217,9 +268,61 @@ def collect_notes(domain_directory: pathlib.Path, errors: list[str]) -> dict[str
 
 TRACK_ITEMS_HEADING_PATTERN = re.compile(r"^### ([a-z0-9-]+)\s*$")
 TRACK_HOURS_PATTERN = re.compile(r"^\*\*Hours:\*\*\s*(.+?)\s*$")
+SCHEDULE_ROW_PATTERN = re.compile(r"^\|\s*(\d+)\s*\|([^|]*)\|([^|]*)\|\s*$")
+SCHEDULE_SEGMENT_PATTERN = re.compile(r"^(.+?)\s+(\d+(?:\.\d+)*(?:\s*,\s*\d+(?:\.\d+)*)*)$")
 
 
-def parse_tracks(domains: list[dict], errors: list[str]) -> list[dict]:
+def parse_schedule(track_file: pathlib.Path, lines: list[str], domains: list[dict], track_items: list[str], errors: list[str], warnings: list[str]) -> list[dict]:
+    """Read the tables under `## Day by day`: `| day | Domain Title 1.2, 1.3; Other Title 4.1 | lab |`."""
+    slug_by_title = {domain["title"].lower(): domain["slug"] for domain in domains}
+    track_item_set = set(track_items)
+    schedule: list[dict] = []
+    seen_days: set[int] = set()
+    scheduled_items: set[str] = set()
+    in_schedule = False
+    for line_number, line in enumerate(lines, 1):
+        if line.startswith("## "):
+            in_schedule = line[3:].strip().lower().startswith("day by day")
+            continue
+        row = SCHEDULE_ROW_PATTERN.match(line) if in_schedule else None
+        if not row:
+            continue
+        day = int(row.group(1))
+        if day in seen_days:
+            errors.append(f"tracks/{track_file.name}:{line_number}: day {day} is scheduled twice")
+        seen_days.add(day)
+        day_items: list[str] = []
+        for segment in [part.strip() for part in row.group(2).split(";") if part.strip()]:
+            segment_match = SCHEDULE_SEGMENT_PATTERN.match(segment)
+            if not segment_match:
+                continue
+            title, id_list = segment_match.groups()
+            slug = slug_by_title.get(title.strip().lower())
+            if slug is None:
+                errors.append(f"tracks/{track_file.name}:{line_number}: unknown domain title '{title.strip()}' in the schedule")
+                continue
+            for item_id in [part.strip() for part in id_list.split(",")]:
+                key = f"{slug}:{item_id}"
+                if key not in track_item_set:
+                    errors.append(f"tracks/{track_file.name}:{line_number}: day {day} schedules {key}, which is not in the track's Items")
+                if key in scheduled_items:
+                    errors.append(f"tracks/{track_file.name}:{line_number}: {key} is scheduled on more than one day")
+                scheduled_items.add(key)
+                day_items.append(key)
+        schedule.append({"day": day, "items": day_items, "lab": row.group(3).strip()})
+    if schedule:
+        last_day = max(seen_days)
+        missing_days = [str(day) for day in range(1, last_day + 1) if day not in seen_days]
+        if missing_days:
+            errors.append(f"tracks/{track_file.name}: the schedule skips day(s) {', '.join(missing_days)}")
+        unscheduled = [key for key in track_items if key not in scheduled_items]
+        for key in unscheduled:
+            warnings.append(f"tracks/{track_file.name}: {key} is in Items but on no day of the schedule")
+    schedule.sort(key=lambda entry: entry["day"])
+    return schedule
+
+
+def parse_tracks(domains: list[dict], errors: list[str], warnings: list[str]) -> list[dict]:
     tracks: list[dict] = []
     tracks_directory = REPOSITORY_ROOT / "tracks"
     if not tracks_directory.is_dir():
@@ -228,6 +331,7 @@ def parse_tracks(domains: list[dict], errors: list[str]) -> list[dict]:
         domain["slug"]: {item["id"] for section in domain["sections"] for item in flatten_items(section["items"])}
         for domain in domains
     }
+    optional_slugs = {domain["slug"] for domain in domains if domain.get("optional")}
     for track_file in sorted(tracks_directory.glob("*.md")):
         content = track_file.read_text(encoding="utf-8")
         lines = content.splitlines()
@@ -249,6 +353,8 @@ def parse_tracks(domains: list[dict], errors: list[str]) -> list[dict]:
                 current_slug = heading.group(1)
                 if current_slug not in item_ids_by_slug:
                     errors.append(f"tracks/{track_file.name}:{line_number}: unknown domain '{current_slug}'")
+                elif current_slug in optional_slugs:
+                    warnings.append(f"tracks/{track_file.name}:{line_number}: '{current_slug}' is an optional domain; its items are hidden until the reader opens the optional section")
                 continue
             if current_slug and line.strip():
                 for item_id in [part.strip() for part in line.split(",") if part.strip()]:
@@ -262,12 +368,15 @@ def parse_tracks(domains: list[dict], errors: list[str]) -> list[dict]:
             errors.append(f"tracks/{track_file.name}: no '## Items' section with items")
         for line_number, line in enumerate(lines, 1):
             extract_links(track_file, line, errors, line_number)
+        schedule = parse_schedule(track_file, lines, domains, items, errors, warnings)
         tracks.append({
             "slug": track_file.stem,
             "title": title,
             "summary": summary,
             "hours": hours,
             "items": items,
+            "schedule": schedule,
+            "days": schedule[-1]["day"] if schedule else 0,
             "content": content,
         })
     return tracks
@@ -368,11 +477,12 @@ def build(check_only: bool) -> int:
 
     known_slugs = {domain["slug"] for domain in domains}
     for domain in domains:
-        for prerequisite in domain["prerequisites"]:
-            if prerequisite not in known_slugs:
-                errors.append(f"{domain['directory']}/README.md: unknown prerequisite domain '{prerequisite}'")
+        for related_slug in domain["related"]:
+            if related_slug not in known_slugs:
+                errors.append(f"{domain['directory']}/README.md: unknown related domain '{related_slug}'")
+    domains = assign_positions(domains, errors)
 
-    tracks = parse_tracks(domains, errors)
+    tracks = parse_tracks(domains, errors, warnings)
     profiles = parse_profiles(domains, errors, warnings)
 
     for warning in warnings:
@@ -395,11 +505,13 @@ def build(check_only: bool) -> int:
     total_items = sum(domain["itemCount"] for domain in domains)
     print(f"{len(domains)} domains, {total_items} checklist items, {len(notes)} notes, {len(tracks)} track(s).")
     for track in tracks:
-        print(f"  track {track['slug']:<30} {len(track['items']):>4} items")
+        scheduled = sum(len(entry["items"]) for entry in track["schedule"])
+        print(f"  track {track['slug']:<30} {len(track['items']):>4} items, {scheduled} scheduled over {track['days']} days")
     for profile in profiles:
         print(f"  profile {profile['name']:<28} {len(profile['progress']):>4} items done")
     for domain in domains:
-        print(f"  {domain['directory']:<32} {domain['itemCount']:>4} items {domain['noteCount']:>3} notes")
+        label = f"{domain['position']:>2}" if domain["position"] else " +"
+        print(f"  {label} {domain['directory']:<32} {domain['itemCount']:>4} items {domain['noteCount']:>3} notes")
 
     if check_only:
         print("check only, nothing written.")

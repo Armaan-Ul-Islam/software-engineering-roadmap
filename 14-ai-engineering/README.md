@@ -2,7 +2,7 @@
 
 > Building with large language models as a backend developer: how models work well enough to use them, prompting and structured output, retrieval-augmented generation, tool use and agents, evaluation and observability, cost and latency, security, and the Java options (Spring AI, LangChain4j).
 
-**Prerequisites:** [Spring](../06-spring/README.md), [Databases](../04-databases/README.md)
+**Related domains:** [Spring](../06-spring/README.md), [Databases](../04-databases/README.md), [Security](../12-security/README.md)
 
 **Done when you can:**
 

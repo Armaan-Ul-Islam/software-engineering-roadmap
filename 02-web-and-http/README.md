@@ -2,7 +2,7 @@
 
 > What actually happens between a client and your server: DNS, TCP, TLS, HTTP semantics, caching, cookies, the browser security model, API styles, and real-time protocols.
 
-**Prerequisites:** [Foundations](../01-foundations/README.md)
+**Related domains:** [Security](../12-security/README.md), [Spring](../06-spring/README.md), [System Design](../07-system-design/README.md)
 
 **Done when you can:**
 

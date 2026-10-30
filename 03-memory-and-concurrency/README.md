@@ -2,7 +2,7 @@
 
 > How programs use memory and do many things at once: stack and heap, caches, garbage collection, memory models, threads, locks, lock-free techniques, thread pools, async I/O and virtual threads. Language-neutral ideas, Java examples.
 
-**Prerequisites:** [Foundations](../01-foundations/README.md)
+**Related domains:** [Foundations](../01-foundations/README.md), [Java](../05-java/README.md), [Spring](../06-spring/README.md)
 
 **Done when you can:**
 

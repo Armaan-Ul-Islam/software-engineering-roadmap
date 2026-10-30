@@ -2,7 +2,7 @@
 
 > Spring Framework and Spring Boot as used in production: the container, proxies and AOP, auto-configuration, MVC, transactions, Spring Data JPA and Hibernate internals, Spring Security, testing, observability, messaging and the operational side. Spring Boot 3.x and 4.x.
 
-**Prerequisites:** [Java](../05-java/README.md), [Databases](../04-databases/README.md), [Web & HTTP](../02-web-and-http/README.md)
+**Related domains:** [Java](../05-java/README.md), [Databases](../04-databases/README.md), [Web & HTTP](../02-web-and-http/README.md), [Security](../12-security/README.md)
 
 **Done when you can:**
 

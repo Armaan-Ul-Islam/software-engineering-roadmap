@@ -2,7 +2,7 @@
 
 > Deliberate practice for coding and system design interviews, and for the day job: the problem-solving method, every algorithmic pattern that shows up, a practice plan built on NeetCode and Grind 75, Java idioms for interviews, behavioural interviews, and how to prepare without burning out.
 
-**Prerequisites:** [Foundations](../01-foundations/README.md)
+**Related domains:** [Foundations](../01-foundations/README.md), [System Design](../07-system-design/README.md), [Java](../05-java/README.md)
 
 **Done when you can:**
 

@@ -24,8 +24,11 @@ tracks/<name>.md        time-boxed subsets of the map; parsed by the build into 
 NOTES.md                backlog: ideas and gaps to fill later
 ```
 
-Domain folders are numbered (`01-foundations`, `02-web-and-http`, ...). The number only
-orders the domains; the slug after it is the identifier used by the tracker.
+Domain folders are numbered (`01-foundations`, `02-web-and-http`, ...). The number only names
+the folder; the slug after it is the identifier used by the tracker. The order in which the
+tracker and the sixty-day track read the domains is `SERIAL_ORDER` in `tools/build.py`, and the
+domains listed in `OPTIONAL_DOMAINS` there (AI Engineering, Projects) are hidden behind the
+tracker's "More" button. No domain is a prerequisite for another; they can be run side by side.
 
 ## 2. Roadmap README conventions
 
@@ -33,7 +36,7 @@ Every domain README has, in this order:
 
 1. `# <Short title>` as the first line (keep it short, it is drawn in the map).
 2. A blockquote (`> ...`) summarising the domain in one to three lines.
-3. `**Prerequisites:**` followed by links to other domain READMEs, or `none`.
+3. `**Related domains:**` followed by links to two to four other domain READMEs that pair well with this one. These are suggestions, not prerequisites; the tracker shows them as related.
 4. `**Done when you can:**` followed by a bulleted list of observable abilities.
 5. `## Roadmap` containing numbered sections `### 1. Title`, `### 2. Title`, ...
 6. `## Resources` with the curated reading/watching list, grouped by type.
@@ -74,6 +77,15 @@ section containing one `### <domain-slug>` heading per domain (the slug is the f
 its numeric prefix) followed by comma-separated item IDs, and then any plan text. The build validates
 every ID and embeds the file so the tracker can show the plan. Never rename a track file; the
 tracker remembers the selected track by file name.
+
+A track with a schedule has a `## Day by day` section whose tables have the columns
+`| Day | Items | Lab or exercise |`. The Items cell names each domain by its README title followed by
+item IDs, several domains separated by `;` (`Foundations 2.1, 2.2; Web & HTTP 1.1`). The build turns
+these rows into the day badges in the tracker and fails if a scheduled item is missing from `## Items`,
+if a day is skipped between Day 1 and the last day, or if an item is scheduled twice; it warns about
+track items that are on no day. Only tables under `## Day by day` are read, so overview tables elsewhere
+in the file can use day numbers freely. Keep a track to the core domains; items from an optional
+domain are hidden until the reader opens the optional section.
 
 ## 4. Curation bar for external links
 

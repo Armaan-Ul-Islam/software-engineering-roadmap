@@ -2,7 +2,7 @@
 
 > Designing systems that stay correct and available under load: estimation, the building blocks (load balancers, caches, queues, databases, CDNs), distributed-systems fundamentals (replication, consistency, consensus, failure), resilience patterns, architecture styles, and the interview method. Anchored in Designing Data-Intensive Applications.
 
-**Prerequisites:** [Web & HTTP](../02-web-and-http/README.md), [Databases](../04-databases/README.md), [Memory & Concurrency](../03-memory-and-concurrency/README.md)
+**Related domains:** [Databases](../04-databases/README.md), [Web & HTTP](../02-web-and-http/README.md), [Cloud](../09-cloud/README.md)
 
 **Done when you can:**
 

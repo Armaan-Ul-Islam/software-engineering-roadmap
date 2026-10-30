@@ -11,13 +11,47 @@
   let activeProfile = null;
   let progress = {};
   const domainsBySlug = new Map(data.domains.map((domain) => [domain.slug, domain]));
+  const coreDomains = data.domains.filter((domain) => !domain.optional);
+  const optionalDomains = data.domains.filter((domain) => domain.optional);
   const itemElements = new Map();
   const tracks = Array.isArray(data.tracks) ? data.tracks : [];
   let activeTrack = tracks.find((track) => track.slug === uiState.track) || null;
   let trackItemKeys = new Set(activeTrack ? activeTrack.items : []);
+  let trackDayByKey = new Map();
+  let trackDayRangeBySlug = new Map();
 
   function inTrack(domain, item) {
     return !activeTrack || trackItemKeys.has(domain.slug + ":" + item.id);
+  }
+
+  function indexTrackSchedule() {
+    trackDayByKey = new Map();
+    trackDayRangeBySlug = new Map();
+    if (!activeTrack || !Array.isArray(activeTrack.schedule)) {
+      return;
+    }
+    for (const entry of activeTrack.schedule) {
+      for (const key of entry.items) {
+        trackDayByKey.set(key, entry.day);
+        const slug = key.split(":")[0];
+        const range = trackDayRangeBySlug.get(slug) || { first: entry.day, last: entry.day };
+        range.first = Math.min(range.first, entry.day);
+        range.last = Math.max(range.last, entry.day);
+        trackDayRangeBySlug.set(slug, range);
+      }
+    }
+  }
+
+  function dayRangeLabel(domain) {
+    const range = trackDayRangeBySlug.get(domain.slug);
+    if (!range) {
+      return "";
+    }
+    return range.first === range.last ? "Day " + range.first : "Days " + range.first + " to " + range.last;
+  }
+
+  function showingOptional() {
+    return uiState.showOptional === true;
   }
 
   function loadJson(key, fallback) {
@@ -168,7 +202,8 @@
 
   function canonicalItemKeys() {
     const keys = [];
-    for (const domain of data.domains) {
+    const domainsInFolderOrder = data.domains.slice().sort((left, right) => left.order - right.order);
+    for (const domain of domainsInFolderOrder) {
       for (const section of domain.sections) {
         for (const item of flattenItems(section.items, [])) {
           keys.push(domain.slug + ":" + item.id);
@@ -296,32 +331,32 @@
 
   /* ---------- map ---------- */
 
-  function computeLevels() {
-    const levels = new Map();
-    const visiting = new Set();
-    function levelOf(slug) {
-      if (levels.has(slug)) {
-        return levels.get(slug);
-      }
-      if (visiting.has(slug)) {
-        return 0;
-      }
-      visiting.add(slug);
-      const domain = domainsBySlug.get(slug);
-      let level = 0;
-      for (const prerequisite of domain.prerequisites) {
-        if (domainsBySlug.has(prerequisite)) {
-          level = Math.max(level, levelOf(prerequisite) + 1);
-        }
-      }
-      visiting.delete(slug);
-      levels.set(slug, level);
-      return level;
-    }
-    for (const domain of data.domains) {
-      levelOf(domain.slug);
-    }
-    return levels;
+  const MAP_WIDTH = 700;
+  const MAP_NODE_WIDTH = 300;
+  const MAP_NODE_HEIGHT = 58;
+  const MAP_PITCH = 46;
+  const MAP_PADDING = 16;
+  const MAP_SPINE_GAP = 26;
+  const MAP_OPTIONAL_GAP = 44;
+
+  function mapNodeMarkup(domain, position) {
+    const items = domainItems(domain);
+    const done = countDone(domain, items);
+    const percent = items.length ? Math.round((done / items.length) * 100) : 0;
+    const barX = 42;
+    const barWidth = MAP_NODE_WIDTH - barX - 56;
+    const badge = domain.optional ? "+" : String(domain.position);
+    return '<g class="node' + (domain.optional ? " optional" : "") + '" data-slug="' + domain.slug + '" transform="translate(' + position.x + "," + position.y + ')">' +
+      '<title>' + escapeHtml(domain.title) + ": " + escapeHtml(domain.summary) + "</title>" +
+      '<rect class="box" width="' + MAP_NODE_WIDTH + '" height="' + MAP_NODE_HEIGHT + '"/>' +
+      '<circle class="badge" cx="22" cy="23" r="11"/>' +
+      '<text class="badge-text" x="22" y="27" text-anchor="middle">' + badge + "</text>" +
+      '<text class="title" x="' + barX + '" y="27">' + escapeHtml(domain.title) + "</text>" +
+      '<text class="days" x="' + (MAP_NODE_WIDTH - 12) + '" y="27" text-anchor="end" data-role="days">' + escapeHtml(dayRangeLabel(domain)) + "</text>" +
+      '<rect class="track" x="' + barX + '" y="40" width="' + barWidth + '" height="7" rx="3.5"/>' +
+      '<rect class="progress" x="' + barX + '" y="40" width="' + (barWidth * percent / 100) + '" height="7" rx="3.5" data-role="progress" data-track="' + barWidth + '"/>' +
+      '<text class="pct" x="' + (MAP_NODE_WIDTH - 12) + '" y="47" text-anchor="end" data-role="pct">' + (items.length ? percent + "%" : "–") + "</text>" +
+      "</g>";
   }
 
   function renderMap() {
@@ -330,75 +365,46 @@
       container.innerHTML = '<p class="empty">No domains yet. Add a folder like 01-foundations/README.md and run tools/build.py.</p>';
       return;
     }
-    const levels = computeLevels();
-    const columns = new Map();
-    for (const domain of data.domains) {
-      const level = levels.get(domain.slug);
-      if (!columns.has(level)) {
-        columns.set(level, []);
+    const shown = showingOptional() ? coreDomains.concat(optionalDomains) : coreDomains;
+    const spineX = MAP_WIDTH / 2;
+    const positions = [];
+    let y = MAP_PADDING + 14;
+    let optionalLabelY = null;
+    shown.forEach((domain, index) => {
+      if (domain.optional && optionalLabelY === null) {
+        y += MAP_OPTIONAL_GAP;
+        optionalLabelY = y - 14;
       }
-      columns.get(level).push(domain);
-    }
-    const nodeWidth = 176;
-    const nodeHeight = 58;
-    const columnGap = 70;
-    const rowGap = 18;
-    const padding = 16;
-    const columnCount = Math.max(...columns.keys()) + 1;
-    const maxRows = Math.max(...Array.from(columns.values()).map((list) => list.length));
-    const width = padding * 2 + columnCount * nodeWidth + (columnCount - 1) * columnGap;
-    const height = padding * 2 + maxRows * nodeHeight + (maxRows - 1) * rowGap;
-    const positions = new Map();
-    for (const [level, list] of columns) {
-      const columnHeight = list.length * nodeHeight + (list.length - 1) * rowGap;
-      const startY = padding + (height - padding * 2 - columnHeight) / 2;
-      list.forEach((domain, rowIndex) => {
-        positions.set(domain.slug, {
-          x: padding + level * (nodeWidth + columnGap),
-          y: startY + rowIndex * (nodeHeight + rowGap),
-        });
-      });
-    }
+      const left = index % 2 === 0;
+      positions.push({ domain, left, x: left ? spineX - MAP_SPINE_GAP - MAP_NODE_WIDTH : spineX + MAP_SPINE_GAP, y });
+      y += MAP_PITCH;
+    });
+    const height = y - MAP_PITCH + MAP_NODE_HEIGHT + MAP_PADDING;
+    const corePositions = positions.filter((position) => !position.domain.optional);
+    const spineTop = corePositions[0].y + MAP_NODE_HEIGHT / 2;
+    const spineBottom = corePositions[corePositions.length - 1].y + MAP_NODE_HEIGHT / 2;
 
-    let edges = "";
-    for (const domain of data.domains) {
-      const target = positions.get(domain.slug);
-      for (const prerequisite of domain.prerequisites) {
-        const source = positions.get(prerequisite);
-        if (!source) {
-          continue;
-        }
-        const startX = source.x + nodeWidth;
-        const startY = source.y + nodeHeight / 2;
-        const endX = target.x;
-        const endY = target.y + nodeHeight / 2;
-        const bend = (endX - startX) / 2;
-        edges += '<path class="edge" marker-end="url(#arrow)" d="M' + startX + " " + startY +
-          " C" + (startX + bend) + " " + startY + ", " + (endX - bend) + " " + endY + ", " + (endX - 4) + " " + endY + '"/>';
-      }
+    let markup = '<svg viewBox="0 0 ' + MAP_WIDTH + " " + height + '" role="img" aria-label="Domain map in reading order">' +
+      '<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">' +
+      '<path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" opacity="0.8"/></marker></defs>';
+    markup += '<text class="spine-label" x="' + spineX + '" y="' + (spineTop - 24) + '" text-anchor="middle">start</text>';
+    markup += '<path class="spine" marker-end="url(#arrow)" d="M' + spineX + " " + (spineTop - 16) + " V" + (spineBottom + 18) + '"/>';
+    if (optionalLabelY !== null) {
+      const optionalBottom = positions[positions.length - 1].y + MAP_NODE_HEIGHT / 2;
+      markup += '<path class="spine optional" d="M' + spineX + " " + (optionalLabelY + 8) + " V" + optionalBottom + '"/>';
+      markup += '<text class="spine-label" x="' + spineX + '" y="' + optionalLabelY + '" text-anchor="middle">optional, after the core or when a task needs it</text>';
     }
-
-    let nodes = "";
-    for (const domain of data.domains) {
-      const position = positions.get(domain.slug);
-      const items = domainItems(domain);
-      const done = countDone(domain, items);
-      const percent = items.length ? Math.round((done / items.length) * 100) : 0;
-      const trackWidth = nodeWidth - 24;
-      nodes += '<g class="node" data-slug="' + domain.slug + '" transform="translate(' + position.x + "," + position.y + ')">' +
-        '<rect class="box" width="' + nodeWidth + '" height="' + nodeHeight + '"/>' +
-        '<text x="12" y="22">' + escapeHtml(domain.title) + "</text>" +
-        '<text class="pct" x="' + (nodeWidth - 12) + '" y="22" text-anchor="end" data-role="pct">' + percent + "%</text>" +
-        '<rect class="track" x="12" y="36" width="' + trackWidth + '" height="8" rx="4"/>' +
-        '<rect class="progress" x="12" y="36" width="' + (trackWidth * percent / 100) + '" height="8" rx="4" data-role="progress" data-track="' + trackWidth + '"/>' +
-        "</g>";
+    for (const position of positions) {
+      const centerY = position.y + MAP_NODE_HEIGHT / 2;
+      const fromX = position.left ? position.x + MAP_NODE_WIDTH : spineX;
+      const toX = position.left ? spineX : position.x;
+      markup += '<path class="connector' + (position.domain.optional ? " optional" : "") + '" d="M' + fromX + " " + centerY + " H" + toX + '"/>';
+      markup += '<circle class="dot' + (position.domain.optional ? " optional" : "") + '" cx="' + spineX + '" cy="' + centerY + '" r="4"/>';
     }
-
-    container.innerHTML =
-      '<svg viewBox="0 0 ' + width + " " + height + '" role="img" aria-label="Domain dependency map">' +
-      '<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
-      '<path d="M 0 0 L 10 5 L 0 10 z" fill="var(--muted)" opacity="0.7"/></marker></defs>' +
-      edges + nodes + "</svg>";
+    for (const position of positions) {
+      markup += mapNodeMarkup(position.domain, position);
+    }
+    container.innerHTML = markup + "</svg>";
 
     container.querySelectorAll(".node").forEach((node) => {
       node.addEventListener("click", () => {
@@ -416,6 +422,7 @@
     const done = countDone(domain, items);
     const percent = items.length ? Math.round((done / items.length) * 100) : 0;
     node.querySelector('[data-role="pct"]').textContent = items.length ? percent + "%" : "–";
+    node.querySelector('[data-role="days"]').textContent = dayRangeLabel(domain);
     node.classList.toggle("off-track", Boolean(activeTrack) && items.length === 0);
     const progressBar = node.querySelector('[data-role="progress"]');
     progressBar.setAttribute("width", String(Number(progressBar.getAttribute("data-track")) * percent / 100));
@@ -436,6 +443,14 @@
     }).join("");
   }
 
+  function renderDayChip(key) {
+    const day = trackDayByKey.get(key);
+    if (!day) {
+      return "";
+    }
+    return '<span class="chip day" title="Scheduled on day ' + day + ' of the track">Day ' + day + "</span>";
+  }
+
   function renderItem(domain, item) {
     const listItem = document.createElement("li");
     listItem.className = "item" + (isDone(domain, item) ? " done" : "");
@@ -446,7 +461,7 @@
       '<input type="checkbox" id="check-' + key.replace(/[:.]/g, "-") + '" ' + (isDone(domain, item) ? "checked" : "") + ' aria-label="Mark ' + escapeHtml(item.text) + ' as done">' +
       '<label class="item-id" for="check-' + key.replace(/[:.]/g, "-") + '">' + item.id + "</label>" +
       '<div class="item-main"><label class="item-text" for="check-' + key.replace(/[:.]/g, "-") + '">' + escapeHtml(item.text) + "</label>" +
-      '<span class="links">' + renderLinkChips(item.links) + "</span></div>" +
+      '<span class="links">' + renderDayChip(key) + renderLinkChips(item.links) + "</span></div>" +
       "</div>";
     const checkbox = listItem.querySelector('input[type="checkbox"]');
     checkbox.addEventListener("change", () => {
@@ -509,21 +524,23 @@
     details.id = "domain-" + domain.slug;
     details.open = uiState.open[domain.slug] === true;
     const items = domainItems(domain);
-    const prerequisites = domain.prerequisites
+    const related = (domain.related || [])
       .filter((slug) => domainsBySlug.has(slug))
       .map((slug) => '<a href="#' + slug + '" data-domain="' + slug + '">' + escapeHtml(domainsBySlug.get(slug).title) + "</a>")
       .join(", ");
     const readmeUrl = githubUrl(domain.directory + "/README.md");
+    const label = domain.optional ? "Optional" : String(domain.position).padStart(2, "0");
+    const days = dayRangeLabel(domain);
     details.innerHTML =
       "<summary>" +
       '<span class="chevron">▶</span>' +
-      '<div class="domain-title"><h3>' + String(domain.order).padStart(2, "0") + " · " + escapeHtml(domain.title) + "</h3>" +
+      '<div class="domain-title"><h3>' + label + " · " + escapeHtml(domain.title) + (days ? ' <span class="chip day">' + escapeHtml(days) + "</span>" : "") + "</h3>" +
       '<span class="summary">' + escapeHtml(domain.summary) + "</span></div>" +
       '<div class="domain-progress"><div class="bar"><div class="fill" data-role="fill"></div></div><span class="count" data-role="count"></span></div>' +
       "</summary>" +
       '<div class="domain-body">' +
       '<div class="domain-meta">' +
-      "<span>Prerequisites: " + (prerequisites || "none") + "</span>" +
+      "<span>Related domains: " + (related || "none") + "</span>" +
       (readmeUrl ? '<a href="' + readmeUrl + '" target="_blank" rel="noopener">Roadmap on GitHub ↗</a>' : "") +
       "<span>" + domain.noteCount + " notes in this domain</span>" +
       "</div>" +
@@ -573,28 +590,58 @@
 
   function renderDomains() {
     const container = document.getElementById("domains");
+    const optionalContainer = document.getElementById("optional-list");
     container.innerHTML = "";
+    optionalContainer.innerHTML = "";
     itemElements.clear();
     if (!data.domains.length) {
       container.innerHTML = '<p class="empty">Nothing to show yet.</p>';
       return;
     }
-    for (const domain of data.domains) {
+    for (const domain of coreDomains) {
       container.appendChild(renderDomain(domain));
     }
-    container.addEventListener("click", (event) => {
-      const noteLink = event.target.closest("[data-note]");
-      if (noteLink) {
-        event.preventDefault();
-        openNote(noteLink.getAttribute("data-note"));
-        return;
-      }
-      const domainLink = event.target.closest("[data-domain]");
-      if (domainLink) {
-        event.preventDefault();
-        openDomain(domainLink.getAttribute("data-domain"), true);
-      }
-    });
+    for (const domain of optionalDomains) {
+      optionalContainer.appendChild(renderDomain(domain));
+    }
+    renderOptionalToggle();
+  }
+
+  function renderOptionalToggle() {
+    const button = document.getElementById("more-btn");
+    const section = document.getElementById("optional-domains");
+    if (!optionalDomains.length) {
+      button.classList.add("hidden");
+      section.classList.add("hidden");
+      return;
+    }
+    const titles = optionalDomains.map((domain) => domain.title).join(" and ");
+    button.textContent = showingOptional() ? "Hide the optional domains" : "More: " + titles + " (optional)";
+    button.setAttribute("aria-expanded", showingOptional() ? "true" : "false");
+    section.classList.toggle("hidden", !showingOptional());
+  }
+
+  function setShowOptional(show) {
+    uiState.showOptional = Boolean(show);
+    saveJson(UI_STATE_KEY, uiState);
+    renderOptionalToggle();
+    renderMap();
+    refreshCounts();
+    applyFilters(document.getElementById("search").value);
+  }
+
+  function handleContentClick(event) {
+    const noteLink = event.target.closest("[data-note]");
+    if (noteLink) {
+      event.preventDefault();
+      openNote(noteLink.getAttribute("data-note"));
+      return;
+    }
+    const domainLink = event.target.closest("[data-domain]");
+    if (domainLink) {
+      event.preventDefault();
+      openDomain(domainLink.getAttribute("data-domain"), true);
+    }
   }
 
   function setDone(domain, item, done, deferRefresh) {
@@ -618,10 +665,17 @@
   function refreshCounts() {
     let total = 0;
     let done = 0;
+    let optionalTotal = 0;
+    let optionalDone = 0;
     for (const domain of data.domains) {
       const items = domainItems(domain);
-      total += items.length;
-      done += countDone(domain, items);
+      if (domain.optional) {
+        optionalTotal += items.length;
+        optionalDone += countDone(domain, items);
+      } else {
+        total += items.length;
+        done += countDone(domain, items);
+      }
       const element = document.getElementById("domain-" + domain.slug);
       if (element) {
         element.updateCount();
@@ -631,6 +685,10 @@
     const percent = total ? Math.round((done / total) * 100) : 0;
     document.getElementById("overall-fill").style.width = percent + "%";
     document.getElementById("overall-text").textContent = done + " / " + total + " · " + percent + "%";
+    const optionalCount = document.getElementById("optional-count");
+    if (optionalCount) {
+      optionalCount.textContent = optionalTotal ? optionalDone + " / " + optionalTotal + " optional items done" : "";
+    }
     if (activeTrack) {
       renderTrackPanel();
     }
@@ -641,6 +699,10 @@
     const element = document.getElementById("domain-" + slug);
     if (!element) {
       return;
+    }
+    const domain = domainsBySlug.get(slug);
+    if (domain && domain.optional && !showingOptional()) {
+      setShowOptional(true);
     }
     element.open = true;
     if (scroll) {
@@ -684,6 +746,8 @@
   function applyFilters(query) {
     const normalised = (query || "").trim().toLowerCase();
     const domainsContainer = document.getElementById("domains");
+    const optionalContainer = document.getElementById("optional-list");
+    const optionalSection = document.getElementById("optional-domains");
     const filtering = Boolean(normalised) || Boolean(activeTrack);
     for (const { element, domain, item } of itemElements.values()) {
       const haystack = (item.id + " " + item.text + " " + item.links.map((link) => link.label).join(" ")).toLowerCase();
@@ -695,7 +759,7 @@
     for (const { element } of itemElements.values()) {
       if (element.dataset.match === "1") {
         let ancestor = element;
-        while (ancestor && ancestor.id !== "domains") {
+        while (ancestor && ancestor.id !== "domains" && ancestor.id !== "optional-list") {
           if (ancestor.classList && ancestor.classList.contains("hidden") && ancestor.tagName === "LI") {
             ancestor.classList.remove("hidden");
             if (ancestor.dataset.match === "0") {
@@ -709,19 +773,24 @@
         }
       }
     }
-    domainsContainer.querySelectorAll(".rsection").forEach((section) => {
-      const visible = section.querySelectorAll("li.item:not(.hidden)").length > 0;
-      section.classList.toggle("hidden", !visible);
-    });
-    domainsContainer.querySelectorAll(".domain").forEach((domain) => {
-      const visible = domain.querySelectorAll(".rsection:not(.hidden)").length > 0;
-      domain.classList.toggle("hidden", !visible);
-      if (visible && normalised) {
-        domain.open = true;
-      }
-    });
+    for (const container of [domainsContainer, optionalContainer]) {
+      container.querySelectorAll(".rsection").forEach((section) => {
+        const visible = section.querySelectorAll("li.item:not(.hidden)").length > 0;
+        section.classList.toggle("hidden", !visible);
+      });
+      container.querySelectorAll(".domain").forEach((domain) => {
+        const visible = domain.querySelectorAll(".rsection:not(.hidden)").length > 0;
+        domain.classList.toggle("hidden", !visible);
+        if (visible && normalised) {
+          domain.open = true;
+        }
+      });
+    }
+    const optionalMatches = Boolean(normalised) && optionalContainer.querySelectorAll(".domain:not(.hidden)").length > 0;
+    optionalSection.classList.toggle("hidden", !(showingOptional() || optionalMatches));
     if (!filtering) {
       restoreOpenStates(domainsContainer);
+      restoreOpenStates(optionalContainer);
     }
   }
 
@@ -746,22 +815,26 @@
     const { done, total } = trackProgress(activeTrack);
     const percent = total ? Math.round((done / total) * 100) : 0;
     const planMarkdown = activeTrack.content.replace(/^## Items[\s\S]*?(?=^## )/m, "");
+    const daysLabel = activeTrack.days ? " · " + activeTrack.days + " days" : "";
     panel.innerHTML =
       '<div class="track-head"><div><h2>' + escapeHtml(activeTrack.title) + "</h2>" +
       '<p class="muted">' + escapeHtml(activeTrack.summary) + "</p></div>" +
       '<div class="track-progress"><div class="bar"><div class="fill" style="width:' + percent + '%"></div></div>' +
-      '<span class="count">' + done + " / " + total + " items · " + percent + "%" + (activeTrack.hours ? " · " + escapeHtml(activeTrack.hours) : "") + "</span></div></div>" +
+      '<span class="count">' + done + " / " + total + " items · " + percent + "%" + daysLabel + (activeTrack.hours ? " · " + escapeHtml(activeTrack.hours) : "") + "</span></div></div>" +
       '<details class="track-plan"><summary>Plan and day-by-day schedule</summary><div class="markdown">' +
       (window.marked ? window.marked.parse(planMarkdown) : "<pre>" + escapeHtml(planMarkdown) + "</pre>") +
       "</div></details>";
+    rewriteMarkdownLinks(panel.querySelector(".track-plan .markdown"), "tracks/" + activeTrack.slug + ".md", null);
     panel.classList.remove("hidden");
   }
 
   function selectTrack(slug) {
     activeTrack = tracks.find((track) => track.slug === slug) || null;
     trackItemKeys = new Set(activeTrack ? activeTrack.items : []);
+    indexTrackSchedule();
     uiState.track = activeTrack ? activeTrack.slug : "";
     saveJson(UI_STATE_KEY, uiState);
+    renderMap();
     renderDomains();
     refreshCounts();
     renderTrackPanel();
@@ -797,20 +870,11 @@
     }
   }
 
-  function openNote(path) {
-    const note = data.notes[path];
-    if (!note) {
+  function rewriteMarkdownLinks(container, basePath, beforeNavigate) {
+    if (!container) {
       return;
     }
-    const html = window.marked ? window.marked.parse(note.content) : "<pre>" + escapeHtml(note.content) + "</pre>";
-    readerContent.innerHTML = html;
-    readerPath.textContent = path;
-    const url = githubUrl(path);
-    readerGithub.classList.toggle("hidden", !url);
-    if (url) {
-      readerGithub.href = url;
-    }
-    readerContent.querySelectorAll("a[href]").forEach((anchor) => {
+    container.querySelectorAll("a[href]").forEach((anchor) => {
       const href = anchor.getAttribute("href");
       if (/^https?:\/\//.test(href) || href.startsWith("mailto:")) {
         anchor.target = "_blank";
@@ -820,13 +884,15 @@
       if (href.startsWith("#")) {
         return;
       }
-      const targetPath = resolveRelativePath(path, href).split("#")[0];
+      const targetPath = resolveRelativePath(basePath, href).split("#")[0];
       const domainMatch = data.domains.find((domain) => domain.directory + "/README.md" === targetPath);
       if (domainMatch) {
         anchor.href = "#" + domainMatch.slug;
         anchor.addEventListener("click", (event) => {
           event.preventDefault();
-          closeReader();
+          if (beforeNavigate) {
+            beforeNavigate();
+          }
           openDomain(domainMatch.slug, true);
         });
         return;
@@ -846,6 +912,22 @@
         anchor.rel = "noopener";
       }
     });
+  }
+
+  function openNote(path) {
+    const note = data.notes[path];
+    if (!note) {
+      return;
+    }
+    const html = window.marked ? window.marked.parse(note.content) : "<pre>" + escapeHtml(note.content) + "</pre>";
+    readerContent.innerHTML = html;
+    readerPath.textContent = path;
+    const url = githubUrl(path);
+    readerGithub.classList.toggle("hidden", !url);
+    if (url) {
+      readerGithub.href = url;
+    }
+    rewriteMarkdownLinks(readerContent, path, closeReader);
     if (window.hljs) {
       readerContent.querySelectorAll("pre code").forEach((block) => {
         try {
@@ -969,6 +1051,7 @@
     migrateLegacyProgress();
     const initialProfile = uiState.profile || (uiState.localProfiles || [])[0] || (repositoryProfiles[0] ? repositoryProfiles[0].name : "me");
     loadProfile(initialProfile);
+    indexTrackSchedule();
     renderMap();
     renderDomains();
     refreshCounts();
@@ -977,6 +1060,9 @@
     renderTrackPanel();
     applyFilters("");
 
+    document.getElementById("domains").addEventListener("click", handleContentClick);
+    document.getElementById("optional-list").addEventListener("click", handleContentClick);
+    document.getElementById("more-btn").addEventListener("click", () => setShowOptional(!showingOptional()));
     document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
     document.getElementById("export-btn").addEventListener("click", exportProgress);
     document.getElementById("link-btn").addEventListener("click", copyProgressLink);
@@ -1013,7 +1099,8 @@
 
     const footerMeta = document.getElementById("footer-meta");
     const totalNotes = Object.keys(data.notes).length;
-    footerMeta.textContent = data.domains.length + " domains · " + totalNotes + " notes · data generated " + (data.generatedAt ? data.generatedAt.slice(0, 10) : "locally");
+    const optionalLabel = optionalDomains.length ? " and " + optionalDomains.length + " optional" : "";
+    footerMeta.textContent = coreDomains.length + " domains" + optionalLabel + " · " + totalNotes + " notes · data generated " + (data.generatedAt ? data.generatedAt.slice(0, 10) : "locally");
     const footerRepo = document.getElementById("footer-repo");
     if (data.repositoryUrl) {
       footerRepo.href = data.repositoryUrl;

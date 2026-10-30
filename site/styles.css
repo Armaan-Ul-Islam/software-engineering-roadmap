@@ -94,13 +94,23 @@ main { max-width: 1120px; margin: 0 auto; padding: 20px 24px 80px; }
 .section-head p { margin: 0; }
 
 .map { width: 100%; overflow-x: auto; padding: 8px 0 16px; }
-.map svg { display: block; min-width: 720px; width: 100%; height: auto; }
-.map .edge { fill: none; stroke: var(--muted); stroke-width: 1.4; opacity: 0.55; }
+.map svg { display: block; min-width: 640px; max-width: 760px; width: 100%; height: auto; margin: 0 auto; }
+.map .spine { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 5; opacity: 0.8; }
+.map .spine.optional { stroke: var(--muted); opacity: 0.5; }
+.map .connector { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 3 4; opacity: 0.7; }
+.map .dot { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.map .dot.optional, .map .connector.optional { stroke: var(--muted); }
+.map .spine-label { fill: var(--muted); font-size: 11px; font-style: italic; }
 .map .node { cursor: pointer; }
 .map .node rect.box { fill: var(--surface); stroke: var(--border); stroke-width: 1.2; rx: 10; }
 .map .node:hover rect.box { stroke: var(--accent); }
+.map .node.optional rect.box { stroke-dasharray: 5 4; }
+.map .node circle.badge { fill: var(--accent-soft); stroke: none; }
+.map .node.optional circle.badge { fill: var(--surface-2); }
 .map .node text { fill: var(--text); font-size: 13px; font-weight: 600; pointer-events: none; }
-.map .node text.pct { fill: var(--muted); font-size: 11px; font-weight: 500; }
+.map .node text.badge-text { fill: var(--accent); font-size: 12px; font-weight: 700; }
+.map .node.optional text.badge-text { fill: var(--muted); }
+.map .node text.pct, .map .node text.days { fill: var(--muted); font-size: 11px; font-weight: 500; }
 .map .node rect.track { fill: var(--surface-2); stroke: none; }
 .map .node rect.progress { fill: var(--done); stroke: none; }
 
@@ -161,6 +171,14 @@ li.item { margin: 0; }
 }
 .chip:hover { border-color: var(--accent); }
 .chip.note { background: var(--note-soft); color: var(--note); border-color: transparent; }
+.chip.day { background: var(--accent-soft); color: var(--accent); border-color: transparent; font-variant-numeric: tabular-nums; cursor: default; }
+.chip.day:hover { border-color: transparent; }
+.domain-title h3 .chip.day { font-size: 11px; vertical-align: middle; margin-left: 4px; }
+.more-row { display: flex; justify-content: center; margin: 18px 0 8px; }
+.more-row .btn { padding: 9px 16px; font-size: 14px; }
+.optional { margin-top: 10px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.optional .section-head { margin-bottom: 12px; }
+.optional .domain { border-style: dashed; }
 .chip.video::before { content: "▶"; font-size: 9px; }
 .chip.pdf::before { content: "⎙"; }
 .chip.repo::before { content: "⌥"; }

@@ -2,7 +2,7 @@
 
 > The language, the standard library and the JVM as used in modern backend work: from `equals`/`hashCode` to generics, streams, records and sealed types; through class loading, JIT and GC; to the tooling that finds what is slow or leaking. Targets Java 21 and 25.
 
-**Prerequisites:** [Foundations](../01-foundations/README.md), [Memory & Concurrency](../03-memory-and-concurrency/README.md)
+**Related domains:** [Memory & Concurrency](../03-memory-and-concurrency/README.md), [Spring](../06-spring/README.md), [Architecture & Craft](../11-architecture-and-craft/README.md)
 
 **Done when you can:**
 

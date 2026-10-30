@@ -2,7 +2,7 @@
 
 > Getting code from a laptop to production and keeping it there: Git workflows, CI/CD pipelines, Docker and the JVM in containers, Kubernetes essentials, observability (logs, metrics, traces), deployment strategies, Linux troubleshooting and incident response.
 
-**Prerequisites:** [Foundations](../01-foundations/README.md)
+**Related domains:** [Foundations](../01-foundations/README.md), [Cloud](../09-cloud/README.md), [Spring](../06-spring/README.md)
 
 **Done when you can:**
 

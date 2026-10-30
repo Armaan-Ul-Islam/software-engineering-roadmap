@@ -1,18 +1,8 @@
-Prompts to run next :  
-1.Serial: 1 , 2, 3, 4, 7, 9, 10, 11, 12, 13, 5, 6 , 8
+# To do
 
-  Make: 14, 15 Extra/ Optional/ Additional. Don't even share it on the initial page. Only show it when someone
+Done on 2026-10-30 (see NOTES.md 0.6 and 0.7):
 
-  clicks a button like "More," "Additional," or something similar.
+- [x] 1. Serial order 1, 2, 3, 4, 7, 9, 10, 11, 12, 13, 5, 6, 8 for the thirteen core domains; 14 and 15 are optional and hidden behind the tracker's "More" button; the sixty days are redistributed over the core domains with a block per domain and two to three items a day.
+- [x] 2. The map is a roadmap.sh-style serial spine with no prerequisite arrows; no domain is a prerequisite for another (READMEs say "Related domains" instead), and the schedule covers Day 1 to Day 60 with every item on a day, validated by the build.
 
-  Now redistribute the 60 days within the core subjects so that it gets more breathing room. If something
-
-  important has been missed, you can add that.
-
-  2. The map looks a bit misleading. Can we follow the approach from [roadmap.sh](http://roadmap.sh) or some other better practices
-
-  to make it clear?
-
-  Also, don't make things prerequisite to one another; design it so we can run all these 13 domains together.
-
-  The important thing is to cover days 1 to 60.
+Nothing pending. New ideas go in NOTES.md.

@@ -2,7 +2,7 @@
 
 > How computers actually run your code: hardware, operating systems, networks, data structures, the shell, and Git. Everything else in this roadmap stands on this.
 
-**Prerequisites:** none
+**Related domains:** [Memory & Concurrency](../03-memory-and-concurrency/README.md), [Databases](../04-databases/README.md), [DSA & Interviews](../13-dsa-and-interview-prep/README.md)
 
 **Done when you can:**
 

@@ -2,7 +2,7 @@
 
 > Cloud fundamentals for backend developers who ship to AWS and Azure: service models, identity, networking, compute options, managed databases and messaging, observability, infrastructure as code, and above all how to estimate what your Spring service needs and what it will cost.
 
-**Prerequisites:** [Web & HTTP](../02-web-and-http/README.md), [Databases](../04-databases/README.md), [DevOps & Delivery](../10-devops-and-delivery/README.md)
+**Related domains:** [DevOps & Delivery](../10-devops-and-delivery/README.md), [Databases](../04-databases/README.md), [Security](../12-security/README.md)
 
 **Done when you can:**
 

@@ -2,7 +2,7 @@
 
 > Writing code other people can change: readable code, SOLID without dogma, the patterns you actually use, refactoring safely, testing strategy, domain-driven design, hexagonal and modular architecture, API design, and the writing (design docs, ADRs, code review) that distinguishes a senior engineer.
 
-**Prerequisites:** [Java](../05-java/README.md)
+**Related domains:** [Java](../05-java/README.md), [Spring](../06-spring/README.md), [System Design](../07-system-design/README.md)
 
 **Done when you can:**
 
