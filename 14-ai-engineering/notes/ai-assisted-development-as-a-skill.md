@@ -21,6 +21,22 @@ Write the test or the interface first when you can. A failing test is the most p
 
 **How to review.** Read every line as if a contractor you do not know had written it, because that is the situation. Look specifically for: methods or parameters that do not exist in the library version you use; error handling that catches broadly and swallows; missing authorisation or tenant checks on a new endpoint; data loaded in bulk and filtered in memory; a new dependency added to avoid writing ten lines; tests that mock the thing under test or assert the mock was called; and scope creep, where the agent "also fixed" something unrelated. Run it. Then ask whether you could explain the change in a design review; if not, you are not done.
 
+**Let the build check before you review.** Every check that runs in the build is one the agent can run itself before reporting, and one less thing your review has to catch. For a Java service, these are the layers worth wiring into the build and the CI pipeline:
+
+| Phase | Tools | Why it matters for AI code |
+|---|---|---|
+| Unit tests | JUnit 5, Mockito, AssertJ | The base layer, and the one agents write most |
+| Integration tests | Spring Boot Test, Testcontainers, WireMock | Real database and fake external APIs, so tests prove more than mocks |
+| Contract tests | Pact or Spring Cloud Contract | Stops one module breaking another; key when a system spans many repositories |
+| End-to-end | Playwright | Real browser flows, judged from the outside |
+| Test quality | PIT (mutation testing), JaCoCo (coverage) | Catches weak generated tests: coverage shows what runs, PIT shows what is actually checked |
+| Static analysis | SonarQube, PMD, SpotBugs, Checkstyle | Duplication, complexity and likely bugs, which grow fastest when code is cheap to produce |
+| Architecture | ArchUnit | Module and layering rules as tests, so an agent cannot quietly break them |
+| Database | Flyway or Liquibase | Schema changes as versioned migrations that are reviewed and run in tests; they are the hardest changes to undo |
+| Security | OWASP Dependency-Check or Snyk, Gitleaks | Vulnerable libraries and leaked secrets |
+
+How many tests of each kind to write is a testing-strategy question (the pyramid and the trophy, Architecture & Craft item 5.1); this table is about which of them an agent's diff must pass before a human reads it.
+
 **Keeping ownership of the design.** Work in small, reviewable steps, one concern per diff. Decide the structure yourself and let the agent fill it in, rather than asking for a feature and accepting whatever architecture arrives. When the agent's approach differs from yours, decide explicitly instead of drifting. Commit messages and pull request descriptions are yours; they record why, which the agent cannot know. The codebase should look as if one careful team wrote it, not as if several sessions each solved a local problem.
 
 **Security and hygiene.** The agent reads files, and files can contain instructions meant for it: a comment in a dependency, a README in a cloned repository, a build log (item 6.1). Give it least privilege: read-only where possible, no production credentials, no ability to push or deploy without a human step, and tool calls that can delete or spend shown for confirmation. Secrets in the working tree end up in the context; keep them out. Generated code can reproduce licensed snippets verbatim; be alert to large blocks that arrive fully formed with no relation to your codebase's style.

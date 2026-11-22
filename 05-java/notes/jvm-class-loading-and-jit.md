@@ -6,6 +6,66 @@
 
 ## The idea
 
+**The whole path, in one picture.** `javac` turns source into bytecode once, at build time, and the same `.class` file runs on every operating system. Each OS and CPU has its own JVM; inside it the bytecode starts in the interpreter and is compiled to machine code for that CPU only once it is hot. GraalVM Native Image (item 4.6) does that compilation at build time instead, trading portability for instant start-up.
+
+```mermaid
+flowchart TD
+    SRC["Calc.java<br/>━━━━━━━━━━<br/>static int add(int a, int b) { return a + b; }"]
+    JAVAC["javac (Maven / Gradle)<br/>BUILD TIME"]
+    BC["Calc.class: BYTECODE<br/>━━━━━━━━━━<br/>iload_0 · iload_1 · iadd · ireturn<br/>━━━━━━━━━━<br/>Same file on every OS<br/>For the JVM, not a real CPU"]
+
+    SRC --> JAVAC --> BC
+    BC -->|"copied: USB / network / Docker image"| MAC & WIN & LIN
+
+    subgraph MAC["Mac: ARM CPU"]
+        J1["JVM for macOS"]
+    end
+    subgraph WIN["Windows: x86 CPU"]
+        J2["JVM for Windows"]
+    end
+    subgraph LIN["Linux: x86 or ARM CPU"]
+        J3["JVM for Linux"]
+    end
+
+    J1 --> INT
+    J2 --> INT
+    J3 --> INT
+
+    subgraph INSIDE["Inside one HotSpot JVM process: RUNTIME"]
+        INT["Interpreter<br/>━━━━━━━━━━<br/>Reads bytecode like a recipe<br/>Runs a prebuilt routine for each instruction<br/>Starts instantly · slow<br/>Compiles nothing"]
+        CNT{"Hot?<br/>call + loop counters"}
+        C1["C1 JIT<br/>quick compile<br/>light optimisation + profiling"]
+        C2["C2 JIT<br/>slow compile<br/>heavy optimisation<br/>inlining · speculation"]
+        CC[("Code cache: MACHINE CODE<br/>━━━━━━━━━━<br/>AArch64: add w0, w1, w2 · ret<br/>x86-64 Linux: lea eax, [rsi+rdx] · ret<br/>━━━━━━━━━━<br/>In memory · lost on exit")]
+        CPU["CPU executes it directly"]
+
+        INT --> CNT
+        CNT -->|warm| C1
+        C1 -->|very hot| C2
+        C1 --> CC
+        C2 --> CC
+        CC --> CPU
+        CPU -.->|"assumption broken: deoptimise"| INT
+    end
+
+    SRC --> NI["GraalVM Native Image<br/>BUILD TIME · ahead of time<br/>one build per OS + CPU"]
+    NI --> EXE["calc: NATIVE EXECUTABLE<br/>━━━━━━━━━━<br/>machine code for one OS + CPU<br/>+ Substrate VM: GC, threads<br/>━━━━━━━━━━<br/>No JVM · no interpreter · no JIT<br/>Instant start · not portable"]
+
+    classDef source fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    classDef bytecode fill:#ede7f6,stroke:#5e35b1,color:#311b92
+    classDef native fill:#fff3e0,stroke:#e65100,color:#bf360c
+    classDef jvm fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    classDef tool fill:#f5f5f5,stroke:#616161,color:#212121
+
+    class SRC source
+    class BC bytecode
+    class CC,EXE,CPU native
+    class J1,J2,J3,INT,C1,C2,CNT jvm
+    class JAVAC,NI tool
+```
+
+`add` is `static`, which is why the bytecode loads slots 0 and 1; an instance method keeps `this` in slot 0 and loads `iload_1, iload_2`. The machine code shows only the instruction that does the work. On JDK 25 (AArch64), `-XX:CompileCommand=print,Calc::add` shows C2 wrapping `add w0, w1, w2` in frame setup, an entry barrier and a safepoint poll before `ret` (as hex, unless the hsdis disassembler plugin is installed).
+
 **Class files and lazy loading.** `javac` turns each type into a `.class` file of constant pool, fields, bytecode and attributes. The JVM loads a class when it is first referenced (a `new`, a static access, `Class.forName`), then **links** it (verification, static field preparation, lazy resolution of symbolic references) and **initialises** it (static initialisers run exactly once, on first active use).
 
 **Class loaders and delegation.** Three built-in loaders form a chain: the bootstrap loader (`java.base`; shows up as `null` from `getClassLoader()`), the platform loader (`java.sql`, `java.net.http` and other modules outside the core) and the application loader (your `-cp` or module path). Each loader asks its parent first and searches its own locations only if the parent fails. So nothing on the classpath can replace `java.lang.String`, and when two jars contain the same class, the first one on the classpath wins, silently. A class's identity is the pair (loader, name), so the same class loaded by two loaders (Tomcat gives each web application its own) is two types, which is where `ClassCastException: com.acme.Foo cannot be cast to com.acme.Foo` comes from.
